@@ -1,25 +1,42 @@
 import { FilesIcon, LeftArrowIcon, RightArrowIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon } from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useLocation, Navigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
 import jammy_wallpaper from "../static/media/jammy_wallpaper.jpg";
 import vbnb_logo from "../static/media/vbnb_logo.png";
 import exercism_logo from "../static/media/exercism_logo.png";
-import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
 
 export const HomeScreenComponent = () => {
   const[senderEmail, setSenderEmail] = useState('')
   const[message, setMessage] = useState('')
   const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
   const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
+  const[isSmallScreen, setIsSmallScreen] = useState(false)
   const openGmailDialogRef = useRef(null)
   const openUbuntuSoftwareDialogRef = useRef(null)
   const openTerminalDialogRef = useRef(null)
   const openSublimeDialogRef = useRef(null)
   const openVsCodeDialogRef = useRef(null)
+  const location = useLocation()
 
   const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 1024)
+    }
+
+    checkScreenSize()
+    window.addEventListener("resize", checkScreenSize)
+
+    return () => window.removeEventListener("resize", checkScreenSize)
+  }, [])
+
+  if (isSmallScreen) {
+    return <Navigate to="/unavailable" state={{ from: location }} replace/>
+  }
 
   const checkValidForm = () => {
     if (!validEmailRegex.test(senderEmail.trim())) {
@@ -101,7 +118,7 @@ export const HomeScreenComponent = () => {
     <section className="h-screen w-screen overflow-hidden relative">
       <dialog
         ref={openVsCodeDialogRef}
-        className="fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] w-fit h-fit border border-solid border-black"
+        className="fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] max-2xl:max-w-[80vw] w-fit h-fit border border-solid border-black"
       >
         <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
           <div className="flex items-center w-6 h-6 mx-3">
@@ -156,7 +173,7 @@ export const HomeScreenComponent = () => {
                 </div>
               </div>
             </div>
-            <div className="h-[70vh] w-full max-w-full overflow-x-auto scrollbar hover:scrollbar-thumb-gray-50/10 whitespace-pre text-left font-mono text-xs leading-relaxed p-1">
+            <div className="h-[70vh] max-w-full w-[calc(95vh)] overflow-x-auto scrollbar hover:scrollbar-thumb-gray-50/10 whitespace-pre text-left font-mono text-sm leading-relaxed p-1">
               <span className="text-red-500">professional_experience</span><span className="text-white">:</span><br/>
               &nbsp;&nbsp;<span className="text-red-500">cloud_engineer</span><span className="text-white">:</span><br/>
               &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Led critical cloud infrastructure operations, including server provisioning, decommissioning, and configuration management across multiple cloud platforms and Linux environments</span><br/>
@@ -188,7 +205,7 @@ export const HomeScreenComponent = () => {
       </dialog>
       <dialog
         ref={openSublimeDialogRef}
-        className="fixed inset-0 m-auto rounded-xl min-h-[70vh] min-w-[50vw] w-fit h-fit bg-[#333A41] border border-solid border-black"
+        className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[50vw] max-2xl:max-w-[60vw] max-xl:max-w-[80vw] w-fit h-fit bg-[#333A41] border border-solid border-black overflow-hidden"
       >
         <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
           <div className="flex items-center w-6 h-6 mx-3">
@@ -213,16 +230,16 @@ export const HomeScreenComponent = () => {
             <li className="text-white">View</li>
           </ul>
         </div>
-        <div className="w-full h-8 bg-gray-600">
-          <span className="flex items-center">
-            <LeftArrowIcon className="fill-current text-white w-6 h-6"/>
-            <RightArrowIcon className="fill-current text-white w-6 h-6"/>
-            <div className="flex items-center w-36 h-8 bg-[#333A41] rounded-lg mt-1">
-              <span className="text-sm text-white mx-2">About_me.md</span>
-            </div>
-          </span>
-          <div className="mx-5">
-            <span className="text-sm text-white font-sublime">
+        <div className="w-full h-8 bg-gray-600 flex items-center">
+          <LeftArrowIcon className="fill-current text-white w-6 h-6"/>
+          <RightArrowIcon className="fill-current text-white w-6 h-6"/>
+          <div className="flex items-center w-36 h-8 bg-[#333A41] rounded-lg mt-1">
+            <span className="text-sm text-white mx-2">About_me.md</span>
+          </div>
+        </div>
+        <div className="h-[39vh] scrollbar-thin scrollbar-thumb-gray-50/15 scrollbar-track-transparent overflow-x-auto">
+          <div className="mx-5 mt-4 w-[calc(100vh)]">
+            <span className="text-sm text-white font-sublime whitespace-nowrap">
               ## About Me<br/>
               Versatile IT professional with a progressive career spanning helpdesk support, Unix system administration, and cloud engineering, now pivoting towards software engineering.<br/>
               Leveraging a strong foundation in technical problem-solving, infrastructure management, and automation to bring a unique perspective to software development.<br/>
@@ -234,7 +251,7 @@ export const HomeScreenComponent = () => {
       </dialog>
       <dialog
         ref={openTerminalDialogRef}
-        className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] w-fit h-fit bg-[#320E24] border border-solid border-black"
+        className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#320E24] border border-solid border-black"
       >
         <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
           <div className="w-6 h-6 mx-3">
@@ -307,7 +324,7 @@ export const HomeScreenComponent = () => {
       </dialog>
       <dialog
         ref={openGmailDialogRef}
-        className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] p-5 w-fit h-fit"
+        className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] max-2xl:min-w-[40vw] p-5 w-fit h-fit"
       >
         <button
           className="flex items-center justify-center w-6 h-6 hover:bg-zinc-100 rounded-full hover:shadow absolute right-5 top-4"
