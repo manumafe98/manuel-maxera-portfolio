@@ -1,17 +1,61 @@
 import { FilesIcon, LeftArrowIcon, RightArrowIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon } from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import emailjs from "@emailjs/browser";
 import jammy_wallpaper from "../static/media/jammy_wallpaper.jpg";
 import vbnb_logo from "../static/media/vbnb_logo.png";
 import exercism_logo from "../static/media/exercism_logo.png";
+import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
 
 export const HomeScreenComponent = () => {
+  const[senderEmail, setSenderEmail] = useState('')
+  const[message, setMessage] = useState('')
+  const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
+  const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
   const openGmailDialogRef = useRef(null)
   const openUbuntuSoftwareDialogRef = useRef(null)
   const openTerminalDialogRef = useRef(null)
   const openSublimeDialogRef = useRef(null)
   const openVsCodeDialogRef = useRef(null)
+
+  const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+
+  const checkValidForm = () => {
+    if (!validEmailRegex.test(senderEmail.trim())) {
+      handleGmailMessagePopUp("Ivalid email address", false)
+      return false
+    } else if (!message.trim()) {
+      handleGmailMessagePopUp("Invalid message", false)
+      return false
+    }
+
+    return true
+  }
+
+  const handleGmailMessagePopUp = (text, success) => {
+    setShowGmailDialogNotification(true)
+    setGmailDialogPopupData({ text, success })
+    setTimeout(() => setShowGmailDialogNotification(false), 4000)
+  }
+
+  const sendEmail = async () => {
+    const isValid = checkValidForm()
+
+    if (isValid) {
+      const templateParams = {
+        from_email: senderEmail,
+        message: message,
+      }
+  
+      try {
+        await emailjs.send(import.meta.env.EMAILJS_SERVICE_ID, import.meta.env.EMAILJS_TEMPLATE_ID, templateParams, import.meta.env.EMAILJS_USER_PUBLIC_KEY)
+        handleGmailMessagePopUp("Email Sent", true)
+      } catch (error) {
+        console.log("FAILED...", error)
+      }
+    }
+  }
 
   const handleDialogPopUp = (dialog) => {
     switch (dialog) {
@@ -83,7 +127,7 @@ export const HomeScreenComponent = () => {
           </ul>
         </div>
         <div className="flex w-full">
-          <div className="flex h-[75vh] w-4/12 bg-[#24242C]">
+          <div className="flex h-[75.1vh] w-3/12 bg-[#24242C]">
             <div className="w-2/12 m-1 p-1">
               <FilesIcon className="fill-current text-white w-10 h-10"/>
             </div>
@@ -102,7 +146,7 @@ export const HomeScreenComponent = () => {
               </div>
             </div>
           </div>
-          <div className="w-8/12 bg-[#242C34]">
+          <div className="w-9/12 bg-[#242C34]">
             <div className="w-full h-12 bg-[#24242C]">
               <div className="w-5/12 bg-[#242C34]">
                 <div className="flex items-center justify-center gap-2 bg-gray-400/30 h-12 p-1 border-b border-solid border-b-white border-x-black">
@@ -279,21 +323,27 @@ export const HomeScreenComponent = () => {
             <input
               placeholder="email@example.com"
               type="text"
-              name="email"
-              id="email"
+              value={senderEmail}
               className="w-full h-9 mb-2 p-2 border border-solid border-main-gray shadow-md rounded-xl focus:outline-none focus:ring-1 focus:ring-ubuntu-focus focus:border-ubuntu-focus"
+              onChange={(e) => setSenderEmail(e.target.value)}
             />
             <textarea
               placeholder="message"
-              name="message"
-              id="message"
+              value={message}
               className="w-full h-32 mb-2 p-2 border border-solid border-main-gray shadow-md rounded-xl resize-none placeholder-top-left focus:outline-none focus:ring-1 focus:ring-ubuntu-focus focus:border-ubuntu-focus"
+              onChange={(e) => setMessage(e.target.value)}
             />
-            <button className="h-9 text-white rounded-xl bg-ubuntu-main w-full hover:bg-ubuntu-focus">
+            <button
+              className="h-9 text-white rounded-xl bg-ubuntu-main w-full hover:bg-ubuntu-focus"
+              onClick={sendEmail}
+            >
               Send
             </button>
           </div>
         </div>
+        {showGmailDialogNotification && (
+          <GmailDialogMessagePopUp text={gmailDialogPopUpData.text} success={gmailDialogPopUpData.success}/>
+        )}
       </dialog>
       <ActivitiesBarComponent/>
       <ApplicationsMenuComponent openIconDialog={handleDialogPopUp}/>
