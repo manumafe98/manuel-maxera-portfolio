@@ -298,3 +298,37 @@ export const YamlIcon = (props) => {
     </svg>
   )
 }
+
+export const CheckMarkIcon = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      {...props}
+    >
+      <path
+        d="M16 2a14 14 0 1 0 14 14A14 14 0 0 0 16 2m-2 19.59l-5-5L10.59 15L14 18.41L21.41 11l1.596 1.586Z"
+      />
+      <path
+        fill="none"
+        d="m14 21.591l-5-5L10.591 15L14 18.409L21.41 11l1.595 1.585z"
+      />
+    </svg>
+  )
+}
+
+export const DialogXMarkIcon = (props) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 16 16"
+      {...props}
+    >
+      <path
+        fill-rule="evenodd"
+        d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14M6.53 5.47a.75.75 0 0 0-1.06 1.06L6.94 8L5.47 9.47a.75.75 0 1 0 1.06 1.06L8 9.06l1.47 1.47a.75.75 0 1 0 1.06-1.06L9.06 8l1.47-1.47a.75.75 0 1 0-1.06-1.06L8 6.94z"
+        clip-rule="evenodd"
+      />
+    </svg>
+  )
+}
