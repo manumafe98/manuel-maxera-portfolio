@@ -1,6 +1,7 @@
 import { FilesIcon, LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon } from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
+import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
 import { useRef, useState, useEffect } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
