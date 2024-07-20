@@ -169,7 +169,7 @@ export const HomeScreenComponent = () => {
 
   return (
     <>
-      {isSmallScreen && <Navigate to="/unavailable" state={{ from: location }} replace />}
+      {isSmallScreen && <Navigate to="/unavailable" state={{ from: location }} replace/>}
       <section className="h-screen w-screen overflow-hidden relative">
         <dialog
           ref={openVsCodeDialogRef}
