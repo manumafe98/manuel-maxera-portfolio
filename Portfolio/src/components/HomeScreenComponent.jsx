@@ -1,4 +1,4 @@
-import { FilesIcon, LeftArrowIcon, RightArrowIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon } from "../constants/Icons";
+import { FilesIcon, LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon } from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
 import { useRef, useState, useEffect } from "react";
@@ -14,6 +14,7 @@ export const HomeScreenComponent = () => {
   const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
   const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
   const[isSmallScreen, setIsSmallScreen] = useState(false)
+  const[selectedIndex, setSelectedIndex] = useState(0)
   const openGmailDialogRef = useRef(null)
   const openUbuntuSoftwareDialogRef = useRef(null)
   const openTerminalDialogRef = useRef(null)
@@ -22,6 +23,7 @@ export const HomeScreenComponent = () => {
   const location = useLocation()
 
   const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+  const options = ["About Me", "Professional Experience", "My Projects", "Contact Me"]
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -37,6 +39,61 @@ export const HomeScreenComponent = () => {
   if (isSmallScreen) {
     return <Navigate to="/unavailable" state={{ from: location }} replace/>
   }
+
+  const handleArrowKeyPress = (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault()
+      const nextIndex = (selectedIndex + 1) % options.length
+      setSelectedIndex(nextIndex)
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault()
+      const prevIndex = (selectedIndex - 1 + options.length) % options.length
+      setSelectedIndex(prevIndex)
+    }
+  }
+
+  const handleEnterKeyPress = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault()
+      const app = options[selectedIndex]
+      switch (app) {
+        case "About Me":
+          openSublimeDialogRef.current?.showModal()
+          openTerminalDialogRef.current.close()
+          break
+        case "Professional Experience":
+          openVsCodeDialogRef.current?.showModal()
+          openTerminalDialogRef.current.close()
+          break
+        case"My Projects":
+          openUbuntuSoftwareDialogRef.current?.showModal()
+          openTerminalDialogRef.current.close()
+          break
+        case"Contact Me":
+          openGmailDialogRef.current?.showModal()
+          openTerminalDialogRef.current.close()
+          break
+      }
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      handleArrowKeyPress(event)
+      handleEnterKeyPress(event)
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [selectedIndex])
+
+  useEffect(() => {
+    if (openTerminalDialogRef.current) {
+      openTerminalDialogRef.current.showModal()
+    }
+  }, [openTerminalDialogRef])
 
   const checkValidForm = () => {
     if (!validEmailRegex.test(senderEmail.trim())) {
@@ -267,17 +324,37 @@ export const HomeScreenComponent = () => {
             <XMarkIcon className="fill-current text-white w-4 h-4"/>
           </button>
         </div>
-        <div className="flex">
-          <div className="flex items-center justify-center h-5 w-36 bg-[#2A2929]">
-            <span className="text-white mx-3">manuel@Ubuntu</span>
+        <div className="flex flex-col">
+          <div className="flex">
+            <div className="flex items-center justify-center h-5 w-36 bg-[#2A2929]">
+              <span className="text-white mx-3">manuel@Ubuntu</span>
+            </div>
+            <div className="flex items-center justify-center h-5 w-8 bg-[#3965A1]">
+              <span>~</span>
+            </div>
+            <div className="w-0 h-0 border-l-[12px] border-l-[#3965A1] border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent"></div>
+            <span className="text-white mx-2">
+              sh ./start_portfolio
+            </span>
           </div>
-          <div className="flex items-center justify-center h-5 w-8 bg-[#3965A1]">
-            <span>~</span>
+          <div className="flex gap-2 ml-1">
+            <span className="text-green-500">?</span>
+            <span className="text-white font-bold">Please select an option:</span>
+            <span className="text-white opacity-60">(use arrow keys and enter)</span>
           </div>
-          <div className="w-0 h-0 border-l-[12px] border-l-[#3965A1] border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent"></div>
-          <span className="text-white mx-2">
-            sh ./start_portfolio
-          </span>
+          <div className="flex flex-col">
+            {options.map((option, index) => (
+              <div
+                key={index}
+                className={`flex items-center italic ${
+                  selectedIndex === index ? "text-blue-500" : "text-white ml-5 opacity-80"
+                }`}
+              >
+                {selectedIndex === index && <UnfilledArrowRightIcon className="fill-current text-blue-500 w-5 h-5"/>}
+                <span>{option}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </dialog>
       <dialog
