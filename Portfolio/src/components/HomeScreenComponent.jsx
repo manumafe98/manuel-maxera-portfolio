@@ -16,6 +16,7 @@ export const HomeScreenComponent = () => {
   const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
   const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
   const[selectedIndex, setSelectedIndex] = useState(0)
+  const[dialogStack, setDialogStack] = useState([])
   const openGmailDialogRef = useRef(null)
   const openUbuntuSoftwareDialogRef = useRef(null)
   const openTerminalDialogRef = useRef(null)
@@ -26,6 +27,26 @@ export const HomeScreenComponent = () => {
 
   const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
   const options = ["About Me", "Professional Experience", "My Projects", "My Skills", "Contact Me"]
+  const[zIndex, setZIndex] = useState({
+    terminal: "z-0",
+    sublime: "z-0",
+    vscode: "z-0",
+    gmail: "z-0",
+    ubuntusoftware: "z-0",
+    filemanager: "z-0",
+  })
+
+  useEffect(() => {
+    const newZIndex = {
+      terminal: `z-${(dialogStack.indexOf("terminal") + 1) * 10}`,
+      sublime: `z-${(dialogStack.indexOf("sublime") + 1) * 10}`,
+      vscode: `z-${(dialogStack.indexOf("vscode") + 1) * 10}`,
+      gmail: `z-${(dialogStack.indexOf("gmail") + 1) * 10}`,
+      ubuntusoftware: `z-${(dialogStack.indexOf("ubuntusoftware") + 1) * 10}`,
+      filemanager: `z-${(dialogStack.indexOf("filemanager") + 1) * 10}`,
+    }
+    setZIndex(newZIndex)
+  }, [dialogStack])
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -55,24 +76,24 @@ export const HomeScreenComponent = () => {
       const app = options[selectedIndex]
       switch (app) {
         case "About Me":
-          openSublimeDialogRef.current?.showModal()
-          openTerminalDialogRef.current.close()
+          openSublimeDialogRef.current?.show()
+          setDialogStack(prevStack => [...prevStack, "sublime"])
           break
         case "Professional Experience":
-          openVsCodeDialogRef.current?.showModal()
-          openTerminalDialogRef.current.close()
+          openVsCodeDialogRef.current?.show()
+          setDialogStack(prevStack => [...prevStack, "vscode"])
           break
         case "My Projects":
-          openUbuntuSoftwareDialogRef.current?.showModal()
-          openTerminalDialogRef.current.close()
+          openUbuntuSoftwareDialogRef.current?.show()
+          setDialogStack(prevStack => [...prevStack, "ubuntusoftware"])
           break
         case "My Skills":
-          openFileManagerDialogRef.current?.showModal()
-          openTerminalDialogRef.current.close()
+          openFileManagerDialogRef.current?.show()
+          setDialogStack(prevStack => [...prevStack, "filemanager"])
           break
         case "Contact Me":
-          openGmailDialogRef.current?.showModal()
-          openTerminalDialogRef.current.close()
+          openGmailDialogRef.current?.show()
+          setDialogStack(prevStack => [...prevStack, "gmail"])
           break
       }
     }
@@ -92,7 +113,8 @@ export const HomeScreenComponent = () => {
 
   useEffect(() => {
     if (openTerminalDialogRef.current) {
-      openTerminalDialogRef.current.showModal()
+      openTerminalDialogRef.current.show()
+      setDialogStack(prevStack => [...prevStack, "terminal"])
     }
   }, [openTerminalDialogRef])
 
@@ -135,48 +157,60 @@ export const HomeScreenComponent = () => {
   const handleDialogPopUp = (dialog) => {
     switch (dialog) {
       case "Gmail":
-        openGmailDialogRef.current?.showModal()
+        openGmailDialogRef.current?.show()
+        setDialogStack(prevStack => [...prevStack, "gmail"])
         break
       case "Ubuntu Software":
-        openUbuntuSoftwareDialogRef.current?.showModal()
+        openUbuntuSoftwareDialogRef.current?.show()
+        setDialogStack(prevStack => [...prevStack, "ubuntusoftware"])
         break
       case "Terminal":
-        openTerminalDialogRef.current?.showModal()
+        openTerminalDialogRef.current?.show()
+        setDialogStack(prevStack => [...prevStack, "terminal"])
         break
       case "Sublime":
-        openSublimeDialogRef.current?.showModal()
+        openSublimeDialogRef.current?.show()
+        setDialogStack(prevStack => [...prevStack, "sublime"])
         break
       case "VsCode":
-        openVsCodeDialogRef.current?.showModal()
+        openVsCodeDialogRef.current?.show()
+        setDialogStack(prevStack => [...prevStack, "vscode"])
         break
       case "File Manager":
-        openFileManagerDialogRef.current?.showModal()
+        openFileManagerDialogRef.current?.show()
+        setDialogStack(prevStack => [...prevStack, "filemanager"])
         break
     }
   }
 
   const closeGmailDialog = () => {
     openGmailDialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "gmail"))
   }
 
   const closeUbuntuSoftwareDialog = () => {
     openUbuntuSoftwareDialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "ubuntusoftware"))
   }
 
   const closeTerminalDialog = () => {
     openTerminalDialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "terminal"))
   }
 
   const closeSublimeDialog = () => {
     openSublimeDialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "sublime"))
   }
 
   const closeVsCodeDialog = () => {
     openVsCodeDialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "vscode"))
   }
 
   const closeFileManagerDialog = () => {
     openFileManagerDialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "filemanager"))
   }
 
   return (
@@ -185,7 +219,7 @@ export const HomeScreenComponent = () => {
       <section className="h-screen w-screen overflow-hidden relative">
         <dialog
           ref={openVsCodeDialogRef}
-          className="fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] max-2xl:max-w-[80vw] w-fit h-fit border border-solid border-black"
+          className={`fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] max-2xl:max-w-[80vw] w-fit h-fit border border-solid border-black ${zIndex.vscode}`}
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex items-center w-6 h-6 mx-3">
@@ -272,7 +306,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openSublimeDialogRef}
-          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[50vw] max-2xl:max-w-[60vw] max-xl:max-w-[80vw] w-fit h-fit bg-[#333A41] border border-solid border-black overflow-hidden"
+          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[50vw] max-2xl:max-w-[60vw] max-xl:max-w-[80vw] w-fit h-fit bg-[#333A41] border border-solid border-black overflow-hidden ${zIndex.sublime}`}
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex items-center w-6 h-6 mx-3">
@@ -318,7 +352,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openTerminalDialogRef}
-          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#320E24] border border-solid border-black"
+          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#320E24] border border-solid border-black ${zIndex.terminal}`}
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="w-6 h-6 mx-3">
@@ -369,7 +403,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openUbuntuSoftwareDialogRef}
-          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
+          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] w-fit h-fit bg-[#2A2929] border border-solid border-black ${zIndex.ubuntusoftware}`}
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex items-center justify-center w-6 h-6 mx-3 bg-gray-50/20 rounded-md">
@@ -411,7 +445,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openFileManagerDialogRef}
-          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
+          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black ${zIndex.filemanager}`}
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex gap-2 mx-3">
@@ -521,7 +555,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openGmailDialogRef}
-          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] max-2xl:min-w-[40vw] p-5 w-fit h-fit"
+          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] max-2xl:min-w-[40vw] p-5 w-fit h-fit ${zIndex.gmail}`}
         >
           <button
             className="flex items-center justify-center w-6 h-6 hover:bg-zinc-100 rounded-full hover:shadow absolute right-5 top-4"
