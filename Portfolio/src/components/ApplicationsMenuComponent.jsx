@@ -1,4 +1,7 @@
-import { GmailIcon, MenuIcon, SublimeTextIcon, TerminalIcon, UbuntuSoftwareIcon, VisualStudioCodeIcon } from "../constants/Icons"
+import { GmailIcon, MenuIcon, SublimeTextIcon, VisualStudioCodeIcon } from "../constants/Icons"
+import file_manager from "../static/media/file_manager.webp";
+import terminal_app from "../static/media/terminal_app.webp";
+import software_store from "../static/media/software_store.webp";
 
 export const ApplicationsMenuComponent = ({ openIconDialog }) => {
 
@@ -10,7 +13,7 @@ export const ApplicationsMenuComponent = ({ openIconDialog }) => {
     <div className="bg-ubuntu-dock/90 h-screen w-24 opacity-65 absolute z-1 border-1 border-solid border-[#464646] flex flex-col py-4">
       <ul className="flex flex-col items-center grow-[0.90]">
         <li className="mb-2 rounded-xl p-3 hover:bg-gray-50/10 relative group cursor-pointer" onClick={handleAppIconClick} data-value="Terminal">
-          <TerminalIcon className="fill-current text-gray-700 w-14 h-14"/>
+          <img src={terminal_app} alt="Ubuntu Terminal App Icon" className="w-14 h-14"/>
           <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white px-2 py-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             Terminal
           </div>
@@ -34,9 +37,15 @@ export const ApplicationsMenuComponent = ({ openIconDialog }) => {
           </div>
         </li>
         <li className="mb-2 rounded-xl p-3 hover:bg-gray-50/10 relative group cursor-pointer" onClick={handleAppIconClick} data-value="Ubuntu Software">
-          <UbuntuSoftwareIcon className="fill-current text-gray-700 w-14 h-14"/>
+          <img src={software_store} alt="Ubuntu Store App Icon" className="w-14 h-14"/>
           <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white px-2 py-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
             My Projects
+          </div>
+        </li>
+        <li className="mb-2 rounded-xl p-3 hover:bg-gray-50/10 relative group cursor-pointer" onClick={handleAppIconClick} data-value="File Manager">
+          <img src={file_manager} alt="Ubuntu File Manager App Icon" className="w-14 h-14"/>
+          <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white px-2 py-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+            My Skills
           </div>
         </li>
       </ul>

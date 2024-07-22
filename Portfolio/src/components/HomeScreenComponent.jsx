@@ -1,13 +1,13 @@
-import { FilesIcon, LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon } from "../constants/Icons";
+import { FilesIcon, LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon, UnfilledArrowLeftIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon, SkillsIcon, RecentIcon, StarredIcon, HomeIcon, DocumentsIcon, DownloadsIcon, JavaIcon, JavaScriptIcon, PythonIcon, SpringIcon, ReactIcon, TailwindCssIcon, GrafanaIcon, DockerIcon, LinuxIcon, AmazonWebServicesIcon, GitIcon, PrometheusIcon } from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
 import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
 import { useRef, useState, useEffect } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
-import jammy_wallpaper from "../static/media/jammy_wallpaper.jpg";
-import vbnb_logo from "../static/media/vbnb_logo.png";
-import exercism_logo from "../static/media/exercism_logo.png";
+import jammy_wallpaper from "../static/media/jammy_wallpaper.webp";
+import vbnb_logo from "../static/media/vbnb_logo.webp";
+import exercism_logo from "../static/media/exercism_logo.webp";
 
 export const HomeScreenComponent = () => {
   const[isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024)
@@ -21,10 +21,11 @@ export const HomeScreenComponent = () => {
   const openTerminalDialogRef = useRef(null)
   const openSublimeDialogRef = useRef(null)
   const openVsCodeDialogRef = useRef(null)
+  const openFileManagerDialogRef = useRef(null)
   const location = useLocation()
 
   const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
-  const options = ["About Me", "Professional Experience", "My Projects", "Contact Me"]
+  const options = ["About Me", "Professional Experience", "My Projects", "My Skills", "Contact Me"]
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -61,11 +62,15 @@ export const HomeScreenComponent = () => {
           openVsCodeDialogRef.current?.showModal()
           openTerminalDialogRef.current.close()
           break
-        case"My Projects":
+        case "My Projects":
           openUbuntuSoftwareDialogRef.current?.showModal()
           openTerminalDialogRef.current.close()
           break
-        case"Contact Me":
+        case "My Skills":
+          openFileManagerDialogRef.current?.showModal()
+          openTerminalDialogRef.current.close()
+          break
+        case "Contact Me":
           openGmailDialogRef.current?.showModal()
           openTerminalDialogRef.current.close()
           break
@@ -144,6 +149,9 @@ export const HomeScreenComponent = () => {
       case "VsCode":
         openVsCodeDialogRef.current?.showModal()
         break
+      case "File Manager":
+        openFileManagerDialogRef.current?.showModal()
+        break
     }
   }
 
@@ -165,6 +173,10 @@ export const HomeScreenComponent = () => {
 
   const closeVsCodeDialog = () => {
     openVsCodeDialogRef.current?.close()
+  }
+
+  const closeFileManagerDialog = () => {
+    openFileManagerDialogRef.current?.close()
   }
 
   return (
@@ -378,7 +390,7 @@ export const HomeScreenComponent = () => {
             <div className="grid grid-cols-2 grid-rows-1 gap-5 w-3/4 h-1/3">
               <a href="https://github.com/manumafe98/java" target="_blank">
                 <div className="flex items-center gap-3 bg-[#1E1E1E] border border-solid border-black shadow-md rounded-xl p-4 hover:opacity-80 cursor-pointer">
-                  <img src={exercism_logo} alt="Vbnb logo" className="w-16 mt-2.5"/>
+                  <img src={exercism_logo} alt="Exercism Logo" className="w-16 mt-2.5"/>
                   <div className="flex flex-col">
                     <span className="text-white font-bold">Exercism</span>
                     <span className="text-white text-sm">Java Track Maintainer</span>
@@ -394,6 +406,116 @@ export const HomeScreenComponent = () => {
                   </div>
                 </div>
               </a>
+            </div>
+          </div>
+        </dialog>
+        <dialog
+          ref={openFileManagerDialogRef}
+          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
+        >
+          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
+            <div className="flex gap-2 mx-3">
+              <div className="flex">
+                <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
+                  <UnfilledArrowLeftIcon className="fill-current text-white w-6 h-6"/>
+                </div>
+                <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-30 border border-solid border-black">
+                  <UnfilledArrowRightIcon className="fill-current text-white w-6 h-6"/>
+                </div>
+              </div>
+              <div className="flex items-center justify-start gap-2 w-80 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
+                <span><SkillsIcon className="fill-current text-white ml-2 w-6 h-6"/></span>
+                <span className="text-white text-md font-bold">Skills</span>
+              </div>
+              <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
+                <SearchIcon className="fill-current text-white w-6 h-6"/>
+              </div>
+            </div>
+            <button
+              className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-gray-50/20 hover:bg-gray-50/15"
+              onClick={closeFileManagerDialog}
+            >
+              <XMarkIcon className="fill-current text-white w-4 h-4"/>
+            </button>
+          </div>
+          <div className="flex">
+            <div className="flex w-1/5 h-[48vh] bg-[#1E1E1E] opacity-85 border-r border-r-solid border-r-black">
+              <div className="flex flex-col w-full my-2 gap-y-3">
+                <div className="flex items-center gap-1 px-3">
+                  <RecentIcon className="fill-current text-white w-6 h-6"/>
+                  <span className="text-white text-sm">Recent</span>
+                </div>
+                <div className="flex items-center gap-1 px-3">
+                  <StarredIcon className="fill-current text-white w-6 h-6"/>
+                  <span className="text-white text-sm">Starred</span>
+                </div>
+                <div className="flex items-center gap-1 px-3">
+                  <HomeIcon className="fill-current text-white w-6 h-6"/>
+                  <span className="text-white text-sm">Home</span>
+                </div>
+                <div className="flex items-center gap-2 px-3">
+                  <DocumentsIcon className="fill-current text-white w-5 h-5"/>
+                  <span className="text-white text-sm">Documents</span>
+                </div>
+                <div className="flex items-center gap-2 px-3">
+                  <DownloadsIcon className="fill-current text-white w-5 h-5"/>
+                  <span className="text-white text-sm">Downloads</span>
+                </div>
+                <div className="flex items-center h-8 gap-2 px-3 bg-gray-50/20">
+                  <SkillsIcon className="fill-current text-white w-5 h-5"/>
+                  <span className="text-white text-sm">Skills</span>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-7 grid-rows-4 mx-4 my-4 gap-y-4">
+              <div className="flex flex-col items-center">
+                <JavaIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Java</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <JavaScriptIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Javascript</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <PythonIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Python</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <SpringIcon className="w-12 h-12"/>
+                <span className="text-white text-md">SpringBoot</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <ReactIcon className="w-12 h-12"/>
+                <span className="text-white text-md">React</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <TailwindCssIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Tailwind</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <GrafanaIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Grafana</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <DockerIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Docker</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <LinuxIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Linux</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <AmazonWebServicesIcon className="w-12 h-12"/>
+                <span className="text-white text-md">AWS</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <GitIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Git</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <PrometheusIcon className="w-12 h-12"/>
+                <span className="text-white text-md">Prometheus</span>
+              </div>
             </div>
           </div>
         </dialog>
