@@ -25,29 +25,46 @@ export const HomeScreenComponent = () => {
   const location = useLocation()
 
   const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+
   const options = ["About Me", "Professional Experience", "My Projects", "My Skills", "Contact Me"]
+  const applicationToRefRelation = {
+    "gmail": openGmailDialogRef,
+    "terminal": openTerminalDialogRef,
+    "sublime": openSublimeDialogRef,
+    "ubuntusoftware": openUbuntuSoftwareDialogRef,
+    "filemanager": openFileManagerDialogRef,
+    "vscode": openVsCodeDialogRef,
+}
 
   const[dialogStack, setDialogStack] = useState([])
-  const[zIndex, setZIndex] = useState({
-    terminal: "z-0",
-    sublime: "z-0",
-    vscode: "z-0",
-    gmail: "z-0",
-    ubuntusoftware: "z-0",
-    filemanager: "z-0",
+  const [zIndex, setZIndex] = useState({
+    terminal: 0,
+    sublime: 0,
+    vscode: 0,
+    gmail: 0,
+    ubuntusoftware: 0,
+    filemanager: 0,
   })
 
   useEffect(() => {
-    const newZIndex = {
-      terminal: `z-${(dialogStack.indexOf("terminal") + 1) * 10}`,
-      sublime: `z-${(dialogStack.indexOf("sublime") + 1) * 10}`,
-      vscode: `z-${(dialogStack.indexOf("vscode") + 1) * 10}`,
-      gmail: `z-${(dialogStack.indexOf("gmail") + 1) * 10}`,
-      ubuntusoftware: `z-${(dialogStack.indexOf("ubuntusoftware") + 1) * 10}`,
-      filemanager: `z-${(dialogStack.indexOf("filemanager") + 1) * 10}`,
-    }
-    setZIndex(newZIndex)
+    const newZIndex = {}
+    dialogStack.forEach((dialog, index) => {
+      newZIndex[dialog] = (index + 1) * 10
+    })
+
+    setZIndex(prevZIndex => ({
+      ...prevZIndex,
+      ...newZIndex
+    }))
   }, [dialogStack])
+
+  useEffect(() => {
+    Object.keys(applicationToRefRelation).forEach(appName => {
+      if (applicationToRefRelation[appName].current) {
+        applicationToRefRelation[appName].current.style.zIndex = zIndex[appName]
+      }
+    })
+  }, [zIndex])
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -117,7 +134,10 @@ export const HomeScreenComponent = () => {
   useEffect(() => {
     if (openTerminalDialogRef.current) {
       openTerminalDialogRef.current.show()
-      setDialogStack(prevStack => [...prevStack, "terminal"])
+      setDialogStack(prevStack => {
+        const newStack = prevStack.filter(app => app !== "terminal")
+        return [...newStack, "terminal"]
+      })
     }
   }, [openTerminalDialogRef])
 
@@ -157,24 +177,28 @@ export const HomeScreenComponent = () => {
     }
   }
 
-  const applicationToRefRelation = {
-      "gmail": openGmailDialogRef,
-      "terminal": openTerminalDialogRef,
-      "sublime": openSublimeDialogRef,
-      "ubuntusoftware": openUbuntuSoftwareDialogRef,
-      "filemanager": openFileManagerDialogRef,
-      "vscode": openVsCodeDialogRef,
-  }
-
   const handleDialogPopUp = (dialog) => {
     const appName = dialog.toLowerCase().replace(" ", "")
-    applicationToRefRelation[dialog].current.show()
-    setDialogStack(prevStack => [...prevStack, appName])
+
+    setDialogStack(prevStack => {
+      const newStack = prevStack.filter(app => app !== appName)
+      return [...newStack, appName]
+    })
+
+    if (applicationToRefRelation[appName].current) {
+      applicationToRefRelation[appName].current.show()
+    }
   }
 
   const closeDialog = (dialogRef, dialogName) => {
+
+    setDialogStack(prevStack => prevStack.filter(app => app !== dialogName))
+    setZIndex(prevZIndex => ({
+      ...prevZIndex,
+      [dialogName]: 0
+    }))
+
     dialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(name => name !== dialogName))
   }
 
   return (
@@ -183,7 +207,7 @@ export const HomeScreenComponent = () => {
       <section className="h-screen w-screen overflow-hidden relative">
         <dialog
           ref={openVsCodeDialogRef}
-          className={`fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] max-2xl:max-w-[80vw] w-fit h-fit border border-solid border-black ${zIndex.vscode}`}
+          className="fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] max-2xl:max-w-[80vw] w-fit h-fit border border-solid border-black"
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex items-center w-6 h-6 mx-3">
@@ -270,7 +294,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openSublimeDialogRef}
-          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[50vw] max-2xl:max-w-[60vw] max-xl:max-w-[80vw] w-fit h-fit bg-[#333A41] border border-solid border-black overflow-hidden ${zIndex.sublime}`}
+          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[50vw] max-2xl:max-w-[60vw] max-xl:max-w-[80vw] w-fit h-fit bg-[#333A41] border border-solid border-black overflow-hidden"
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex items-center w-6 h-6 mx-3">
@@ -316,7 +340,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openTerminalDialogRef}
-          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#320E24] border border-solid border-black ${zIndex.terminal}`}
+          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#320E24] border border-solid border-black"
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="w-6 h-6 mx-3">
@@ -367,7 +391,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openUbuntuSoftwareDialogRef}
-          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] w-fit h-fit bg-[#2A2929] border border-solid border-black ${zIndex.ubuntusoftware}`}
+          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex items-center justify-center w-6 h-6 mx-3 bg-gray-50/20 rounded-md">
@@ -409,7 +433,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openFileManagerDialogRef}
-          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black ${zIndex.filemanager}`}
+          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
         >
           <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
             <div className="flex gap-2 mx-3">
@@ -467,51 +491,51 @@ export const HomeScreenComponent = () => {
             </div>
             <div className="grid grid-cols-7 grid-rows-4 mx-4 my-4 gap-y-4">
               <div className="flex flex-col items-center">
-                <JavaIcon className="w-12 h-12"/>
+                <JavaIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Java</span>
               </div>
               <div className="flex flex-col items-center">
-                <JavaScriptIcon className="w-12 h-12"/>
+                <JavaScriptIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Javascript</span>
               </div>
               <div className="flex flex-col items-center">
-                <PythonIcon className="w-12 h-12"/>
+                <PythonIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Python</span>
               </div>
               <div className="flex flex-col items-center">
-                <SpringIcon className="w-12 h-12"/>
+                <SpringIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">SpringBoot</span>
               </div>
               <div className="flex flex-col items-center">
-                <ReactIcon className="w-12 h-12"/>
+                <ReactIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">React</span>
               </div>
               <div className="flex flex-col items-center">
-                <TailwindCssIcon className="w-12 h-12"/>
+                <TailwindCssIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Tailwind</span>
               </div>
               <div className="flex flex-col items-center">
-                <GrafanaIcon className="w-12 h-12"/>
+                <GrafanaIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Grafana</span>
               </div>
               <div className="flex flex-col items-center">
-                <DockerIcon className="w-12 h-12"/>
+                <DockerIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Docker</span>
               </div>
               <div className="flex flex-col items-center">
-                <LinuxIcon className="w-12 h-12"/>
+                <LinuxIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Linux</span>
               </div>
               <div className="flex flex-col items-center">
-                <AmazonWebServicesIcon className="w-12 h-12"/>
+                <AmazonWebServicesIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">AWS</span>
               </div>
               <div className="flex flex-col items-center">
-                <GitIcon className="w-12 h-12"/>
+                <GitIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Git</span>
               </div>
               <div className="flex flex-col items-center">
-                <PrometheusIcon className="w-12 h-12"/>
+                <PrometheusIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Prometheus</span>
               </div>
             </div>
@@ -519,7 +543,7 @@ export const HomeScreenComponent = () => {
         </dialog>
         <dialog
           ref={openGmailDialogRef}
-          className={`fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[30vw] max-2xl:min-w-[40vw] p-5 w-fit h-fit ${zIndex.gmail}`}
+          className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] p-5 w-fit h-fit"
         >
           <button
             className="flex items-center justify-center w-6 h-6 hover:bg-zinc-100 rounded-full hover:shadow absolute right-5 top-4"
