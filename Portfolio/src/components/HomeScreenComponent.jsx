@@ -16,7 +16,6 @@ export const HomeScreenComponent = () => {
   const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
   const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
   const[selectedIndex, setSelectedIndex] = useState(0)
-  const[dialogStack, setDialogStack] = useState([])
   const openGmailDialogRef = useRef(null)
   const openUbuntuSoftwareDialogRef = useRef(null)
   const openTerminalDialogRef = useRef(null)
@@ -27,6 +26,8 @@ export const HomeScreenComponent = () => {
 
   const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
   const options = ["About Me", "Professional Experience", "My Projects", "My Skills", "Contact Me"]
+
+  const[dialogStack, setDialogStack] = useState([])
   const[zIndex, setZIndex] = useState({
     terminal: "z-0",
     sublime: "z-0",
@@ -58,15 +59,17 @@ export const HomeScreenComponent = () => {
     return () => window.removeEventListener("resize", checkScreenSize)
   }, [])
 
+  const handleArrowFunctionality = (event, arrowType) => {
+    event.preventDefault()
+    const index = arrowType === "Up" ? (selectedIndex - 1 + options.length) % options.length : (selectedIndex + 1) % options.length
+    setSelectedIndex(index)
+  }
+
   const handleArrowKeyPress = (event) => {
     if (event.key === "ArrowDown") {
-      event.preventDefault()
-      const nextIndex = (selectedIndex + 1) % options.length
-      setSelectedIndex(nextIndex)
+      handleArrowFunctionality(event, "Down")
     } else if (event.key === "ArrowUp") {
-      event.preventDefault()
-      const prevIndex = (selectedIndex - 1 + options.length) % options.length
-      setSelectedIndex(prevIndex)
+      handleArrowFunctionality(event, "Up")
     }
   }
 
@@ -154,63 +157,24 @@ export const HomeScreenComponent = () => {
     }
   }
 
+  const applicationToRefRelation = {
+      "gmail": openGmailDialogRef,
+      "terminal": openTerminalDialogRef,
+      "sublime": openSublimeDialogRef,
+      "ubuntusoftware": openUbuntuSoftwareDialogRef,
+      "filemanager": openFileManagerDialogRef,
+      "vscode": openVsCodeDialogRef,
+  }
+
   const handleDialogPopUp = (dialog) => {
-    switch (dialog) {
-      case "Gmail":
-        openGmailDialogRef.current?.show()
-        setDialogStack(prevStack => [...prevStack, "gmail"])
-        break
-      case "Ubuntu Software":
-        openUbuntuSoftwareDialogRef.current?.show()
-        setDialogStack(prevStack => [...prevStack, "ubuntusoftware"])
-        break
-      case "Terminal":
-        openTerminalDialogRef.current?.show()
-        setDialogStack(prevStack => [...prevStack, "terminal"])
-        break
-      case "Sublime":
-        openSublimeDialogRef.current?.show()
-        setDialogStack(prevStack => [...prevStack, "sublime"])
-        break
-      case "VsCode":
-        openVsCodeDialogRef.current?.show()
-        setDialogStack(prevStack => [...prevStack, "vscode"])
-        break
-      case "File Manager":
-        openFileManagerDialogRef.current?.show()
-        setDialogStack(prevStack => [...prevStack, "filemanager"])
-        break
-    }
+    const appName = dialog.toLowerCase().replace(" ", "")
+    applicationToRefRelation[dialog].current.show()
+    setDialogStack(prevStack => [...prevStack, appName])
   }
 
-  const closeGmailDialog = () => {
-    openGmailDialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "gmail"))
-  }
-
-  const closeUbuntuSoftwareDialog = () => {
-    openUbuntuSoftwareDialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "ubuntusoftware"))
-  }
-
-  const closeTerminalDialog = () => {
-    openTerminalDialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "terminal"))
-  }
-
-  const closeSublimeDialog = () => {
-    openSublimeDialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "sublime"))
-  }
-
-  const closeVsCodeDialog = () => {
-    openVsCodeDialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "vscode"))
-  }
-
-  const closeFileManagerDialog = () => {
-    openFileManagerDialogRef.current?.close()
-    setDialogStack(prevStack => prevStack.filter(dialogName => dialogName !== "filemanager"))
+  const closeDialog = (dialogRef, dialogName) => {
+    dialogRef.current?.close()
+    setDialogStack(prevStack => prevStack.filter(name => name !== dialogName))
   }
 
   return (
@@ -230,7 +194,7 @@ export const HomeScreenComponent = () => {
             </span>
             <button
               className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-              onClick={closeVsCodeDialog}
+              onClick={() => closeDialog(openVsCodeDialogRef, "vscode")}
             >
               <XMarkIcon className="fill-current text-white w-4 h-4"/>
             </button>
@@ -317,7 +281,7 @@ export const HomeScreenComponent = () => {
             </span>
             <button
               className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-orange-500 hover:bg-orange-500/80"
-              onClick={closeSublimeDialog}
+              onClick={() => closeDialog(openSublimeDialogRef, "sublime")}
             >
               <XMarkIcon className="fill-current text-white w-4 h-4"/>
             </button>
@@ -363,7 +327,7 @@ export const HomeScreenComponent = () => {
             </span>
             <button
               className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-              onClick={closeTerminalDialog}
+              onClick={() => closeDialog(openTerminalDialogRef, "terminal")}
             >
               <XMarkIcon className="fill-current text-white w-4 h-4"/>
             </button>
@@ -414,7 +378,7 @@ export const HomeScreenComponent = () => {
             </span>
             <button
               className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-              onClick={closeUbuntuSoftwareDialog}
+              onClick={() => closeDialog(openUbuntuSoftwareDialogRef, "ubuntusoftware")}
             >
               <XMarkIcon className="fill-current text-white w-4 h-4"/>
             </button>
@@ -467,7 +431,7 @@ export const HomeScreenComponent = () => {
             </div>
             <button
               className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-              onClick={closeFileManagerDialog}
+              onClick={() => closeDialog(openFileManagerDialogRef, "filemanager")}
             >
               <XMarkIcon className="fill-current text-white w-4 h-4"/>
             </button>
@@ -559,7 +523,7 @@ export const HomeScreenComponent = () => {
         >
           <button
             className="flex items-center justify-center w-6 h-6 hover:bg-zinc-100 rounded-full hover:shadow absolute right-5 top-4"
-            onClick={closeGmailDialog}
+            onClick={() => closeDialog(openGmailDialogRef, "gmail")}
           >
             <XMarkIcon className="fill-current text-ubuntu-main w-4 h-4"/>
           </button>
