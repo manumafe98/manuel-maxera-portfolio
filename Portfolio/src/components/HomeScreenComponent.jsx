@@ -1,4 +1,36 @@
-import { FilesIcon, LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon, UnfilledArrowLeftIcon, SearchIcon, SublimeTextIcon, UnfilledArrowDownIcon, VisualStudioCodeIcon, XMarkIcon, YamlIcon, SkillsIcon, RecentIcon, StarredIcon, HomeIcon, DocumentsIcon, DownloadsIcon, JavaIcon, JavaScriptIcon, PythonIcon, SpringIcon, ReactIcon, TailwindCssIcon, GrafanaIcon, DockerIcon, LinuxIcon, AmazonWebServicesIcon, GitIcon, PrometheusIcon } from "../constants/Icons";
+import { 
+  FilesIcon,
+  LeftArrowIcon,
+  RightArrowIcon,
+  UnfilledArrowRightIcon,
+  UnfilledArrowLeftIcon,
+  SearchIcon,
+  SublimeTextIcon,
+  UnfilledArrowDownIcon,
+  VisualStudioCodeIcon,
+  XMarkIcon,
+  YamlIcon,
+  SkillsIcon,
+  RecentIcon,
+  StarredIcon,
+  HomeIcon,
+  DocumentsIcon,
+  DownloadsIcon,
+  JavaIcon,
+  JavaScriptIcon,
+  PythonIcon,
+  SpringIcon,
+  ReactIcon,
+  TailwindCssIcon,
+  GrafanaIcon,
+  DockerIcon,
+  LinuxIcon,
+  AmazonWebServicesIcon,
+  GitIcon,
+  PrometheusIcon,
+  TypeScriptIcon,
+  PhpIcon
+} from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
 import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
@@ -264,6 +296,14 @@ export const HomeScreenComponent = () => {
               </div>
               <div className="h-[70vh] max-w-full w-[calc(95vh)] overflow-x-auto scrollbar hover:scrollbar-thumb-gray-50/10 whitespace-pre text-left font-mono text-sm leading-relaxed p-1">
                 <span className="text-red-500">professional_experience</span><span className="text-white">:</span><br/>
+                &nbsp;&nbsp;<span className="text-red-500">software_engineer</span><span className="text-white">:</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Develop and maintain a suite of applications across multiple technologies: PHP (core app), Java (scraping and API interaction), and TypeScript (browser extension)</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Designed and maintained a browser extension using TypeScript with a React frontend and Node.js backend</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Developed Java-based crawlers/robots to scrape job boards or communicate with their APIs, parsing responses to create user-specific datasets</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Built and maintained the core PHP application, acting as the end product for end-users and integrating functionalities from the extension and crawlers</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Conducted bug fixes, defect resolution, and implemented new features across all platforms to enhance functionality and user experience</span><br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Collaborated with cross-functional teams to ensure seamless integration between projects</span><br/>
+                <br/>
                 &nbsp;&nbsp;<span className="text-red-500">cloud_engineer</span><span className="text-white">:</span><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Led critical cloud infrastructure operations, including server provisioning, decommissioning, and configuration management across multiple cloud platforms and Linux environments</span><br/>
                 &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-green-500">- Managed on-call rotations, ensuring rapid response to and resolution of critical infrastructure issues</span><br/>
@@ -531,12 +571,20 @@ export const HomeScreenComponent = () => {
                 <span className="text-white text-md">AWS</span>
               </div>
               <div className="flex flex-col items-center">
+                <TypeScriptIcon className="w-12 h-12 hover:scale-110"/>
+                <span className="text-white text-md">TypeScript</span>
+              </div>
+              <div className="flex flex-col items-center">
                 <GitIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Git</span>
               </div>
               <div className="flex flex-col items-center">
                 <PrometheusIcon className="w-12 h-12 hover:scale-110"/>
                 <span className="text-white text-md">Prometheus</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <PhpIcon className="w-12 h-12 hover:scale-110"/>
+                <span className="text-white text-md">Php</span>
               </div>
             </div>
           </div>
