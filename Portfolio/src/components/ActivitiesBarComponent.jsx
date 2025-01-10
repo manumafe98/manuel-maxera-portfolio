@@ -37,16 +37,16 @@ export const ActivitiesBarComponent = () => {
             <FilledArrowDownIcon className="fill-current text-white w-5 h-5"/>
           </span>
           {menuOpen && (
-            <div className="absolute w-52 top-10 -left-28 mt-1 bg-white rounded-md shadow-lg">
-              <ul className="py-1">
+            <div className="absolute w-56 top-10 -left-32 mt-1 bg-black rounded-lg shadow-lg border border-gray-600">
+              <ul className="py-1 px-1">
                 <li>
                   <a
                     href="https://www.linkedin.com/in/manuel-maxera/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex gap-2 px-4 py-2 hover:bg-gray-200 text-sm font-bold cursor-pointer"
+                    className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
                   >
-                    <span><LinkedinIcon className="w-4 h-4"/></span>
+                    <span><LinkedinIcon className="fill-current text-white w-4 h-4"/></span>
                     Linkedin
                   </a>
                 </li>
@@ -55,9 +55,9 @@ export const ActivitiesBarComponent = () => {
                     href="https://github.com/manumafe98"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex gap-2 px-4 py-2 hover:bg-gray-200 text-sm font-bold cursor-pointer"
+                    className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
                   >
-                    <span><GithubIcon className="w-4 h-4"/></span>
+                    <span><GithubIcon className="fill-current text-white w-4 h-4"/></span>
                     Github
                   </a>
                 </li>
@@ -65,9 +65,9 @@ export const ActivitiesBarComponent = () => {
                   <a
                     href="/files/Manuel_Maxera_Resume.pdf"
                     download="Manuel_Maxera_Resume.pdf"
-                    className="flex gap-2 px-4 py-2 hover:bg-gray-200 text-sm font-bold cursor-pointer"
+                    className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
                   >
-                    <span><CurriculumIcon className="w-4 h-4"/></span>
+                    <span><CurriculumIcon className="fill-current text-white w-4 h-4"/></span>
                     Download Curriculum
                   </a>
                 </li>
