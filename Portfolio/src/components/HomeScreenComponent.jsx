@@ -233,6 +233,65 @@ export const HomeScreenComponent = () => {
     dialogRef.current?.close()
   }
 
+  const skills = [
+    {
+      name: "Java",
+      icon: JavaIcon
+    },
+    {
+      name: "JavaScript",
+      icon: JavaScriptIcon
+    },
+    {
+      name: "Python",
+      icon: PythonIcon
+    },
+    {
+      name: "Spring",
+      icon: SpringIcon
+    },
+    {
+      name: "React",
+      icon: ReactIcon
+    },
+    {
+      name: "Tailwind",
+      icon: TailwindCssIcon
+    },
+    {
+      name: "Grafana",
+      icon: GrafanaIcon
+    },
+    {
+      name: "Docker",
+      icon: DockerIcon
+    },
+    {
+      name: "Linux",
+      icon: LinuxIcon
+    },
+    {
+      name: "AWS",
+      icon: AmazonWebServicesIcon
+    },
+    {
+      name: "TypeScript",
+      icon: TypeScriptIcon
+    },
+    {
+      name: "Git",
+      icon: GitIcon
+    },
+    {
+      name: "Prometheus",
+      icon: PrometheusIcon
+    },
+    {
+      name: "Php",
+      icon: PhpIcon
+    }
+  ]
+
   return (
     <>
       {isSmallScreen && <Navigate to="/unavailable" state={{ from: location }} replace/>}
@@ -241,7 +300,7 @@ export const HomeScreenComponent = () => {
           ref={openVsCodeDialogRef}
           className="fixed inset-0 m-auto rounded-xl min-h-[80vh] min-w-[50vw] max-2xl:max-w-[80vw] w-fit h-fit border border-solid border-black"
         >
-          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
+          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] rounded-t-xl border-b border-solid border-black">
             <div className="flex items-center w-6 h-6 mx-3">
               <VisualStudioCodeIcon className="w-5 h-5"/>
             </div>
@@ -265,7 +324,7 @@ export const HomeScreenComponent = () => {
             </ul>
           </div>
           <div className="flex w-full">
-            <div className="flex h-[75.1vh] w-3/12 bg-[#24242C]">
+            <div className="flex h-[75.1vh] w-3/12 bg-[#24242C] rounded-bl-lg border-b border-solid border-black">
               <div className="w-2/12 m-1 p-1">
                 <FilesIcon className="fill-current text-white w-10 h-10"/>
               </div>
@@ -284,7 +343,7 @@ export const HomeScreenComponent = () => {
                 </div>
               </div>
             </div>
-            <div className="w-9/12 bg-[#242C34]">
+            <div className="w-9/12 bg-[#242C34] rounded-br-lg">
               <div className="w-full h-12 bg-[#24242C]">
                 <div className="w-5/12 bg-[#242C34]">
                   <div className="flex items-center justify-center gap-2 bg-gray-400/30 h-12 p-1 border-b border-solid border-b-white border-x-black">
@@ -382,7 +441,7 @@ export const HomeScreenComponent = () => {
           ref={openTerminalDialogRef}
           className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#320E24] border border-solid border-black"
         >
-          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
+          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] rounded-t-lg border-b border-solid border-black">
             <div className="w-6 h-6 mx-3">
               <span className="hidden">hidden</span>
             </div>
@@ -433,7 +492,7 @@ export const HomeScreenComponent = () => {
           ref={openUbuntuSoftwareDialogRef}
           className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
         >
-          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
+          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] rounded-t-lg border-b border-solid border-black">
             <div className="flex items-center justify-center w-6 h-6 mx-3 bg-gray-50/20 rounded-md">
               <SearchIcon className="fill-current text-white w-5 h-5"/>
             </div>
@@ -475,7 +534,7 @@ export const HomeScreenComponent = () => {
           ref={openFileManagerDialogRef}
           className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] w-fit h-fit bg-[#2A2929] border border-solid border-black"
         >
-          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black">
+          <div className="flex items-center justify-between w-full h-10 bg-[#1E1E1E] border-b border-solid border-black rounded-t-lg">
             <div className="flex gap-2 mx-3">
               <div className="flex">
                 <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
@@ -501,7 +560,7 @@ export const HomeScreenComponent = () => {
             </button>
           </div>
           <div className="flex">
-            <div className="flex w-1/5 h-[48vh] bg-[#1E1E1E] opacity-85 border-r border-r-solid border-r-black">
+            <div className="flex w-1/5 h-[48vh] bg-[#1E1E1E] opacity-85 border-r border-r-solid border-r-black rounded-b-lg">
               <div className="flex flex-col w-full my-2 gap-y-3">
                 <div className="flex items-center gap-1 px-3">
                   <RecentIcon className="fill-current text-white w-6 h-6"/>
@@ -530,62 +589,12 @@ export const HomeScreenComponent = () => {
               </div>
             </div>
             <div className="grid grid-cols-7 grid-rows-4 mx-4 my-4 gap-y-4">
-              <div className="flex flex-col items-center">
-                <JavaIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Java</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <JavaScriptIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Javascript</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <PythonIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Python</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <SpringIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">SpringBoot</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <ReactIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">React</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <TailwindCssIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Tailwind</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <GrafanaIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Grafana</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <DockerIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Docker</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <LinuxIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Linux</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <AmazonWebServicesIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">AWS</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <TypeScriptIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">TypeScript</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <GitIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Git</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <PrometheusIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Prometheus</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <PhpIcon className="w-12 h-12 hover:scale-110"/>
-                <span className="text-white text-md">Php</span>
-              </div>
+              {skills.map((skill, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <skill.icon className="w-12 h-12 transition-transform duration-300 hover:scale-110"/>
+                  <span className="text-white text-md">{skill.name}</span>
+                </div>
+              ))}
             </div>
           </div>
         </dialog>
