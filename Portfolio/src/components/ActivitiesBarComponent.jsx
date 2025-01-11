@@ -41,11 +41,11 @@ export const ActivitiesBarComponent = ({ openCalendar }) => {
   return (
     <div className="bg-[#1e1e1e] h-11">
       <div className="flex justify-between items-center mx-5">
-        <span className="text-white">Activities</span>
-        <div className="rounded-3xl p-2 text-white hover:bg-gray-50/10 cursor-pointer" onClick={handleCalendarClick}>
+        <span className="text-white select-none">Activities</span>
+        <div className="rounded-3xl p-2 text-white hover:bg-gray-50/10 cursor-pointer select-none" onClick={handleCalendarClick}>
           {formattedDate}
         </div>
-        <div className="rounded-3xl p-1.5 relative hover:bg-gray-50/10 my-1 cursor-pointer" onClick={() => setMenuOpen(!menuOpen)}>
+        <div className="rounded-3xl p-1.5 relative hover:bg-gray-50/10 my-1 cursor-pointer select-none" onClick={() => setMenuOpen(!menuOpen)}>
           <span className="flex items-center gap-2 text-white">
             Socials
             <FilledArrowDownIcon className="fill-current text-white w-5 h-5"/>
