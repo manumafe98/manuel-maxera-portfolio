@@ -40,6 +40,7 @@ import emailjs from "@emailjs/browser";
 import jammy_wallpaper from "../static/media/jammy_wallpaper.webp";
 import vbnb_logo from "../static/media/vbnb_logo.webp";
 import exercism_logo from "../static/media/exercism_logo.webp";
+import "cally";
 
 export const HomeScreenComponent = () => {
   const[isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024)
@@ -48,6 +49,8 @@ export const HomeScreenComponent = () => {
   const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
   const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
   const[selectedIndex, setSelectedIndex] = useState(0)
+  const[calendarOpen, setCalendarOpen] = useState(false)
+  const[calendarDay, setCalendarDay] = useState("")
   const openGmailDialogRef = useRef(null)
   const openUbuntuSoftwareDialogRef = useRef(null)
   const openTerminalDialogRef = useRef(null)
@@ -69,7 +72,7 @@ export const HomeScreenComponent = () => {
 }
 
   const[dialogStack, setDialogStack] = useState([])
-  const [zIndex, setZIndex] = useState({
+  const[zIndex, setZIndex] = useState({
     terminal: 0,
     sublime: 0,
     vscode: 0,
@@ -291,6 +294,14 @@ export const HomeScreenComponent = () => {
       icon: PhpIcon
     }
   ]
+
+  const handleCalendarClick = (isCalendarOpen, calendarValue) => {
+    setCalendarOpen(isCalendarOpen)
+    if (calendarValue) {
+      const formattedDate = new Date(calendarValue).toISOString().split("T")[0]
+      setCalendarDay(formattedDate)
+  }
+}
 
   return (
     <>
@@ -638,13 +649,24 @@ export const HomeScreenComponent = () => {
             <GmailDialogMessagePopUp text={gmailDialogPopUpData.text} success={gmailDialogPopUpData.success}/>
           )}
         </dialog>
-        <ActivitiesBarComponent/>
+        <ActivitiesBarComponent openCalendar={handleCalendarClick}/>
         <ApplicationsMenuComponent openIconDialog={handleDialogPopUp}/>
         <img 
           src={jammy_wallpaper} 
           alt="Ubuntu Jammy Wallpaper" 
           className="w-full h-full object-cover"
         />
+        {calendarOpen && (
+          <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">
+            <div className="bg-[#1e1e1e] text-white rounded-xl p-5 shadow-lg border border-gray-600">
+              <calendar-date value={calendarDay}>
+                <LeftArrowIcon className="h-6" aria-label="Previous" slot="previous"/>
+                <RightArrowIcon className="h-6" aria-label="Next" slot="next"/>
+                <calendar-month></calendar-month>
+              </calendar-date>
+            </div>
+          </div>
+        )}
       </section>
     </>
   )

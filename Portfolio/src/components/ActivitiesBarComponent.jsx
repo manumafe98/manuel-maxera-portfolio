@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { FilledArrowDownIcon, CurriculumIcon, GithubIcon, LinkedinIcon } from "../constants/Icons";
 
-export const ActivitiesBarComponent = () => {
-  const [formattedDate, setFormattedDate] = useState("")
-  const [menuOpen, setMenuOpen] = useState(false)
+export const ActivitiesBarComponent = ({ openCalendar }) => {
+  const[formattedDate, setFormattedDate] = useState("")
+  const[menuOpen, setMenuOpen] = useState(false)
+  const[calendarOpen, setCalendarOpen] = useState(false)
 
   useEffect(() => {
     const updateTime = () => {
@@ -23,21 +24,34 @@ export const ActivitiesBarComponent = () => {
     return () => clearInterval(timer)
   }, [])
 
+  const formatDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  const handleCalendarClick = () => {
+    setCalendarOpen(!calendarOpen)
+    openCalendar(calendarOpen, formatDate())
+  }
+
   return (
-    <div className="bg-black h-11">
+    <div className="bg-[#1e1e1e] h-11">
       <div className="flex justify-between items-center mx-5">
         <span className="text-white">Activities</span>
-        <span className="text-white">{formattedDate}</span>
-        <div className="rounded-3xl p-1.5 relative hover:bg-gray-50/10 my-1">
-          <span 
-            className="flex items-center gap-2 text-white cursor-pointer"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
+        <div className="rounded-3xl p-2 text-white hover:bg-gray-50/10 cursor-pointer" onClick={handleCalendarClick}>
+          {formattedDate}
+        </div>
+        <div className="rounded-3xl p-1.5 relative hover:bg-gray-50/10 my-1 cursor-pointer" onClick={() => setMenuOpen(!menuOpen)}>
+          <span className="flex items-center gap-2 text-white">
             Socials
             <FilledArrowDownIcon className="fill-current text-white w-5 h-5"/>
           </span>
           {menuOpen && (
-            <div className="absolute w-56 top-10 -left-32 mt-1 bg-black rounded-lg shadow-lg border border-gray-600">
+            <div className="absolute w-56 top-10 -left-32 mt-1 bg-[#1e1e1e] rounded-lg shadow-lg border border-gray-600">
               <ul className="py-1 px-1">
                 <li>
                   <a

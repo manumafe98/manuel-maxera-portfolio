@@ -33,3 +33,10 @@ img, video, svg { height: auto; max-width: 100%; }
         transition: none;
     }
 }
+
+calendar-month {
+    --color-accent: #f97316;
+    &::part(button) {
+        border-radius: 30px;
+    }
+}
