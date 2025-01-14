@@ -365,6 +365,8 @@ export const HomeScreenComponent = () => {
     }
   ]
 
+  const editorOptions = ["File", "Edit", "Selection", "Find", "View"]
+
   const handleCalendarClick = (isCalendarOpen, calendarValue) => {
     setCalendarOpen(isCalendarOpen)
     if (calendarValue) {
@@ -397,11 +399,9 @@ export const HomeScreenComponent = () => {
           </div>
           <div className="w-full h-8 bg-[#2A2929]">
             <ul className="flex items-center gap-4 mx-2">
-              <li className="text-white">File</li>
-              <li className="text-white">Edit</li>
-              <li className="text-white">Selection</li>
-              <li className="text-white">Find</li>
-              <li className="text-white">View</li>
+              {editorOptions.map((editorOption, index) => (
+                <li key={index} className="text-white">{editorOption}</li>
+              ))}
             </ul>
           </div>
           <div className="flex w-full">
@@ -492,11 +492,9 @@ export const HomeScreenComponent = () => {
           </div>
           <div className="w-full h-8 bg-[#2A2929]">
             <ul className="flex items-center gap-4 mx-2">
-              <li className="text-white">File</li>
-              <li className="text-white">Edit</li>
-              <li className="text-white">Selection</li>
-              <li className="text-white">Find</li>
-              <li className="text-white">View</li>
+              {editorOptions.map((editorOption, index) => (
+                <li key={index} className="text-white">{editorOption}</li>
+              ))}
             </ul>
           </div>
           <div className="w-full h-8 bg-gray-600 flex items-center">
