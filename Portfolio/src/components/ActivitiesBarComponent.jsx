@@ -38,6 +38,27 @@ export const ActivitiesBarComponent = ({ openCalendar }) => {
     openCalendar(calendarOpen, formatDate())
   }
 
+  const activities = [
+    {
+      name: "Linkedin",
+      href: "https://www.linkedin.com/in/manuel-maxera/",
+      icon: LinkedinIcon,
+      props: { rel: "noopener noreferrer", target: "_blank" }
+    },
+    {
+      name: "Github",
+      href: "https://github.com/manumafe98",
+      icon: GithubIcon,
+      props: { rel: "noopener noreferrer", target: "_blank" }
+    },
+    {
+      name: "Download Curriculum",
+      href: "/files/Manuel_Maxera_Resume.pdf",
+      icon: CurriculumIcon,
+      props: { download: "Manuel_Maxera_Resume.pdf" }
+    }
+  ]
+
   return (
     <div className="bg-[#1e1e1e] h-11">
       <div className="flex justify-between items-center mx-5">
@@ -53,38 +74,19 @@ export const ActivitiesBarComponent = ({ openCalendar }) => {
           {menuOpen && (
             <div className="absolute w-56 top-10 -left-32 mt-1 bg-[#1e1e1e] rounded-lg shadow-lg border border-gray-600">
               <ul className="py-1 px-1">
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/manuel-maxera/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
-                  >
-                    <span><LinkedinIcon className="fill-current text-white w-4 h-4"/></span>
-                    Linkedin
-                  </a>
-                </li>
-                <li>
-                  <a 
-                    href="https://github.com/manumafe98"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
-                  >
-                    <span><GithubIcon className="fill-current text-white w-4 h-4"/></span>
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/files/Manuel_Maxera_Resume.pdf"
-                    download="Manuel_Maxera_Resume.pdf"
-                    className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
-                  >
-                    <span><CurriculumIcon className="fill-current text-white w-4 h-4"/></span>
-                    Download Curriculum
-                  </a>
-                </li>
+                {activities.map((activity, index) => (
+                  <li key={index}>
+                    <a
+                      href={activity.href}
+                      target="_blank"
+                      className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
+                      {...activity.props}
+                    >
+                      <span><activity.icon className="fill-current text-white w-4 h-4"/></span>
+                      {activity.name}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           )}

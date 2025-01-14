@@ -29,7 +29,9 @@ import {
   GitIcon,
   PrometheusIcon,
   TypeScriptIcon,
-  PhpIcon
+  PhpIcon,
+  GithubIcon,
+  WwwIcon
 } from "../constants/Icons";
 import { ActivitiesBarComponent } from "./ActivitiesBarComponent";
 import { ApplicationsMenuComponent } from "./ApplicationsMenuComponent";
@@ -40,6 +42,7 @@ import emailjs from "@emailjs/browser";
 import jammy_wallpaper from "../static/media/jammy_wallpaper.webp";
 import vbnb_logo from "../static/media/vbnb_logo.webp";
 import exercism_logo from "../static/media/exercism_logo.webp";
+import chelsea_trivia_logo from "../static/media/chelsea_trivia_logo.webp";
 import "cally";
 
 export const HomeScreenComponent = () => {
@@ -295,6 +298,73 @@ export const HomeScreenComponent = () => {
     }
   ]
 
+  const projects = [
+    {
+      name: "Exercism",
+      description: "Java Track Maintainer",
+      imgSrc: exercism_logo,
+      imgAlt: "Exercism Logo",
+      githubRepoUrl: "https://github.com/manumafe98/java",
+      hasWebPage: false,
+    },
+    {
+      name: "Vbnb",
+      description: "Listing App",
+      imgSrc: vbnb_logo,
+      imgAlt: "Vbnb logo",
+      githubRepoUrl: "https://github.com/manumafe98/Vbnb",
+      hasWebPage: true,
+      webUrl: "https://vbnb.netlify.app/",
+    },
+    {
+      name: "Chelsea Trivia",
+      description: "Chelsea Trivia Game",
+      imgSrc: chelsea_trivia_logo,
+      imgAlt: "Chelsea Trivia Logo",
+      githubRepoUrl: "https://github.com/manumafe98/chelsea_trivia_2.0",
+      hasWebPage: false
+    }
+  ]
+
+  const fileManagerIcons = [
+    {
+      name: "Recent",
+      icon: RecentIcon,
+      iconSize: "w-6 h-6",
+      styles: "gap-1"
+    },
+    {
+      name: "Starred",
+      icon: StarredIcon,
+      iconSize: "w-6 h-6",
+      styles: "gap-1"
+    },
+    {
+      name: "Home",
+      icon: HomeIcon,
+      iconSize: "w-6 h-6",
+      styles: "gap-1"
+    },
+    {
+      name: "Documents",
+      icon: DocumentsIcon,
+      iconSize: "w-5 h-5",
+      styles: "gap-2"
+    },
+    {
+      name: "Downloads",
+      icon: DownloadsIcon,
+      iconSize: "w-5 h-5",
+      styles: "gap-2"
+    },
+    {
+      name: "Skills",
+      icon: SkillsIcon,
+      iconSize: "w-5 h-5",
+      styles: "h-8 gap-2 bg-gray-50/20"
+    }
+  ]
+
   const handleCalendarClick = (isCalendarOpen, calendarValue) => {
     setCalendarOpen(isCalendarOpen)
     if (calendarValue) {
@@ -520,24 +590,25 @@ export const HomeScreenComponent = () => {
           <div className="flex flex-col items-center justify-center">
             <span className="text-white text-2xl font-bold my-10">Projects</span>
             <div className="grid grid-cols-2 grid-rows-1 gap-5 w-3/4 h-1/3">
-              <a href="https://github.com/manumafe98/java" target="_blank">
-                <div className="flex items-center gap-3 bg-[#1E1E1E] border border-solid border-black shadow-md rounded-xl p-4 hover:opacity-80 cursor-pointer">
-                  <img src={exercism_logo} alt="Exercism Logo" className="w-16 mt-2.5"/>
+              {projects.map((project, index) => (
+                <div key={index} className="flex items-center gap-3 bg-[#1E1E1E] border border-solid border-black shadow-md rounded-xl p-4">
+                  <img src={project.imgSrc} alt={project.imgAlt} className="w-20 mt-2.5"/>
                   <div className="flex flex-col">
-                    <span className="text-white font-bold">Exercism</span>
-                    <span className="text-white text-sm">Java Track Maintainer</span>
+                    <span className="text-white font-bold">{project.name}</span>
+                    <span className="text-white text-sm">{project.description}</span>
+                    <div className="flex mt-2 gap-2">
+                      <a href={project.githubRepoUrl} target="_blank">
+                        <GithubIcon className="fill-current w-6 h-6 hover:text-ubuntu-main"/>
+                      </a>
+                      {project.hasWebPage && (
+                        <a href={project.webUrl} target="_blank">
+                          <WwwIcon className="fill-current w-6 h-6 hover:text-ubuntu-main"/>
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </a>
-              <a href="https://github.com/manumafe98/Vbnb" target="_blank">
-                <div className="flex items-center gap-3 bg-[#1E1E1E] border border-solid border-black shadow-md rounded-xl p-4 hover:opacity-80 cursor-pointer">
-                  <img src={vbnb_logo} alt="Vbnb logo" className="w-16 mt-2.5"/>
-                  <div className="flex flex-col">
-                    <span className="text-white font-bold">Vbnb</span>
-                    <span className="text-white text-sm">Listing App</span>
-                  </div>
-                </div>
-              </a>
+              ))}
             </div>
           </div>
         </dialog>
@@ -573,30 +644,12 @@ export const HomeScreenComponent = () => {
           <div className="flex">
             <div className="flex w-1/5 h-[48vh] bg-[#1E1E1E] opacity-85 border-r border-r-solid border-r-black rounded-b-lg">
               <div className="flex flex-col w-full my-2 gap-y-3">
-                <div className="flex items-center gap-1 px-3">
-                  <RecentIcon className="fill-current text-white w-6 h-6"/>
-                  <span className="text-white text-sm">Recent</span>
-                </div>
-                <div className="flex items-center gap-1 px-3">
-                  <StarredIcon className="fill-current text-white w-6 h-6"/>
-                  <span className="text-white text-sm">Starred</span>
-                </div>
-                <div className="flex items-center gap-1 px-3">
-                  <HomeIcon className="fill-current text-white w-6 h-6"/>
-                  <span className="text-white text-sm">Home</span>
-                </div>
-                <div className="flex items-center gap-2 px-3">
-                  <DocumentsIcon className="fill-current text-white w-5 h-5"/>
-                  <span className="text-white text-sm">Documents</span>
-                </div>
-                <div className="flex items-center gap-2 px-3">
-                  <DownloadsIcon className="fill-current text-white w-5 h-5"/>
-                  <span className="text-white text-sm">Downloads</span>
-                </div>
-                <div className="flex items-center h-8 gap-2 px-3 bg-gray-50/20">
-                  <SkillsIcon className="fill-current text-white w-5 h-5"/>
-                  <span className="text-white text-sm">Skills</span>
-                </div>
+                {fileManagerIcons.map((icon, index) => (
+                  <div key={index} className={`flex items-center px-3 ${icon.styles}`}>
+                    <icon.icon className={`fill-current text-white ${icon.iconSize}`}/>
+                    <span className="text-white text-sm">{icon.name}</span>
+                  </div>
+                ))}
               </div>
             </div>
             <div className="grid grid-cols-7 grid-rows-4 mx-4 my-4 gap-y-4">
