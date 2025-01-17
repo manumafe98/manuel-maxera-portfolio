@@ -9,5 +9,5 @@ export const NotFoundComponent = () => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};

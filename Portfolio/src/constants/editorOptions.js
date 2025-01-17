@@ -1,1 +1,1 @@
-export const editorOptions = ["File", "Edit", "Selection", "Find", "View"]
+export const editorOptions = ["File", "Edit", "Selection", "Find", "View"];

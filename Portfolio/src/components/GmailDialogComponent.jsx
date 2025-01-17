@@ -1,66 +1,75 @@
+import emailjs from "@emailjs/browser";
 import { forwardRef, useState } from "react";
 import { XMarkIcon } from "../constants/Icons";
 import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
-import emailjs from "@emailjs/browser";
 
 export const GmailDialogComponent = forwardRef((props, ref) => {
-  const { onClose } = props
-  const[senderEmail, setSenderEmail] = useState('')
-  const[message, setMessage] = useState('')
-  const[gmailDialogPopUpData, setGmailDialogPopupData] = useState({ text: "", success: true })
-  const[showGmailDialogNotification, setShowGmailDialogNotification] = useState(false)
-  const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+  const { onClose } = props;
+  const [senderEmail, setSenderEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [gmailDialogPopUpData, setGmailDialogPopupData] = useState({
+    text: "",
+    success: true,
+  });
+  const [showGmailDialogNotification, setShowGmailDialogNotification] =
+    useState(false);
+  const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
 
   const sendEmail = async () => {
-    const isValid = checkValidForm()
+    const isValid = checkValidForm();
 
     if (isValid) {
       const templateParams = {
         from_email: senderEmail,
         message: message,
-      }
+      };
 
       try {
-        await emailjs.send(import.meta.env.EMAILJS_SERVICE_ID, import.meta.env.EMAILJS_TEMPLATE_ID, templateParams, import.meta.env.EMAILJS_USER_PUBLIC_KEY)
-        handleGmailMessagePopUp("Email Sent", true)
+        await emailjs.send(
+          import.meta.env.EMAILJS_SERVICE_ID,
+          import.meta.env.EMAILJS_TEMPLATE_ID,
+          templateParams,
+          import.meta.env.EMAILJS_USER_PUBLIC_KEY
+        );
+        handleGmailMessagePopUp("Email Sent", true);
       } catch (error) {
-        console.log("FAILED...", error)
+        console.log("FAILED...", error);
       }
     }
-  }
+  };
 
   const checkValidForm = () => {
     if (!validEmailRegex.test(senderEmail.trim())) {
-      handleGmailMessagePopUp("Ivalid email address", false)
-      return false
+      handleGmailMessagePopUp("Ivalid email address", false);
+      return false;
     } else if (!message.trim()) {
-      handleGmailMessagePopUp("Invalid message", false)
-      return false
+      handleGmailMessagePopUp("Invalid message", false);
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleGmailMessagePopUp = (text, success) => {
-    setShowGmailDialogNotification(true)
-    setGmailDialogPopupData({ text, success })
-    setTimeout(() => setShowGmailDialogNotification(false), 4000)
-  }
+    setShowGmailDialogNotification(true);
+    setGmailDialogPopupData({ text, success });
+    setTimeout(() => setShowGmailDialogNotification(false), 4000);
+  };
 
   const closeGmailDialog = () => {
-    onClose(ref, "gmail")
-  }
+    onClose(ref, "gmail");
+  };
 
   return (
     <dialog
       ref={ref}
-      className="fixed inset-0 m-auto rounded-xl min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] p-5 w-fit h-fit"
+      className="dialog-container min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] p-5"
     >
       <button
         className="flex items-center justify-center w-6 h-6 hover:bg-zinc-100 rounded-full hover:shadow absolute right-5 top-4"
         onClick={closeGmailDialog}
       >
-        <XMarkIcon className="fill-current text-ubuntu-main w-4 h-4"/>
+        <XMarkIcon className="fill-current text-ubuntu-main w-4 h-4" />
       </button>
       <div className="flex flex-col justify-center items-center mt-10">
         <span className="text-ubuntu-main text-2xl font-bold mb-10">
@@ -89,8 +98,11 @@ export const GmailDialogComponent = forwardRef((props, ref) => {
         </div>
       </div>
       {showGmailDialogNotification && (
-        <GmailDialogMessagePopUp text={gmailDialogPopUpData.text} success={gmailDialogPopUpData.success}/>
+        <GmailDialogMessagePopUp
+          text={gmailDialogPopUpData.text}
+          success={gmailDialogPopUpData.success}
+        />
       )}
     </dialog>
-  )
-})
+  );
+});

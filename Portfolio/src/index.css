@@ -40,3 +40,19 @@ calendar-month {
         border-radius: 30px;
     }
 }
+
+.dialog-container {
+    @apply inset-0 m-auto border border-solid border-black rounded-xl;
+}
+
+.white-icon {
+    @apply fill-current text-white;
+}
+
+.calendar-icon {
+    @apply fill-current w-6 h-6 text-ubuntu-orange bg-ubuntu-navbar;
+}
+
+.project-icon {
+    @apply fill-current w-6 h-6 hover:text-ubuntu-main;
+}

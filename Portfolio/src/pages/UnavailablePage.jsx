@@ -1,9 +1,9 @@
-import { UnavailableComponent } from "../components/UnavailableComponent"
+import { UnavailableComponent } from "../components/UnavailableComponent";
 
 export const UnavailablePage = () => {
   return (
     <>
-      <UnavailableComponent/>
+      <UnavailableComponent />
     </>
-  )
-}
+  );
+};

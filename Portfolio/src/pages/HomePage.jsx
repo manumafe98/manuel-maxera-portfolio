@@ -1,9 +1,9 @@
-import { HomeScreenComponent } from "../components/HomeScreenComponent"
+import { HomeScreenComponent } from "../components/HomeScreenComponent";
 
 export const HomePage = () => {
   return (
     <>
-      <HomeScreenComponent/>
+      <HomeScreenComponent />
     </>
-  )
-}
+  );
+};
