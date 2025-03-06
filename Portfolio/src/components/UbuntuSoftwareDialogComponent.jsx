@@ -22,7 +22,7 @@ export const UbuntuSoftwareDialogComponent = forwardRef((props, ref) => {
       imgSrc: vbnb_logo,
       imgAlt: "Vbnb logo",
       githubRepoUrl: "https://github.com/manumafe98/Vbnb",
-      hasWebPage: true,
+      hasWebPage: false,
       webUrl: "https://vbnb.netlify.app/",
     },
     {
