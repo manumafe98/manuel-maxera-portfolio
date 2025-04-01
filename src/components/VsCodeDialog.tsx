@@ -1,15 +1,16 @@
+import { editorOptions } from "@/constants/editorOptions";
 import {
   FilesIcon,
   UnfilledArrowDownIcon,
   VisualStudioCodeIcon,
   XMarkIcon,
   YamlIcon,
-} from "@/constants/Icons";
-import { editorOptions } from "@/constants/editorOptions";
+} from "@/icons";
 import { DialogProps } from "@/types/dialog.types";
 import { forwardRef, Fragment } from "react";
+import { CloseDialog } from "./CloseDialog";
 
-export const VsCodeDialogComponent = forwardRef<HTMLDialogElement, DialogProps>(
+export const VsCodeDialog = forwardRef<HTMLDialogElement, DialogProps>(
   ({ onClose }, ref) => {
     const closeVsCodeDialog = () => {
       onClose(ref, "vscode");
@@ -75,12 +76,11 @@ export const VsCodeDialogComponent = forwardRef<HTMLDialogElement, DialogProps>(
           <span className="text-white font-bold">
             professional_experience.yaml - Experience - Visual Studio Code
           </span>
-          <button
-            className="flex items-center justify-center w-6 h-6 rounded-full mx-3 bg-gray-50/20 hover:bg-gray-50/15 focus:outline-none"
-            onClick={closeVsCodeDialog}
-          >
-            <XMarkIcon className="white-icon w-4 h-4" />
-          </button>
+          <CloseDialog
+            closeDialog={closeVsCodeDialog}
+            buttonExtraStyles="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
+            svgCustomStyle={undefined}
+          />
         </div>
         <div className="w-full h-8 bg-ubuntu-options">
           <ul className="flex items-center gap-4 mx-2">

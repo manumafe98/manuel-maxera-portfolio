@@ -3,16 +3,14 @@ import {
   FilledArrowDownIcon,
   GithubIcon,
   LinkedinIcon,
-} from "@/constants/Icons";
+} from "@/icons";
 import { useEffect, useState } from "react";
 
-interface ActivitiesBarComponentProps {
+interface ActivitiesBarProps {
   openCalendar: (isCalendarOpen: boolean, calendarValue: string) => void;
 }
 
-export const ActivitiesBarComponent = ({
-  openCalendar,
-}: ActivitiesBarComponentProps) => {
+export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
@@ -83,6 +81,10 @@ export const ActivitiesBarComponent = ({
     },
   ];
 
+  const handleMenuOpen = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <div className="bg-ubuntu-navbar h-11">
       <div className="flex justify-between items-center mx-5">
@@ -95,7 +97,7 @@ export const ActivitiesBarComponent = ({
         </div>
         <div
           className="rounded-3xl p-1.5 relative hover:bg-gray-50/10 my-1 cursor-pointer select-none"
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={handleMenuOpen}
         >
           <span className="flex items-center gap-2 text-white">
             Socials

@@ -1,10 +1,10 @@
-import { XMarkIcon } from "@/constants/Icons";
 import { DialogProps } from "@/types/dialog.types";
 import emailjs from "@emailjs/browser";
 import { forwardRef, useState } from "react";
+import { CloseDialog } from "./CloseDialog";
 import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
 
-export const GmailDialogComponent = forwardRef<HTMLDialogElement, DialogProps>(
+export const GmailDialog = forwardRef<HTMLDialogElement, DialogProps>(
   ({ onClose }, ref) => {
     const [senderEmail, setSenderEmail] = useState("");
     const [message, setMessage] = useState("");
@@ -34,7 +34,7 @@ export const GmailDialogComponent = forwardRef<HTMLDialogElement, DialogProps>(
           );
           handleGmailMessagePopUp("Email Sent", true);
         } catch (error) {
-          console.log("FAILED...", error);
+          console.error("FAILED...", error);
         }
       }
     };
@@ -66,12 +66,11 @@ export const GmailDialogComponent = forwardRef<HTMLDialogElement, DialogProps>(
         ref={ref}
         className="dialog-container min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] p-5"
       >
-        <button
-          className="flex items-center justify-center w-6 h-6 hover:bg-zinc-100 rounded-full hover:shadow absolute right-5 top-4 focus:outline-none"
-          onClick={closeGmailDialog}
-        >
-          <XMarkIcon className="fill-current text-ubuntu-main w-4 h-4 focus:outline-none" />
-        </button>
+        <CloseDialog
+          closeDialog={closeGmailDialog}
+          buttonExtraStyles="hover:bg-zinc-100 hover:shadow absolute right-5 top-4"
+          svgCustomStyle="fill-current text-ubuntu-main w-4 h-4"
+        />
         <div className="flex flex-col justify-center items-center mt-10">
           <span className="text-ubuntu-main text-2xl font-bold mb-10">
             Contact Me

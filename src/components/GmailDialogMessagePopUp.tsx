@@ -1,4 +1,4 @@
-import { CheckMarkIcon, DialogXMarkIcon } from "@/constants/Icons";
+import { CheckMarkIcon, DialogXMarkIcon } from "@/icons";
 
 interface GmailDialogMessagePopUpProps {
   text: string;

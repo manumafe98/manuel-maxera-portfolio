@@ -3,18 +3,16 @@ import {
   MenuIcon,
   SublimeTextIcon,
   VisualStudioCodeIcon,
-} from "@/constants/Icons";
+} from "@/icons";
 import file_manager from "@/static/media/file_manager.webp";
 import software_store from "@/static/media/software_store.webp";
 import terminal_app from "@/static/media/terminal_app.webp";
 
-interface ApplicationsMenuComponentProps {
+interface ApplicationsMenuProps {
   openIconDialog: (dialog: string | undefined) => void;
 }
 
-export const ApplicationsMenuComponent = ({
-  openIconDialog,
-}: ApplicationsMenuComponentProps) => {
+export const ApplicationsMenu = ({ openIconDialog }: ApplicationsMenuProps) => {
   const handleAppIconClick = (event: React.MouseEvent<HTMLElement>) => {
     openIconDialog(event.currentTarget.dataset.value);
   };
