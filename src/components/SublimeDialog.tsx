@@ -47,22 +47,22 @@ export const SublimeDialog = forwardRef<HTMLDialogElement, DialogProps>(
             <span className="text-sm text-white font-sublime whitespace-nowrap">
               ## About Me
               <br />
-              Versatile IT professional with a progressive career spanning
-              helpdesk support, Unix system administration, and cloud
-              engineering, now pivoting towards software engineering.
+              Versatile IT professional turned full-stack software engineer with
+              a strong foundation in infrastructure, automation, and cloud
+              technologies—now specializing in smart contract and blockchain
+              development.
               <br />
-              Leveraging a strong foundation in technical problem-solving,
-              infrastructure management, and automation to bring a unique
-              perspective to software development.
+              Experienced in building and maintaining production-grade
+              applications across PHP, Java, and TypeScript, including a browser
+              extension, web crawlers, and a core backend system.
               <br />
-              Experienced in optimizing systems, implementing monitoring
-              solutions, and driving operational efficiencies, with skills that
-              translate directly to creating robust, scalable software
-              solutions.
+              Passionate about Web3 and decentralized applications, I’ve
+              developed and deployed fullstack dApps on Ethereum using Solidity,
+              Hardhat, Foundry, and Ethers.js.
               <br />
-              Passionate about emerging technologies and continuously expanding
-              coding skills, eager to contribute a diverse IT background to
-              innovative software development projects.
+              Comfortable working across the stack—from writing smart contracts
+              to building performant frontends using React, Tailwind CSS, and
+              Vite.
             </span>
           </div>
         </div>

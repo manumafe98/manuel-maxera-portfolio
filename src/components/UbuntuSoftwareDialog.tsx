@@ -1,7 +1,8 @@
-import { GithubIcon, SearchIcon, WwwIcon } from "@/icons";
-import chelsea_trivia_logo from "@/static/media/chelsea_trivia_logo.webp";
-import exercism_logo from "@/static/media/exercism_logo.webp";
-import vbnb_logo from "@/static/media/vbnb_logo.webp";
+import exercism_logo from "@/assets/exercism_logo.webp";
+import hoytsx_logo from "@/assets/hoytsx_logo.webp";
+import pokemon_voting_dapp_logo from "@/assets/pokemon_voting_dapp_logo.webp";
+import vbnb_logo from "@/assets/vbnb_logo.webp";
+import { GithubIcon, SearchIcon, WebLinkIcon } from "@/icons";
 import { DialogProps } from "@/types/dialog.types";
 import { forwardRef } from "react";
 import { CloseDialog } from "./CloseDialog";
@@ -9,6 +10,24 @@ import { CloseDialog } from "./CloseDialog";
 export const UbuntuSoftwareDialog = forwardRef<HTMLDialogElement, DialogProps>(
   ({ onClose }, ref) => {
     const projects = [
+      {
+        name: "HoytsX",
+        description: "Your cinema in the blockchain",
+        imgSrc: hoytsx_logo,
+        imgAlt: "HoytsX Logo",
+        githubRepoUrl: "https://github.com/manumafe98/HoytsX",
+        hasWebPage: false,
+        webUrl: "https://hoytsx.netlify.app/",
+      },
+      {
+        name: "Pokemon Voting",
+        description: "Vote your favourite Pokemon",
+        imgSrc: pokemon_voting_dapp_logo,
+        imgAlt: "Pokemon Voting Dapp Logo",
+        githubRepoUrl: "https://github.com/manumafe98/pokemon_voting_dapp",
+        hasWebPage: false,
+        webUrl: "https://pokemonvotingdapp.netlify.app/",
+      },
       {
         name: "Exercism",
         description: "Java Track Maintainer",
@@ -25,14 +44,6 @@ export const UbuntuSoftwareDialog = forwardRef<HTMLDialogElement, DialogProps>(
         githubRepoUrl: "https://github.com/manumafe98/Vbnb",
         hasWebPage: false,
         webUrl: "https://vbnb.netlify.app/",
-      },
-      {
-        name: "Chelsea Trivia",
-        description: "Chelsea Trivia Game",
-        imgSrc: chelsea_trivia_logo,
-        imgAlt: "Chelsea Trivia Logo",
-        githubRepoUrl: "https://github.com/manumafe98/chelsea_trivia_2.0",
-        hasWebPage: false,
       },
     ];
 
@@ -80,7 +91,7 @@ export const UbuntuSoftwareDialog = forwardRef<HTMLDialogElement, DialogProps>(
                     </a>
                     {project.hasWebPage && (
                       <a href={project.webUrl} target="_blank">
-                        <WwwIcon className="project-icon" />
+                        <WebLinkIcon className="project-icon mt-0.5" />
                       </a>
                     )}
                   </div>

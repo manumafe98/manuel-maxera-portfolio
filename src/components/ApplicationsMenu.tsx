@@ -1,12 +1,12 @@
+import file_manager from "@/assets/file_manager.webp";
+import software_store from "@/assets/software_store.webp";
+import terminal_app from "@/assets/terminal_app.webp";
 import {
   GmailIcon,
   MenuIcon,
   SublimeTextIcon,
   VisualStudioCodeIcon,
 } from "@/icons";
-import file_manager from "@/static/media/file_manager.webp";
-import software_store from "@/static/media/software_store.webp";
-import terminal_app from "@/static/media/terminal_app.webp";
 
 interface ApplicationsMenuProps {
   openIconDialog: (dialog: string | undefined) => void;

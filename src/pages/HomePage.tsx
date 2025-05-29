@@ -1,3 +1,4 @@
+import jammy_wallpaper from "@/assets/jammy_wallpaper.webp";
 import { ActivitiesBar } from "@/components/ActivitiesBar";
 import { ApplicationsMenu } from "@/components/ApplicationsMenu";
 import { CloseDialog } from "@/components/CloseDialog";
@@ -7,7 +8,6 @@ import { SublimeDialog } from "@/components/SublimeDialog";
 import { UbuntuSoftwareDialog } from "@/components/UbuntuSoftwareDialog";
 import { VsCodeDialog } from "@/components/VsCodeDialog";
 import { LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon } from "@/icons";
-import jammy_wallpaper from "@/static/media/jammy_wallpaper.webp";
 import "cally";
 import { RefObject, useEffect, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";

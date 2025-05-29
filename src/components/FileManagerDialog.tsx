@@ -5,6 +5,7 @@ import {
   DownloadsIcon,
   GitIcon,
   GrafanaIcon,
+  HardhatIcon,
   HomeIcon,
   JavaIcon,
   JavaScriptIcon,
@@ -16,6 +17,7 @@ import {
   RecentIcon,
   SearchIcon,
   SkillsIcon,
+  SolidityIcon,
   SpringIcon,
   StarredIcon,
   TailwindCssIcon,
@@ -69,6 +71,14 @@ export const FileManagerDialog = forwardRef<HTMLDialogElement, DialogProps>(
     ];
 
     const skills = [
+      {
+        name: "Solidity",
+        icon: SolidityIcon,
+      },
+      {
+        name: "Hardhat",
+        icon: HardhatIcon,
+      },
       {
         name: "Java",
         icon: JavaIcon,
@@ -179,7 +189,9 @@ export const FileManagerDialog = forwardRef<HTMLDialogElement, DialogProps>(
           <div className="grid grid-cols-7 grid-rows-4 mx-4 my-4 gap-y-4">
             {skills.map((skill, index) => (
               <div key={index} className="flex flex-col items-center">
-                <skill.icon className="w-12 h-12 transition-transform duration-300 hover:scale-110" />
+                <skill.icon
+                  className={`${skill.name !== "Hardhat" ? "w-12 h-12" : "mb-1.5"} transition-transform duration-300 hover:scale-110`}
+                />
                 <span className="text-white text-md">{skill.name}</span>
               </div>
             ))}
