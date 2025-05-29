@@ -34,4 +34,4 @@ export const SolidityIcon = (props: SVGProps<SVGSVGElement>) => {
       />
     </svg>
   );
-}
+};
