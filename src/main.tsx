@@ -1,12 +1,15 @@
-import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createElement } from "react";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import "./index.css";
-import { Portfolio } from "./Portfolio";
+import { pageForPath, pages, type PageId } from "./pages/pages";
 
-createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/*" element={<Portfolio />} />
-    </Routes>
-  </BrowserRouter>,
-);
+const container = document.getElementById("root")!;
+const prerenderedPage = container.dataset.page as PageId | undefined;
+
+if (prerenderedPage) {
+  hydrateRoot(container, createElement(pages[prerenderedPage]));
+} else {
+  createRoot(container).render(
+    createElement(pages[pageForPath(location.pathname)]),
+  );
+}

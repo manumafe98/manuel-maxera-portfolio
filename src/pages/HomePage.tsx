@@ -5,7 +5,6 @@ import { PhoneClaudeCode } from "@/components/claude-code/PhoneClaudeCode";
 import type { AppId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
 import type { DialogProps } from "@/types/dialog.types";
-import "cally";
 import { ElementType, lazy, Suspense, useState } from "react";
 
 // App windows load on first open, so they stay out of the initial bundle.
@@ -75,6 +74,8 @@ export const HomePage = () => {
     isCalendarOpen: boolean,
     calendarValue: string,
   ) => {
+    // The calendar's custom elements need a browser, so they load on first use.
+    void import("cally");
     setCalendarOpen(isCalendarOpen);
     if (calendarValue) {
       const formattedDate = new Date(calendarValue).toISOString().split("T")[0];
