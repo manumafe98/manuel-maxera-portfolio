@@ -46,9 +46,14 @@ export const ClaudeCodeWindow = ({
     >
       <header className="cc-titlebar">
         {/* The page's first heading in the raw HTML: the Chat titles below
-            are H2s under it, so heading levels stay sequential. */}
+            are H2s under it, so heading levels stay sequential. It names
+            Manuel for agents and screen readers; sighted visitors see only
+            "Claude Code", like the real app's title bar. */}
         <h1 className="cc-title">
           <ClaudeCodeIcon width={16} height={16} aria-hidden="true" />
+          <span className="sr-only">
+            Manuel Maxera, AI Engineer: portfolio in{" "}
+          </span>
           Claude Code
         </h1>
         <CloseWindowButton

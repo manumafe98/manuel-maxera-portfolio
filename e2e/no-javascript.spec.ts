@@ -103,6 +103,16 @@ test.describe("with JavaScript disabled", () => {
     }
   });
 
+  test("/ HTML's first H1 names Manuel Maxera as an AI Engineer, while it still reads Claude Code on screen", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const firstH1 = page.locator("#root h1").first();
+
+    await expect(firstH1).toHaveText(/Manuel Maxera, AI Engineer/);
+    await expect(firstH1).toContainText("Claude Code");
+  });
+
   test("/ HTML has one title, a description, a canonical URL and lang=en", async ({
     page,
   }) => {
