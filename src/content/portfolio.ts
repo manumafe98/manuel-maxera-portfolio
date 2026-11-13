@@ -239,3 +239,59 @@ export const cv = {
   path: "/files/Manuel_Maxera_Resume.pdf",
   fileName: "Manuel_Maxera_Resume.pdf",
 };
+
+export type ClaudeProjectId = "manuel-maxera-portfolio" | "about-me";
+
+export interface Command {
+  /** Slash-prefixed, lower case, as the visitor types it. */
+  name: string;
+  /** One line shown in the Chat's list of Commands. */
+  description: string;
+}
+
+export interface ClaudeProject {
+  id: ClaudeProjectId;
+  /** The name of the project's one Chat, shown in the sidebar and header. */
+  displayName: string;
+  /** Opening message of the Chat. The Commands list is added after it. */
+  intro: string;
+  commands: Command[];
+  /** Commands offered as clickable chips above the input. */
+  chips: string[];
+  /** Other Claude projects this Chat links to. */
+  links?: ClaudeProjectId[];
+}
+
+const aboutMeCommand: Command = {
+  name: "/about-me",
+  description: "Manuel's full background",
+};
+const tldrCommand: Command = {
+  name: "/tldr",
+  description: "a two-line summary",
+};
+const downloadCvCommand: Command = {
+  name: "/download-cv",
+  description: "download the current CV as a PDF",
+};
+
+export const claudeProjects: ClaudeProject[] = [
+  {
+    id: "manuel-maxera-portfolio",
+    displayName: "Welcome",
+    intro: `Hi! This is **${profile.name}**'s portfolio, running as a Claude Code session. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
+
+Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar or from the links below, run a Command from the chips, or type \`/\` to start.`,
+    commands: [downloadCvCommand],
+    chips: [downloadCvCommand.name],
+    links: ["about-me"],
+  },
+  {
+    id: "about-me",
+    displayName: "About Me",
+    intro:
+      "This is the **About Me** Chat. I can tell you who Manuel is, in full or in short.",
+    commands: [aboutMeCommand, tldrCommand, downloadCvCommand],
+    chips: [aboutMeCommand.name, tldrCommand.name, downloadCvCommand.name],
+  },
+];

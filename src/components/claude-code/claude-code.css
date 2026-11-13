@@ -1,0 +1,495 @@
+/* Claude Code window. Look ported from the approved #10 prototype. */
+.cc-window {
+  --cc-bg: #1f1e1d;
+  --cc-sidebar: #191817;
+  --cc-title: #161514;
+  --cc-raised: #2a2928;
+  --cc-border: #34322f;
+  --cc-text: #e8e6e1;
+  --cc-muted: #9b978f;
+  --cc-faint: #6f6b64;
+  --cc-accent: #d97757;
+  --cc-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  width: min(1100px, calc(100vw - 160px));
+  height: min(700px, calc(100vh - 80px));
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--cc-bg);
+  border-color: #3a3835;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  color: var(--cc-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  font-size: 13px;
+}
+.cc-window[open] {
+  display: flex;
+}
+
+.cc-muted {
+  color: var(--cc-muted);
+}
+.cc-mono {
+  font-family: var(--cc-mono);
+}
+
+/* title bar */
+.cc-titlebar {
+  height: 36px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 0 14px;
+  background: var(--cc-title);
+  border-bottom: 1px solid var(--cc-border);
+}
+.cc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 12.5px;
+}
+.cc-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* sidebar */
+.cc-sidebar {
+  width: 240px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--cc-sidebar);
+  border-right: 1px solid var(--cc-border);
+  padding: 10px 8px;
+}
+.cc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.cc-nav-item,
+.cc-chat-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  text-align: left;
+}
+.cc-nav-item svg {
+  color: var(--cc-muted);
+}
+.cc-projects {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 14px;
+}
+.cc-project {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 6px 3px;
+  font-size: 11.5px;
+  color: var(--cc-faint);
+}
+.cc-chev {
+  display: inline-grid;
+  transition: transform 0.15s;
+}
+.cc-chev svg {
+  width: 12px;
+  height: 12px;
+}
+.cc-chev.is-open {
+  transform: rotate(90deg);
+}
+.cc-chat-link {
+  padding-left: 22px;
+  color: var(--cc-muted);
+  cursor: pointer;
+}
+.cc-chat-link:hover {
+  background: #252422;
+}
+.cc-chat-link[aria-current="page"] {
+  background: #2a2927;
+  color: var(--cc-text);
+}
+.cc-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px 2px;
+  border-top: 1px solid var(--cc-border);
+}
+.cc-avatar {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #c9c4ba;
+  color: #1f1e1d;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* main pane: one Chat visible at a time */
+.cc-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.cc-chat {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.cc-chat[hidden] {
+  display: none;
+}
+.cc-chat-head {
+  height: 42px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--cc-border);
+}
+.cc-chat-head h2 {
+  font-weight: 500;
+}
+.cc-messages {
+  scrollbar-color: #3d3b37 transparent;
+  scrollbar-width: thin;
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 24px 8px;
+}
+.cc-column {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.cc-user-msg {
+  align-self: flex-end;
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--cc-raised);
+  font-family: var(--cc-mono);
+  font-size: 12.5px;
+}
+
+/* answer text */
+.cc-answer {
+  line-height: 1.6;
+  font-size: 13.5px;
+}
+.cc-block + .cc-block {
+  margin-top: 10px;
+}
+.cc-answer ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+.cc-answer li {
+  margin: 3px 0;
+}
+.cc-answer li::marker {
+  color: var(--cc-faint);
+}
+.cc-answer strong {
+  font-weight: 600;
+}
+.cc-answer em {
+  font-style: normal;
+  font-size: 12.5px;
+}
+.cc-answer code {
+  font-family: var(--cc-mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--cc-raised);
+  color: #e6a68c;
+}
+.cc-answer a,
+.cc-link {
+  color: var(--cc-accent);
+  cursor: pointer;
+}
+.cc-link:hover {
+  text-decoration: underline;
+}
+.cc-caret {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  background: var(--cc-accent);
+  animation: cc-blink 1s steps(2) infinite;
+}
+@keyframes cc-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* download card */
+.cc-answer a.cc-download {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 360px;
+  padding: 10px 12px;
+  border: 1px solid var(--cc-border);
+  border-radius: 10px;
+  background: #232220;
+  color: var(--cc-text);
+  text-decoration: none;
+}
+.cc-answer a.cc-download:hover {
+  border-color: var(--cc-accent);
+}
+.cc-download-icon {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--cc-raised);
+  color: var(--cc-accent);
+}
+.cc-download-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+  font-size: 12.5px;
+}
+.cc-download-name {
+  font-weight: 500;
+}
+
+/* reply pieces */
+.cc-reply {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cc-reply.is-running {
+  cursor: pointer;
+}
+.cc-thinking-label,
+.cc-thought {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cc-muted);
+  font-size: 12.5px;
+}
+.cc-thought {
+  cursor: pointer;
+}
+.cc-thought:hover {
+  color: var(--cc-text);
+}
+.cc-thinking-text {
+  white-space: pre-wrap;
+  padding-left: 10px;
+  border-left: 2px solid var(--cc-border);
+  color: var(--cc-faint);
+  font-style: italic;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.cc-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--cc-faint) 0%,
+    var(--cc-faint) 35%,
+    #f0e6dc 50%,
+    var(--cc-faint) 65%,
+    var(--cc-faint) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cc-shimmer 1.4s linear infinite;
+}
+@keyframes cc-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+
+.cc-tool {
+  border: 1px solid var(--cc-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cc-tool-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  text-align: left;
+  background: #232220;
+  cursor: pointer;
+}
+.cc-tool-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cc-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--cc-accent);
+}
+.cc-dot.is-running {
+  animation: cc-blink 0.8s steps(2) infinite;
+}
+.cc-dot.is-done {
+  background: #6fbf73;
+}
+.cc-tool-body {
+  margin: 0;
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--cc-border);
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--cc-muted);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* bottom: chips and composer */
+.cc-bottom {
+  flex: none;
+  padding: 8px 24px 14px;
+}
+.cc-bottom .cc-column {
+  gap: 8px;
+}
+.cc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cc-chip {
+  padding: 5px 10px;
+  border: 1px solid var(--cc-border);
+  border-radius: 999px;
+  font-family: var(--cc-mono);
+  font-size: 11.5px;
+  color: var(--cc-muted);
+  cursor: pointer;
+}
+.cc-chip:hover:not(:disabled) {
+  border-color: var(--cc-accent);
+  color: var(--cc-text);
+}
+.cc-chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.cc-composer {
+  border: 1px solid #3d3b37;
+  border-radius: 14px;
+  background: #262524;
+  padding: 10px 10px 8px 14px;
+}
+.cc-composer:focus-within {
+  border-color: #55524c;
+}
+.cc-composer input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--cc-text);
+  font-size: 13.5px;
+}
+.cc-composer input::placeholder {
+  color: var(--cc-faint);
+}
+.cc-composer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.cc-icon-btn {
+  width: 28px;
+  height: 28px;
+  margin-left: -6px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--cc-border);
+  border-radius: 8px;
+  color: var(--cc-muted);
+}
+.cc-send {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #3a3835;
+  color: var(--cc-faint);
+}
+.cc-send.is-ready {
+  background: var(--cc-accent);
+  color: #1f1e1d;
+  cursor: pointer;
+}
+.cc-footer {
+  display: flex;
+  gap: 4px;
+  padding: 0 4px;
+}
+.cc-foot-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  color: var(--cc-faint);
+  font-size: 11.5px;
+}
+.cc-foot-chip svg {
+  width: 12px;
+  height: 12px;
+}
