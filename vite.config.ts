@@ -35,23 +35,39 @@ const previewNotFoundPage = (): Plugin => ({
   },
 });
 
+/** The contact form's EmailJS settings, read from the build environment. */
+const emailJsVariables = [
+  "EMAILJS_SERVICE_ID",
+  "EMAILJS_TEMPLATE_ID",
+  "EMAILJS_USER_PUBLIC_KEY",
+] as const;
+
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [tailwindcss(), react(), previewNotFoundPage()],
-  define: {
-    "import.meta.env.EMAILJS_SERVICE_ID": JSON.stringify(
-      process.env.EMAILJS_SERVICE_ID,
+export default defineConfig(({ command, isSsrBuild }) => {
+  // Without these the contact form can't send, so a client build without
+  // them must not reach production. The SSR build only pre-renders HTML.
+  if (command === "build" && !isSsrBuild) {
+    const missing = emailJsVariables.filter((name) => !process.env[name]);
+    if (missing.length > 0) {
+      throw new Error(
+        `Missing EmailJS settings: ${missing.join(", ")}. ` +
+          "Set them in the build environment (on Netlify: Site configuration > Environment variables); .env-example lists them.",
+      );
+    }
+  }
+
+  return {
+    plugins: [tailwindcss(), react(), previewNotFoundPage()],
+    define: Object.fromEntries(
+      emailJsVariables.map((name) => [
+        `import.meta.env.${name}`,
+        JSON.stringify(process.env[name]),
+      ]),
     ),
-    "import.meta.env.EMAILJS_TEMPLATE_ID": JSON.stringify(
-      process.env.EMAILJS_TEMPLATE_ID,
-    ),
-    "import.meta.env.EMAILJS_USER_PUBLIC_KEY": JSON.stringify(
-      process.env.EMAILJS_USER_PUBLIC_KEY,
-    ),
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "src"),
+    resolve: {
+      alias: {
+        "@": path.resolve(import.meta.dirname, "src"),
+      },
     },
-  },
+  };
 });
