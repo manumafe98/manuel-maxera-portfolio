@@ -98,6 +98,22 @@ const sitemapXml = () =>
     "",
   ].join("\n");
 
+/**
+ * The Markdown body the Edge Function returns, with a 404 status, to agents
+ * that ask for Markdown at an unknown path (ADR-0003).
+ */
+const notFoundMarkdown = () =>
+  [
+    "# Page not found",
+    "",
+    `There is no page at this address on ${profile.name}'s portfolio. Check the URL, or start from one of these:`,
+    "",
+    `- [llms.txt](${absolute("/llms.txt")}): the whole portfolio as Markdown`,
+    `- [Sitemap](${absolute("/sitemap.xml")}): every page on the site`,
+    `- [Home](${site.url}): the portfolio`,
+    "",
+  ].join("\n");
+
 /** The Claude Code palette's background (claude-code.css). */
 const darkBackground = "#1f1e1d";
 
@@ -124,10 +140,13 @@ const webManifest = () =>
 /**
  * The files for crawlers and agents, keyed by the path the site serves them
  * at, generated from the content module. scripts/prerender.js writes them
- * into dist.
+ * into dist. index.md and 404.md are the Markdown the Edge Function serves
+ * for / and for unknown paths (ADR-0003); index.md is the llms.txt content.
  */
 export const agentFiles = (): Record<string, string> => ({
   "llms.txt": llmsTxt(),
+  "index.md": llmsTxt(),
+  "404.md": notFoundMarkdown(),
   "robots.txt": robotsTxt(),
   "sitemap.xml": sitemapXml(),
   "site.webmanifest": webManifest(),

@@ -41,6 +41,7 @@ const person = () => {
     description: profile.shortSummary,
     url: site.url,
     sameAs: socialLinks.map((link) => link.url),
+    knowsAbout: profile.knowsAbout,
     address: {
       "@type": "PostalAddress",
       addressLocality: locality,
