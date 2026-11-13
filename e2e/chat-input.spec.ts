@@ -198,6 +198,26 @@ for (const title of [
   });
 }
 
+test("the /socials LinkedIn and GitHub links sit in a row with no list bullets, so no bullet overlaps the LinkedIn text", async ({
+  page,
+}) => {
+  const title = "Getting started with Manuel's portfolio";
+  await openChat(page, title);
+  const input = commandInput(page, title);
+  await input.fill("/socials");
+  await input.press("Enter");
+
+  const reply = chat(page, title).getByRole("article", { name: "Reply" });
+  const items = reply
+    .getByRole("link", { name: /^(LinkedIn|GitHub)$/ })
+    .locator("xpath=ancestor::li[1]");
+  await expect(items).toHaveCount(2);
+  const bullets = await items.evaluateAll((lis) =>
+    lis.map((li) => getComputedStyle(li).listStyleType),
+  );
+  expect(bullets).toEqual(["none", "none"]);
+});
+
 test("while a reply streams, the input takes typing but neither Enter, Send, the chips nor the / list start a second reply, and the typed text waits in the input", async ({
   page,
 }) => {
