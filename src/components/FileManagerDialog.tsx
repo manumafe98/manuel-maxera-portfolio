@@ -1,53 +1,18 @@
 import { skillAreas } from "@/content/portfolio";
 import {
-  AmazonWebServicesIcon,
-  DockerIcon,
   DocumentsIcon,
   DownloadsIcon,
-  GitIcon,
-  GrafanaIcon,
-  HardhatIcon,
   HomeIcon,
-  JavaIcon,
-  JavaScriptIcon,
-  LinuxIcon,
-  PhpIcon,
-  PrometheusIcon,
-  PythonIcon,
-  ReactIcon,
   RecentIcon,
   SearchIcon,
   SkillsIcon,
-  SolidityIcon,
-  SpringIcon,
   StarredIcon,
-  TailwindCssIcon,
-  TypeScriptIcon,
   UnfilledArrowLeftIcon,
   UnfilledArrowRightIcon,
 } from "@/icons";
 import type { DialogProps } from "@/types/dialog.types";
-import { ComponentType, SVGProps } from "react";
 import { CloseDialog } from "./CloseDialog";
-
-const skillIcons: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
-  Solidity: SolidityIcon,
-  Hardhat: HardhatIcon,
-  Java: JavaIcon,
-  JavaScript: JavaScriptIcon,
-  Python: PythonIcon,
-  Spring: SpringIcon,
-  React: ReactIcon,
-  Tailwind: TailwindCssIcon,
-  Grafana: GrafanaIcon,
-  Docker: DockerIcon,
-  Linux: LinuxIcon,
-  AWS: AmazonWebServicesIcon,
-  TypeScript: TypeScriptIcon,
-  Git: GitIcon,
-  Prometheus: PrometheusIcon,
-  PHP: PhpIcon,
-};
+import { skillIcons } from "./skillIcons";
 
 export const FileManagerDialog = ({
   open,

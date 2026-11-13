@@ -1,7 +1,8 @@
-import { projects, type AppId } from "@/content/portfolio";
+import { projects, skillAreas, type AppId } from "@/content/portfolio";
 import { GithubIcon, WebLinkIcon } from "@/icons";
 import type { MouseEvent } from "react";
 import { initials } from "../initials";
+import { skillIcons } from "../skillIcons";
 
 /** Links inside a reply must not also trigger skip-to-end. */
 const stopPropagation = (event: MouseEvent) => event.stopPropagation();
@@ -57,12 +58,37 @@ const ProjectsCard = () => (
   </ul>
 );
 
+const SkillsCard = () => (
+  <div className="cc-card cc-skills">
+    {skillAreas.map(({ area, skills }) => {
+      const headingId = `cc-skills-${area.replace(/\W+/g, "-")}`;
+      return (
+        <section key={area} aria-labelledby={headingId}>
+          <h3 id={headingId}>{area}</h3>
+          <ul aria-labelledby={headingId} className="cc-tags">
+            {skills.map((skill) => {
+              const Icon = skillIcons[skill];
+              return (
+                <li key={skill} className="cc-tag">
+                  {Icon && <Icon aria-hidden="true" />}
+                  {skill}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      );
+    })}
+  </div>
+);
+
 /** A Skill's content shown inside the Chat, in place of its App window. */
 export const SkillCard = ({ app }: { app: AppId }) => {
   switch (app) {
     case "ubuntu-software":
       return <ProjectsCard />;
     case "files":
+      return <SkillsCard />;
     case "gmail":
       return null;
   }

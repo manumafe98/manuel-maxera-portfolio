@@ -252,6 +252,46 @@ test.describe("Skill cards", () => {
     await expect(hoytsx).toHaveAttribute("rel", "noopener noreferrer");
     expect((await hoytsx.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   });
+
+  test("on a phone /open-skills shows the skills as tag chips grouped by area, Python with its icon, and opens no App window", async ({
+    page,
+  }) => {
+    const reply = await runSkill(page, "Tech stack overview", "/open-skills");
+
+    await expect(reply).toContainText(
+      "Here are Manuel's 38 skills in 6 areas:",
+    );
+    await expect(reply.getByRole("heading")).toHaveText([
+      "Languages",
+      "Frameworks",
+      "AI engineering",
+      "Search and backend",
+      "Quality and observability",
+      "AI developer tooling",
+    ]);
+    await expect(
+      reply.getByRole("list", { name: "Languages" }).getByRole("listitem"),
+    ).toHaveText([
+      "Python",
+      "PHP",
+      "TypeScript",
+      "Java",
+      "Solidity",
+      "JavaScript",
+    ]);
+    await expect(
+      reply
+        .getByRole("list", { name: "AI developer tooling" })
+        .getByRole("listitem"),
+    ).toHaveText(["Devin", "Windsurf", "Codex", "Opencode"]);
+    await expect(
+      reply
+        .getByRole("listitem")
+        .filter({ hasText: /^Python$/ })
+        .locator("svg"),
+    ).toBeVisible();
+    await expect(anyAppWindow(page)).toHaveCount(0);
+  });
 });
 
 test("a phone never requests the Ubuntu wallpaper image", async ({ page }) => {

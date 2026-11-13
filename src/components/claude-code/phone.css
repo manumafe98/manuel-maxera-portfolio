@@ -208,6 +208,37 @@
   fill: currentColor;
 }
 
+.cc-skills {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cc-answer ul.cc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cc-answer li.cc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 5px 10px;
+  border: 1px solid var(--cc-border);
+  border-radius: 999px;
+  background: var(--cc-raised);
+  font-size: 13px;
+}
+.cc-tag svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
 /* drawer: slides in from the left over a dimmed overlay */
 .ph-overlay {
   position: absolute;
