@@ -23,7 +23,7 @@ const llmsTxt = () =>
     "",
     "## Links",
     "",
-    `- [Portfolio](${site.url}): the interactive portfolio, a simulated Claude Code session`,
+    `- [Portfolio](${site.url}): the interactive portfolio, built to look like the Claude Code app`,
     `- [CV](${absolute(cv.path)}): the current CV as a PDF`,
     ...socialLinks.map(
       (link) =>
