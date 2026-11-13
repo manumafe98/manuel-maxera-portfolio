@@ -101,8 +101,9 @@ export const ClaudeCodeWindow = ({
                           project.id === activeId ? "page" : undefined
                         }
                         onClick={() => setActiveId(project.id)}
+                        title={project.title}
                       >
-                        {project.title}
+                        <span className="cc-chat-title">{project.title}</span>
                       </button>
                     </div>
                   </li>
