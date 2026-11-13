@@ -15,3 +15,17 @@ test("the Top bar clock shows the lower-case month, the day and the 24-hour time
 
   await expect(page.getByText("sep 03 17:46", { exact: true })).toBeVisible();
 });
+
+test("one click on the Top bar clock opens the calendar and a second click closes it", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const clock = page.getByText(/^[a-z]{3} \d{2} \d{2}:\d{2}$/);
+  const calendar = page.locator("calendar-date");
+
+  await clock.click();
+  await expect(calendar).toBeVisible();
+
+  await clock.click();
+  await expect(calendar).toHaveCount(0);
+});
