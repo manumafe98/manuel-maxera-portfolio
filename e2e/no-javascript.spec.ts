@@ -1,5 +1,6 @@
 /// <reference lib="dom" />
 import { expect, test } from "@playwright/test";
+import { contrastRatio } from "./contrast";
 
 const SITE_URL = "https://manuel-maxera.netlify.app/";
 
@@ -111,6 +112,56 @@ test.describe("with JavaScript disabled", () => {
 
     await expect(firstH1).toHaveText(/Manuel Maxera, AI Engineer/);
     await expect(firstH1).toContainText("Claude Code");
+  });
+
+  test("/ shows the content with headings sized H1 over H2 over H3 over body text, and space between the sections", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const content = page.getByRole("main", { name: "Manuel Maxera" });
+    const fontSize = async (selector: string) =>
+      parseFloat(
+        await content
+          .locator(selector)
+          .first()
+          .evaluate((element) => getComputedStyle(element).fontSize),
+      );
+
+    const [h1, h2, h3, text] = await Promise.all(
+      ["h1", "h2", "h3", "p"].map(fontSize),
+    );
+    expect(h1).toBeGreaterThan(h2);
+    expect(h2).toBeGreaterThan(h3);
+    expect(h3).toBeGreaterThan(text);
+
+    const gaps = await content
+      .locator(":scope > header, :scope > section")
+      .evaluateAll((blocks) =>
+        blocks
+          .slice(1)
+          .map(
+            (block, i) =>
+              block.getBoundingClientRect().top -
+              blocks[i].getBoundingClientRect().bottom,
+          ),
+      );
+    expect(gaps).toHaveLength(4);
+    for (const gap of gaps) expect(gap).toBeGreaterThanOrEqual(24);
+  });
+
+  test("/ shows the content's links in a colour other than the text's, with at least 4.5:1 contrast", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const content = page.getByRole("main", { name: "Manuel Maxera" });
+    const link = content.getByRole("link", { name: "LinkedIn" });
+    const color = (locator: typeof link) =>
+      locator.evaluate((element) => getComputedStyle(element).color);
+
+    expect(await color(link)).not.toBe(
+      await color(content.locator("p").first()),
+    );
+    expect(await contrastRatio(link)).toBeGreaterThanOrEqual(4.5);
   });
 
   test("/ HTML has one title, a description, a canonical URL and lang=en", async ({
@@ -262,4 +313,20 @@ test("with JavaScript on, the noscript content is not shown", async ({
     0,
   );
   await expect(page.getByText(SUMMARY_START)).toBeHidden();
+});
+
+test("with JavaScript on, the page has no CSS rule for the noscript content, so its styles can't change the Desktop or the phone layout", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+
+  const noscriptRules = await page.evaluate(() =>
+    [...document.styleSheets]
+      .flatMap((sheet) => [...sheet.cssRules])
+      .map((rule) => rule.cssText)
+      .filter((text) => text.includes("noscript")),
+  );
+
+  expect(noscriptRules).toEqual([]);
 });
