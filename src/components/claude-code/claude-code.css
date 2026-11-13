@@ -1,5 +1,7 @@
 /* Claude Code window. Look ported from the approved #10 prototype. */
-.cc-window {
+/* The palette, shared by the desktop window and the phone layout. */
+.cc-window,
+.cc-theme {
   --cc-bg: #1f1e1d;
   --cc-sidebar: #191817;
   --cc-title: #161514;
@@ -10,7 +12,8 @@
   --cc-faint: #6f6b64;
   --cc-accent: #d97757;
   --cc-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-
+}
+.cc-window {
   width: min(1100px, calc(100vw - 160px));
   height: min(700px, calc(100vh - 80px));
   flex-direction: column;

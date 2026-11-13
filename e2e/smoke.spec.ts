@@ -1,14 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("phone", () => {
-  test.skip(({ isMobile }) => !isMobile, "phone-only behaviour");
+test("/unavailable is no longer a page: it shows the 404 page", async ({
+  page,
+}) => {
+  await page.goto("/unavailable");
 
-  test("opening the site on a phone redirects to the Service Unavailable page", async ({
-    page,
-  }) => {
-    await page.goto("/");
-
-    await expect(page).toHaveURL(/\/unavailable$/);
-    await expect(page.getByText("Service Unavailable")).toBeVisible();
-  });
+  await expect(page).toHaveURL(/\/unavailable$/);
+  await expect(page.getByText("Oops! Page Not Found")).toBeVisible();
+  await expect(page.getByText("Service Unavailable")).toHaveCount(0);
 });

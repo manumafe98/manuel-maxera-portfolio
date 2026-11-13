@@ -16,6 +16,21 @@
   --font-sublime: "Menlo", "Consolas", "Ubuntu Mono", "monospace";
 }
 
+/* CSS, not JavaScript, picks the shell (ADR-0002). The wallpaper lives in the
+   desktop media query so phones never download it. */
+.desktop-shell {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .desktop-shell {
+    display: block;
+    background: url("./assets/jammy_wallpaper.webp") center / cover no-repeat;
+  }
+  .phone-shell {
+    display: none;
+  }
+}
+
 calendar-month {
   --color-accent: #f97316;
 
