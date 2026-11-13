@@ -246,7 +246,6 @@ export const Chat = ({
             <div className="cc-composer-row">
               <span className="cc-icon-btn" aria-hidden="true">
                 <LineIcon name="plus" />
-                onOpenClaudeProject={onOpenClaudeProject}
               </span>
               <button
                 type="submit"
