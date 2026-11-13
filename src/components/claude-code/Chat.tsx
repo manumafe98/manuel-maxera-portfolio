@@ -239,7 +239,6 @@ export const Chat = ({
               }
               autoComplete="off"
               value={input}
-              disabled={streaming}
               onChange={(event) => changeInput(event.target.value)}
               onKeyDown={onMenuKey}
               placeholder="Type / for commands. Replies are scripted, no live model."

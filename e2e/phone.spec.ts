@@ -135,7 +135,7 @@ test("tapping outside the drawer closes it and keeps the open Chat", async ({
   await expect(chat(page, WELCOME)).toBeVisible();
 });
 
-test("on a phone the /tldr chip shows thinking that folds into 'Thought for', a get_profile tool call, then streams the short summary", async ({
+test("on a phone the /tldr chip keeps the input editable while it shows thinking that folds into 'Thought for', a get_profile tool call, then streams the short summary", async ({
   page,
 }) => {
   await page.goto("/");
@@ -149,9 +149,10 @@ test("on a phone the /tldr chip shows thinking that folds into 'Thought for', a 
 
   const reply = aboutMe.getByRole("article", { name: "Reply" });
   await expect(reply).toHaveAttribute("aria-busy", "true");
-  await expect(
-    aboutMe.getByRole("combobox", { name: "Message" }),
-  ).toBeDisabled();
+  // Checked once, not retried, so it can't pass by waiting for the reply to end.
+  expect(
+    await aboutMe.getByRole("combobox", { name: "Message" }).isEditable(),
+  ).toBe(true);
   await expect(reply.getByText(/^Thought for \d+s$/)).toBeVisible();
   await expect(reply).toContainText(
     'mcp__portfolio__get_profile({ format: "short" })',
@@ -160,9 +161,6 @@ test("on a phone the /tldr chip shows thinking that folds into 'Thought for', a 
     "Background in full-stack product engineering and cloud infrastructure.",
   );
   await expect(reply).toHaveAttribute("aria-busy", "false");
-  await expect(
-    aboutMe.getByRole("combobox", { name: "Message" }),
-  ).toBeEnabled();
 });
 
 test("typing /about-me in the phone composer and tapping Send streams the full background", async ({

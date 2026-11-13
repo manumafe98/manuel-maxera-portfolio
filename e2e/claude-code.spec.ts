@@ -65,7 +65,7 @@ test("the about-me link in the Welcome intro opens the about-me Chat and marks i
   ).toHaveAttribute("aria-current", "page");
 });
 
-test("the /tldr chip locks the input, shows thinking that folds into 'Thought for', a get_profile tool call, then the short summary", async ({
+test("the /tldr chip keeps the input editable while it shows thinking that folds into 'Thought for', a get_profile tool call, then the short summary", async ({
   page,
 }) => {
   await sidebar(page)
@@ -76,7 +76,12 @@ test("the /tldr chip locks the input, shows thinking that folds into 'Thought fo
 
   await aboutMe.getByRole("button", { name: "/tldr" }).click();
 
-  await expect(input).toBeDisabled();
+  await expect(aboutMe.getByRole("article", { name: "Reply" })).toHaveAttribute(
+    "aria-busy",
+    "true",
+  );
+  // Checked once, not retried, so it can't pass by waiting for the reply to end.
+  expect(await input.isEditable()).toBe(true);
   await expect(aboutMe.getByText(/^Thought for \d+s$/)).toBeVisible();
   await expect(aboutMe).toContainText(
     'mcp__portfolio__get_profile({ format: "short" })',
@@ -84,7 +89,6 @@ test("the /tldr chip locks the input, shows thinking that folds into 'Thought fo
   await expect(aboutMe).toContainText(
     "Background in full-stack product engineering and cloud infrastructure.",
   );
-  await expect(input).toBeEnabled();
 });
 
 test("typing /about-me and pressing Enter streams the full background", async ({
@@ -120,9 +124,10 @@ test("clicking a reply while it streams shows its full answer at once", async ({
   await expect(aboutMe).toContainText("Italian: Elementary (A2)", {
     timeout: 1000,
   });
-  await expect(
-    aboutMe.getByRole("combobox", { name: "Message" }),
-  ).toBeEnabled();
+  await expect(aboutMe.getByRole("article", { name: "Reply" })).toHaveAttribute(
+    "aria-busy",
+    "false",
+  );
 });
 
 test("/download-cv in the Welcome Chat shows a download card that downloads the CV PDF", async ({
