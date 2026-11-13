@@ -17,12 +17,18 @@ export const GmailDialogMessagePopUp = ({
       <span className="flex items-center gap-2">
         {success ? (
           <>
-            <CheckMarkIcon className="fill-current text-green-700 w-5 h-5" />{" "}
+            <CheckMarkIcon
+              aria-hidden="true"
+              className="fill-current text-green-700 w-5 h-5"
+            />{" "}
             {text}
           </>
         ) : (
           <>
-            <DialogXMarkIcon className="fill-current text-red-600 w-5 h-5" />{" "}
+            <DialogXMarkIcon
+              aria-hidden="true"
+              className="fill-current text-red-600 w-5 h-5"
+            />{" "}
             {text}
           </>
         )}

@@ -24,7 +24,7 @@ export const UbuntuSoftwareDialog = ({
     >
       <div className="flex items-center justify-between w-full h-10 bg-ubuntu-navbar rounded-t-lg border-b border-solid border-black">
         <div className="flex items-center justify-center w-6 h-6 mx-3 bg-gray-50/20 rounded-md">
-          <SearchIcon className="white-icon w-5 h-5" />
+          <SearchIcon aria-hidden="true" className="white-icon w-5 h-5" />
         </div>
         <span className="text-white">Explore</span>
         <CloseDialog
@@ -67,7 +67,7 @@ export const UbuntuSoftwareDialog = ({
                     rel="noopener noreferrer"
                     aria-label={`${project.name} on GitHub`}
                   >
-                    <GithubIcon className="project-icon" />
+                    <GithubIcon aria-hidden="true" className="project-icon" />
                   </a>
                   {project.liveUrl && (
                     <a
@@ -76,7 +76,10 @@ export const UbuntuSoftwareDialog = ({
                       rel="noopener noreferrer"
                       aria-label={`${project.name} website`}
                     >
-                      <WebLinkIcon className="project-icon mt-0.5" />
+                      <WebLinkIcon
+                        aria-hidden="true"
+                        className="project-icon mt-0.5"
+                      />
                     </a>
                   )}
                 </div>

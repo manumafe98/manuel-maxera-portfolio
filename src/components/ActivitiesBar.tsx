@@ -99,7 +99,10 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
         >
           <span className="flex items-center gap-2 text-white">
             Socials
-            <FilledArrowDownIcon className="white-icon w-5 h-5" />
+            <FilledArrowDownIcon
+              aria-hidden="true"
+              className="white-icon w-5 h-5"
+            />
           </span>
           {menuOpen && (
             <div className="absolute w-56 top-10 -left-32 mt-1 bg-ubuntu-navbar rounded-lg shadow-lg border border-gray-600">
@@ -113,7 +116,10 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
                       {...activity.props}
                     >
                       <span>
-                        <activity.icon className="white-icon w-4 h-4" />
+                        <activity.icon
+                          aria-hidden="true"
+                          className="white-icon w-4 h-4"
+                        />
                       </span>
                       {activity.name}
                     </a>
