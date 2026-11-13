@@ -409,7 +409,7 @@ describe("/socials", () => {
           links: [
             {
               name: "LinkedIn",
-              url: "https://www.linkedin.com/in/manuelmaxera/",
+              url: "https://www.linkedin.com/in/manuel-maxera/",
             },
             { name: "GitHub", url: "https://github.com/manumafe98" },
           ],

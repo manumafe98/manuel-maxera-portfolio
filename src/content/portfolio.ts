@@ -231,7 +231,7 @@ export const spokenLanguages: SpokenLanguage[] = [
 ];
 
 export const socialLinks: SocialLink[] = [
-  { name: "LinkedIn", url: "https://www.linkedin.com/in/manuelmaxera/" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/manuel-maxera/" },
   { name: "GitHub", url: "https://github.com/manumafe98" },
 ];
 
