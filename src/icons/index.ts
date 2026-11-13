@@ -1,6 +1,4 @@
 export * from "./AmazonWebServicesIcon";
-export * from "./CheckMarkIcon";
-export * from "./CircleXMarkIcon";
 export * from "./ClaudeCodeIcon";
 export * from "./CodexIcon";
 export * from "./CurriculumIcon";

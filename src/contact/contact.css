@@ -1,0 +1,101 @@
+/* The contact form, in the Gmail window and the phone contact card. */
+.cc-contact {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cc-contact label {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--cc-muted);
+}
+.cc-contact input,
+.cc-contact textarea {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  background: var(--cc-bg);
+  color: var(--cc-text);
+  /* 16px keeps mobile browsers from zooming into the field. */
+  font-size: 16px;
+}
+.cc-contact input::placeholder,
+.cc-contact textarea::placeholder {
+  color: var(--cc-faint);
+}
+.cc-contact textarea {
+  resize: vertical;
+}
+.cc-contact input:focus-visible,
+.cc-contact textarea:focus-visible {
+  outline: 2px solid var(--cc-accent);
+  outline-offset: -1px;
+}
+.cc-contact [aria-invalid="true"] {
+  border-color: #e0786c;
+}
+.cc-contact-error {
+  font-size: 13px;
+  color: #f0a59c;
+}
+.cc-contact-send {
+  min-height: 44px;
+  margin-top: 6px;
+  border-radius: 12px;
+  background: var(--cc-accent);
+  color: #1f1e1d;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cc-contact-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.cc-contact-notice {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+.cc-contact-notice.is-success {
+  background: rgb(74 160 100 / 0.15);
+  color: #9fd8ad;
+}
+.cc-contact-notice.is-error {
+  background: rgb(220 90 80 / 0.15);
+  color: #f0a59c;
+}
+.cc-contact-note {
+  font-size: 13px;
+  color: var(--cc-muted);
+}
+.cc-contact-note a {
+  color: var(--cc-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* The Gmail window: a Claude-toned frame around the form. */
+.cc-gmail {
+  width: min(520px, calc(100vw - 160px));
+  height: fit-content;
+  overflow: hidden;
+  background: var(--cc-bg);
+  border-color: #3a3835;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  color: var(--cc-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  font-size: 13px;
+}
+.cc-gmail-body {
+  padding: 20px 28px 24px;
+}
+.cc-gmail-heading {
+  font-size: 18px;
+  font-weight: 600;
+}

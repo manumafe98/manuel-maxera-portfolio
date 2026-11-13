@@ -98,6 +98,7 @@ export const FileManagerWindow = ({
         <CloseWindowButton
           onClose={onClose}
           className="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
+          label="Close Files"
         />
       </div>
       <div className="flex">

@@ -202,13 +202,53 @@ test.describe("dock", () => {
     await dock(page).getByRole("button", { name: "My Projects" }).click();
 
     await appWindow(page, "Software")
-      .getByRole("button", { name: "Close" })
+      .getByRole("button", { name: "Close Software" })
       .click();
     await expect(appWindow(page, "Software")).toBeHidden();
     await dock(page).getByRole("button", { name: "My Projects" }).click();
 
     await expect(appWindow(page, "Software")).toBeVisible();
   });
+});
+
+/** Presses Tab until the element has focus, as a keyboard user would. */
+const tabTo = async (page: Page, target: Locator) => {
+  for (let presses = 0; presses < 80; presses++) {
+    await page.keyboard.press("Tab");
+    if (await target.evaluate((el) => el === document.activeElement)) return;
+  }
+  throw new Error("Tab never reached the element");
+};
+
+test.describe("close buttons", () => {
+  for (const { dockButton, window } of [
+    { dockButton: null, window: "Claude Code" },
+    { dockButton: "My Projects", window: "Software" },
+    { dockButton: "My Skills", window: "Files" },
+    { dockButton: "Contact Me", window: "Gmail" },
+  ]) {
+    test(`the ${window} window's close button is named "Close ${window}" and shows an outline at least 2px wide when reached with Tab`, async ({
+      page,
+    }) => {
+      await page.goto("/");
+      if (dockButton) {
+        await dock(page).getByRole("button", { name: dockButton }).click();
+      }
+      const close = appWindow(page, window).getByRole("button", {
+        name: `Close ${window}`,
+        exact: true,
+      });
+
+      await tabTo(page, close);
+
+      const outline = await close.evaluate((el) => {
+        const style = getComputedStyle(el);
+        return { style: style.outlineStyle, width: style.outlineWidth };
+      });
+      expect(outline.style).not.toBe("none");
+      expect(parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
+    });
+  }
 });
 
 test.describe("Top bar", () => {
@@ -310,29 +350,41 @@ test.describe("contact form", () => {
     await gmail.getByRole("button", { name: "Send" }).click();
   };
 
-  test("an invalid email address is rejected with a clear message and nothing is sent", async ({
+  test("an invalid email address focuses the email field, marks it aria-invalid and describes it with the error, and nothing is sent", async ({
     page,
   }) => {
     await routeEmailJs(page, 200);
+    const email = appWindow(page, "Gmail").getByRole("textbox", {
+      name: "Your email",
+    });
 
     await fill(page, "not-an-email", "Hello Manuel");
 
-    await expect(appWindow(page, "Gmail").getByRole("alert")).toHaveText(
+    await expect(email).toBeFocused();
+    await expect(email).toHaveAttribute("aria-invalid", "true");
+    await expect(email).toHaveAccessibleDescription(
       "Enter a valid email address, like name@example.com.",
     );
     expect(sends).toEqual([]);
   });
 
-  test("an empty message is rejected with a clear message and nothing is sent", async ({
+  test("an empty message focuses the message field, marks it aria-invalid and describes it with the error, and nothing is sent", async ({
     page,
   }) => {
     await routeEmailJs(page, 200);
+    const gmail = appWindow(page, "Gmail");
+    const message = gmail.getByRole("textbox", { name: "Message" });
 
     await fill(page, "recruiter@example.com", "   ");
 
-    await expect(appWindow(page, "Gmail").getByRole("alert")).toHaveText(
+    await expect(message).toBeFocused();
+    await expect(message).toHaveAttribute("aria-invalid", "true");
+    await expect(message).toHaveAccessibleDescription(
       "Write a message before sending.",
     );
+    await expect(
+      gmail.getByRole("textbox", { name: "Your email" }),
+    ).not.toHaveAttribute("aria-invalid", "true");
     expect(sends).toEqual([]);
   });
 
@@ -353,6 +405,25 @@ test.describe("contact form", () => {
     });
   });
 
+  test("after a successful send the message field is empty and the email field keeps the address", async ({
+    page,
+  }) => {
+    await routeEmailJs(page, 200);
+    const gmail = appWindow(page, "Gmail");
+
+    await fill(page, "recruiter@example.com", "Let's talk about a role.");
+
+    await expect(gmail.getByRole("status")).toHaveText(
+      "Message sent. Manuel will reply to your email.",
+    );
+    await expect(gmail.getByRole("textbox", { name: "Message" })).toHaveValue(
+      "",
+    );
+    await expect(
+      gmail.getByRole("textbox", { name: "Your email" }),
+    ).toHaveValue("recruiter@example.com");
+  });
+
   test("a failed EmailJS request makes the form report failure", async ({
     page,
   }) => {
@@ -364,6 +435,18 @@ test.describe("contact form", () => {
       "Your message couldn't be sent. Try again, or email manumaxerapro@gmail.com.",
     );
     expect(sends).toHaveLength(1);
+  });
+
+  test("the Gmail window shows visible Your email and Message labels and a mailto link to Manuel's address", async ({
+    page,
+  }) => {
+    const gmail = appWindow(page, "Gmail");
+
+    await expect(gmail.getByText("Your email", { exact: true })).toBeVisible();
+    await expect(gmail.getByText("Message", { exact: true })).toBeVisible();
+    await expect(
+      gmail.getByRole("link", { name: "Email manumaxerapro@gmail.com" }),
+    ).toHaveAttribute("href", "mailto:manumaxerapro@gmail.com");
   });
 
   test("the form shows the privacy note with a link to /privacy", async ({

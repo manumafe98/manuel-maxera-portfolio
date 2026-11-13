@@ -240,65 +240,6 @@
   flex: none;
 }
 
-.cc-contact {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.cc-contact label {
-  margin-top: 4px;
-  font-size: 13px;
-  color: var(--cc-muted);
-}
-.cc-contact input,
-.cc-contact textarea {
-  min-height: 44px;
-  padding: 10px 12px;
-  border: 1px solid var(--cc-border);
-  border-radius: 12px;
-  background: var(--cc-bg);
-  color: var(--cc-text);
-  /* 16px keeps mobile browsers from zooming into the field. */
-  font-size: 16px;
-}
-.cc-contact textarea {
-  resize: vertical;
-}
-.cc-contact input:focus-visible,
-.cc-contact textarea:focus-visible {
-  outline: 2px solid var(--cc-accent);
-  outline-offset: -1px;
-}
-.cc-contact-send {
-  min-height: 44px;
-  margin-top: 6px;
-  border-radius: 12px;
-  background: var(--cc-accent);
-  color: #1f1e1d;
-  font-weight: 600;
-  cursor: pointer;
-}
-.cc-contact-send:disabled {
-  opacity: 0.6;
-}
-.cc-contact-notice {
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 13.5px;
-}
-.cc-contact-notice.is-success {
-  background: rgb(74 160 100 / 0.15);
-  color: #9fd8ad;
-}
-.cc-contact-notice.is-error {
-  background: rgb(220 90 80 / 0.15);
-  color: #f0a59c;
-}
-.cc-contact-note {
-  font-size: 13px;
-  color: var(--cc-muted);
-}
 .cc-answer a.cc-touch-link {
   display: inline-flex;
   align-items: center;

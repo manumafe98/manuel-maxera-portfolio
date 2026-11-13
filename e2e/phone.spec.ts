@@ -316,27 +316,35 @@ test.describe("contact card", () => {
     await expect(anyAppWindow(page)).toHaveCount(0);
   });
 
-  test("the contact card rejects an invalid email address with a clear message and sends nothing", async ({
+  test("the contact card focuses and scrolls to an invalid email field, marks it aria-invalid, describes it with the error, and sends nothing", async ({
     page,
   }) => {
     const card = await openContactCard(page, 200);
+    const email = card.getByRole("textbox", { name: "Your email" });
 
     await send(card, "not-an-email", "Hello Manuel");
 
-    await expect(card.getByRole("alert")).toHaveText(
+    await expect(email).toBeFocused();
+    await expect(email).toBeInViewport();
+    await expect(email).toHaveAttribute("aria-invalid", "true");
+    await expect(email).toHaveAccessibleDescription(
       "Enter a valid email address, like name@example.com.",
     );
     expect(sends).toEqual([]);
   });
 
-  test("the contact card rejects an empty message with a clear message and sends nothing", async ({
+  test("the contact card focuses and scrolls to an empty message field, marks it aria-invalid, describes it with the error, and sends nothing", async ({
     page,
   }) => {
     const card = await openContactCard(page, 200);
+    const message = card.getByRole("textbox", { name: "Message" });
 
     await send(card, "recruiter@example.com", "   ");
 
-    await expect(card.getByRole("alert")).toHaveText(
+    await expect(message).toBeFocused();
+    await expect(message).toBeInViewport();
+    await expect(message).toHaveAttribute("aria-invalid", "true");
+    await expect(message).toHaveAccessibleDescription(
       "Write a message before sending.",
     );
     expect(sends).toEqual([]);
@@ -357,6 +365,24 @@ test.describe("contact card", () => {
       from_email: "Recruiter@Example.com",
       message: "Let's talk about a role.",
     });
+  });
+
+  test("after a successful send the contact card's message field is empty and its email field keeps the address", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await send(card, "recruiter@example.com", "Let's talk about a role.");
+
+    await expect(card.getByRole("status")).toHaveText(
+      "Message sent. Manuel will reply to your email.",
+    );
+    await expect(card.getByRole("textbox", { name: "Message" })).toHaveValue(
+      "",
+    );
+    await expect(card.getByRole("textbox", { name: "Your email" })).toHaveValue(
+      "recruiter@example.com",
+    );
   });
 
   test("the contact card reports failure when the EmailJS request fails", async ({

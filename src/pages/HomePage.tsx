@@ -82,6 +82,7 @@ export const HomePage = () => {
                     <CloseWindowButton
                       onClose={props.onClose}
                       className="bg-gray-50/20 hover:bg-gray-50/15"
+                      label={`Close ${dock.label}`}
                     />
                   </dialog>
                 }
@@ -93,7 +94,7 @@ export const HomePage = () => {
             )
           );
         })}
-        <TopBar onToggleCalendar={toggleCalendar} />
+        <TopBar calendarOpen={calendarOpen} onToggleCalendar={toggleCalendar} />
         <ApplicationsMenu openWindow={bringToFront} />
         {calendarOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">
