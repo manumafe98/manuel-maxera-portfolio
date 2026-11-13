@@ -10,7 +10,10 @@ export const GmailDialogMessagePopUp = ({
   success = true,
 }: GmailDialogMessagePopUpProps) => {
   return (
-    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 my-4 px-4 py-2 rounded-xl shadow-lg transition-opacity duration-300 border-1 border-solid border-main-gray">
+    <div
+      role={success ? "status" : "alert"}
+      className="absolute bottom-0 left-1/2 transform -translate-x-1/2 my-4 px-4 py-2 rounded-xl shadow-lg transition-opacity duration-300 border-1 border-solid border-main-gray"
+    >
       <span className="flex items-center gap-2">
         {success ? (
           <>
