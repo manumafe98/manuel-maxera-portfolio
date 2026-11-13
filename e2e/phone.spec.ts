@@ -270,6 +270,33 @@ test.describe("Skill cards", () => {
     expect(chipsWithoutIcon).toBe(0);
     await expect(anyAppWindow(page)).toHaveCount(0);
   });
+
+  test("on a phone the whole Hardhat logo fits inside its skill chip's icon box, with no part cropped", async ({
+    page,
+  }) => {
+    const reply = await runSkill(page, "Tech stack overview", "/open-skills");
+    const icon = reply
+      .getByRole("listitem")
+      .filter({ hasText: /^Hardhat$/ })
+      .locator("svg");
+
+    const overflow = await icon.evaluate((svg) => {
+      const box = svg.getBoundingClientRect();
+      const shapes = [...svg.querySelectorAll("path")].map((shape) =>
+        shape.getBoundingClientRect(),
+      );
+      return {
+        left: box.left - Math.min(...shapes.map((s) => s.left)),
+        top: box.top - Math.min(...shapes.map((s) => s.top)),
+        right: Math.max(...shapes.map((s) => s.right)) - box.right,
+        bottom: Math.max(...shapes.map((s) => s.bottom)) - box.bottom,
+      };
+    });
+
+    for (const [side, pixels] of Object.entries(overflow)) {
+      expect(pixels, `drawing overflows the ${side} edge`).toBeLessThan(0.5);
+    }
+  });
 });
 
 test.describe("contact card", () => {
