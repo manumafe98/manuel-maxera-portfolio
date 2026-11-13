@@ -10,12 +10,12 @@ export type ProjectCardFrame = "window" | "chat";
 const styles = {
   window: {
     card: "flex items-center gap-3 bg-ubuntu-top-bar border border-solid border-black shadow-md rounded-xl p-4",
-    logo: "w-20 mt-2.5",
+    logo: "shrink-0 w-20 h-20 p-2 rounded-2xl bg-stone-100 object-contain",
     initials:
       "flex items-center justify-center shrink-0 w-20 h-20 rounded-2xl bg-gray-50/20 text-white text-2xl font-bold",
-    text: "flex flex-col",
-    name: "text-white font-bold",
-    description: "text-white text-sm",
+    text: "flex flex-col min-w-0",
+    name: "text-white font-bold truncate",
+    description: "text-white text-sm line-clamp-2",
     links: "flex mt-2 gap-2",
     link: undefined,
     repoIcon: "project-icon",
@@ -66,7 +66,9 @@ export const ProjectCard = ({
         </span>
       )}
       <div className={style.text}>
-        <h3 className={style.name}>{project.name}</h3>
+        <h3 className={style.name} title={project.name}>
+          {project.name}
+        </h3>
         <p className={style.description}>{project.description}</p>
         <div className={style.links}>
           <a

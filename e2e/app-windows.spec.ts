@@ -201,6 +201,66 @@ test.describe("at 1280x720", () => {
     expect(layout.cutLabels).toBe(0);
     expect(layout.peekingIcons).toBeGreaterThan(0);
   });
+
+  test("the Software window's Project cards are all the same height and each title fits on one line", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await dock(page).getByRole("button", { name: "My Projects" }).click();
+    const cards = appWindow(page, "Software").getByRole("listitem");
+    await expect(cards).toHaveCount(5);
+
+    const heights = await cards.evaluateAll((items) =>
+      items.map((item) => Math.round(item.getBoundingClientRect().height)),
+    );
+    const titleLines = await cards
+      .getByRole("heading")
+      .evaluateAll((titles) =>
+        titles.map((title) =>
+          Math.round(
+            title.getBoundingClientRect().height /
+              parseFloat(getComputedStyle(title).lineHeight),
+          ),
+        ),
+      );
+
+    expect(new Set(heights).size, heights.join(", ")).toBe(1);
+    expect(titleLines).toEqual([1, 1, 1, 1, 1]);
+  });
+
+  test("the Software window shows each Project logo on a light tile, so dark logos such as Pokemon Voting stay visible", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await dock(page).getByRole("button", { name: "My Projects" }).click();
+    const logos = appWindow(page, "Software").getByRole("img");
+    await expect(logos).toHaveCount(4);
+
+    const tileLightness = await logos.evaluateAll((images) => {
+      // Paints a CSS colour on a canvas to read it as sRGB, whatever its syntax.
+      const context = document.createElement("canvas").getContext("2d")!;
+      const rgba = (color: string) => {
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = color;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data];
+      };
+      return images.map((image) => {
+        // The nearest box with a painted background behind the logo.
+        let box: Element | null = image;
+        while (box) {
+          const [r, g, b, a] = rgba(getComputedStyle(box).backgroundColor);
+          if (a > 0) return (r + g + b) / 3 / 255;
+          box = box.parentElement;
+        }
+        return 0;
+      });
+    });
+
+    for (const lightness of tileLightness) {
+      expect(lightness).toBeGreaterThan(0.8);
+    }
+  });
 });
 
 test.describe("dock", () => {
