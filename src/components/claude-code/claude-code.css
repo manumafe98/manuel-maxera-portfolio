@@ -9,7 +9,9 @@
   --cc-border: #34322f;
   --cc-text: #e8e6e1;
   --cc-muted: #9b978f;
-  --cc-faint: #6f6b64;
+  /* At least 4.5:1 on every background faint text sits on: the sidebar
+     (5.24), the Chat (4.92) and the composer (4.52). */
+  --cc-faint: #908b83;
   --cc-accent: #d97757;
   --cc-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
@@ -486,8 +488,8 @@
   color: var(--cc-text);
 }
 .cc-chip:disabled {
-  opacity: 0.45;
-  cursor: default;
+  color: var(--cc-faint);
+  cursor: not-allowed;
 }
 .cc-composer {
   position: relative;
@@ -534,6 +536,9 @@
   border-radius: 8px;
   background: #3a3835;
   color: var(--cc-faint);
+}
+.cc-send:disabled {
+  cursor: not-allowed;
 }
 .cc-send.is-ready {
   background: var(--cc-accent);
