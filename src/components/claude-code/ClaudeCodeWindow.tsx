@@ -1,19 +1,19 @@
 import {
   claudeProjects,
-  type AppId,
+  type AppWindowId,
   type ClaudeProjectId,
 } from "@/content/portfolio";
 import { ClaudeCodeIcon } from "@/icons";
-import type { DialogProps } from "@/types/dialog.types";
+import type { WindowProps } from "@/types/window.types";
 import { useState } from "react";
-import { CloseDialog } from "../CloseDialog";
+import { CloseWindowButton } from "../CloseWindowButton";
 import { Chat } from "./Chat";
 import "./claude-code.css";
 import { LineIcon } from "./LineIcon";
 
-interface ClaudeCodeWindowProps extends DialogProps {
+interface ClaudeCodeWindowProps extends WindowProps {
   /** Opens or focuses the App window a Skill launches. */
-  onOpenApp: (app: AppId) => void;
+  onOpenApp: (app: AppWindowId) => void;
 }
 
 /** The simulated Claude Code app: a sidebar of Claude projects and their Chats. */
@@ -42,17 +42,16 @@ export const ClaudeCodeWindow = ({
       style={{ zIndex }}
       onPointerDown={onFocus}
       aria-label="Claude Code"
-      className="dialog-container cc-window"
+      className="window-frame cc-window"
     >
       <header className="cc-titlebar">
         <div className="cc-title">
           <ClaudeCodeIcon width={16} height={16} aria-hidden="true" />
           Claude Code
         </div>
-        <CloseDialog
-          closeDialog={() => onClose()}
-          buttonExtraStyles="bg-gray-50/10 hover:bg-gray-50/20"
-          svgCustomStyle={undefined}
+        <CloseWindowButton
+          onClose={onClose}
+          className="bg-gray-50/10 hover:bg-gray-50/20"
           label="Close Claude Code"
         />
       </header>

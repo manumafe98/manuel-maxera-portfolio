@@ -38,11 +38,11 @@ import {
 import type { ComponentType, SVGProps } from "react";
 
 /**
- * The logo of each skill in the skills grid, by skill name. Logos come from
+ * The logo of each Tech skill in the Tech skill grid, by name. Logos come from
  * svgl (dark-theme variants where it has two); herdr's comes from its own
  * repo; tools svgl lacks get a monogram tile.
  */
-export const skillIcons: Record<
+export const techSkillIcons: Record<
   string,
   ComponentType<SVGProps<SVGSVGElement>>
 > = {

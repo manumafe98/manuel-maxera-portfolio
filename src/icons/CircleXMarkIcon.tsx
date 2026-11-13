@@ -1,6 +1,6 @@
 import { SVGProps } from "react";
 
-export const DialogXMarkIcon = (props: SVGProps<SVGSVGElement>) => {
+export const CircleXMarkIcon = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" {...props}>
       <path

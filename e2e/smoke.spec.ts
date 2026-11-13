@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("/unavailable is no longer a page: it shows the 404 page", async ({
+test("/unavailable shows the 404 page, not a Service Unavailable page", async ({
   page,
 }) => {
   await page.goto("/unavailable");

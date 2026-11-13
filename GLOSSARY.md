@@ -22,6 +22,10 @@ _Avoid_: Dialog, modal
 Something Manuel built and shows in the portfolio, such as Hoytsx or VBNB.
 _Avoid_: Showcase item, work
 
+**Tech skill**:
+A technology Manuel works with, such as Python or LangGraph, shown in the Files window and the phone Tech skills card.
+_Avoid_: Bare "skill", which means a Command that opens an App window
+
 ## Claude Code
 
 **Claude Code**:

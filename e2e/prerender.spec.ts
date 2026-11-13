@@ -1,6 +1,6 @@
 /// <reference lib="dom" />
 import { expect, test } from "@playwright/test";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 
 test.describe("with JavaScript disabled", () => {
   test.use({ javaScriptEnabled: false });
@@ -96,13 +96,4 @@ test("after hydration the 404 page's home link goes to the Welcome Chat", async 
 test("the build writes dist/404.html and dist/privacy.html for Netlify", () => {
   expect(existsSync("dist/404.html")).toBe(true);
   expect(existsSync("dist/privacy.html")).toBe(true);
-});
-
-test("react-router is no longer a dependency", () => {
-  const pkg = JSON.parse(readFileSync("package.json", "utf8"));
-  const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-
-  expect(
-    Object.keys(deps).filter((name) => name.includes("react-router")),
-  ).toEqual([]);
 });

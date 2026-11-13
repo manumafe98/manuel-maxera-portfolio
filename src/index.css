@@ -1,19 +1,13 @@
 @import "tailwindcss";
-@plugin 'tailwind-scrollbar';
 
 @theme {
   --color-ubuntu-dock: #1d1d1d;
   --color-ubuntu-main: #6e2047;
   --color-ubuntu-focus: #b33f4a;
-  --color-ubuntu-navbar: #1e1e1e;
+  --color-ubuntu-top-bar: #1e1e1e;
   --color-ubuntu-options: #2a2929;
-  --color-ubuntu-terminal-bg: #320e24;
-  --color-ubuntu-terminal-select: #3965a1;
   --color-ubuntu-orange: #f97316;
-  --color-ubuntu-sublime-bg: #333a41;
   --color-main-gray: #e0e0e0;
-
-  --font-sublime: "Menlo", "Consolas", "Ubuntu Mono", "monospace";
 }
 
 /* CSS, not JavaScript, picks the shell (ADR-0002). Which shell shows is set
@@ -33,7 +27,7 @@ calendar-month {
   }
 }
 
-.dialog-container {
+.window-frame {
   @apply inset-0 m-auto border border-solid border-black rounded-xl;
 }
 
@@ -42,9 +36,14 @@ calendar-month {
 }
 
 .calendar-icon {
-  @apply fill-current w-6 h-6 text-ubuntu-orange bg-ubuntu-navbar;
+  @apply fill-current w-6 h-6 text-ubuntu-orange bg-ubuntu-top-bar;
 }
 
 .project-icon {
   @apply fill-current w-6 h-6 hover:text-ubuntu-main;
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: --alpha(var(--color-gray-50) / 15%) transparent;
 }
