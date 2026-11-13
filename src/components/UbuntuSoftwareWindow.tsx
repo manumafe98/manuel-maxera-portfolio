@@ -1,8 +1,8 @@
 import { projects } from "@/content/portfolio";
-import { GithubIcon, SearchIcon, WebLinkIcon } from "@/icons";
+import { SearchIcon } from "@/icons";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
-import { initials } from "./initials";
+import { ProjectCard } from "./ProjectCard";
 
 export const UbuntuSoftwareWindow = ({
   open,
@@ -30,58 +30,11 @@ export const UbuntuSoftwareWindow = ({
       </div>
       <div className="flex flex-col items-center justify-center pb-10">
         <span className="text-white text-2xl font-bold my-10">Projects</span>
-        <div className="grid grid-cols-2 grid-rows-1 gap-5 w-3/4 h-1/3">
-          {projects.map((project, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-3 bg-ubuntu-top-bar border border-solid border-black shadow-md rounded-xl p-4"
-            >
-              {project.logo ? (
-                <img
-                  src={project.logo.src}
-                  alt={project.logo.alt}
-                  className="w-20 mt-2.5"
-                />
-              ) : (
-                <div
-                  aria-hidden="true"
-                  className="flex items-center justify-center shrink-0 w-20 h-20 rounded-2xl bg-gray-50/20 text-white text-2xl font-bold"
-                >
-                  {initials(project.name)}
-                </div>
-              )}
-              <div className="flex flex-col">
-                <span className="text-white font-bold">{project.name}</span>
-                <span className="text-white text-sm">
-                  {project.description}
-                </span>
-                <div className="flex mt-2 gap-2">
-                  <a
-                    href={project.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${project.name} on GitHub`}
-                  >
-                    <GithubIcon aria-hidden="true" className="project-icon" />
-                  </a>
-                  {project.liveUrl && (
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${project.name} website`}
-                    >
-                      <WebLinkIcon
-                        aria-hidden="true"
-                        className="project-icon mt-0.5"
-                      />
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
+        <ul className="grid grid-cols-2 grid-rows-1 gap-5 w-3/4 h-1/3">
+          {projects.map((project) => (
+            <ProjectCard key={project.name} project={project} frame="window" />
           ))}
-        </div>
+        </ul>
       </div>
     </dialog>
   );

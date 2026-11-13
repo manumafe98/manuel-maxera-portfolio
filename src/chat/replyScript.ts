@@ -15,7 +15,7 @@ import {
   projects,
   socialLinks,
   spokenLanguages,
-  type AppId,
+  type AppWindowId,
   type ClaudeProject,
   type ClaudeProjectId,
   type ExperienceEntry,
@@ -40,7 +40,7 @@ export type AnswerBlock =
   /** A link that opens another Claude project's Chat. */
   | { kind: "claude-project-link"; id: ClaudeProjectId }
   /** A Skill's content shown inside the Chat, in place of its App window. */
-  | { kind: "skill-card"; app: AppId };
+  | { kind: "skill-card"; app: AppWindowId };
 
 export type ReplyEvent =
   | { type: "thinking"; text: string }
@@ -50,7 +50,7 @@ export type ReplyEvent =
   /** A Skill's trace line, such as Skill(open-projects). */
   | { type: "skill"; name: string }
   /** Open or focus an App window. Only sent when Skills open windows. */
-  | { type: "open-app"; app: AppId }
+  | { type: "open-app"; app: AppWindowId }
   | { type: "answer-chunk"; text: string }
   | { type: "answer-block"; block: AnswerBlock }
   | { type: "done" };
@@ -79,7 +79,7 @@ export type SkillsShownAs = "windows" | "cards";
 interface Script {
   thinking: string;
   /** Set for a Skill: its name and the App window it opens. */
-  skill?: { name: string; app: AppId };
+  skill?: { name: string; app: AppWindowId };
   tool?: { name: string; args: string; result: string };
   answer: (string | AnswerBlock)[];
 }
@@ -102,7 +102,7 @@ type SkillWording = Record<
 >;
 
 const skill =
-  (name: string, app: AppId, result: unknown, wording: SkillWording) =>
+  (name: string, app: AppWindowId, result: unknown, wording: SkillWording) =>
   (shownAs: SkillsShownAs): Script => ({
     thinking: wording[shownAs].thinking,
     skill: { name, app },

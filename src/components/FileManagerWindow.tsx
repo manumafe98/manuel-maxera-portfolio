@@ -1,4 +1,3 @@
-import { gridTechSkills } from "@/content/portfolio";
 import {
   DocumentsIcon,
   DownloadsIcon,
@@ -12,7 +11,7 @@ import {
 } from "@/icons";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
-import { techSkillIcons } from "./techSkillIcons";
+import { TechSkillGrid } from "./TechSkillGrid";
 
 export const FileManagerWindow = ({
   open,
@@ -119,25 +118,7 @@ export const FileManagerWindow = ({
           </div>
         </div>
         <div className="flex-1 h-[48vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-50/15 scrollbar-track-transparent">
-          <ul
-            aria-label="Skills"
-            className="grid grid-cols-7 gap-y-4 mx-4 my-4"
-          >
-            {gridTechSkills.map((techSkill) => {
-              const TechSkillIcon = techSkillIcons[techSkill];
-              return (
-                <li key={techSkill} className="flex flex-col items-center">
-                  <TechSkillIcon
-                    aria-hidden="true"
-                    className={`${techSkill === "Hardhat" ? "mb-1.5" : "w-12 h-12"} transition-transform duration-300 hover:scale-110`}
-                  />
-                  <span className="text-white text-md text-center">
-                    {techSkill}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+          <TechSkillGrid frame="window" />
         </div>
       </div>
     </dialog>

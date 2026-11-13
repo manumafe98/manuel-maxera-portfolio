@@ -1,6 +1,6 @@
 import {
   claudeProjects,
-  type AppId,
+  type AppWindowId,
   type ClaudeProjectId,
 } from "@/content/portfolio";
 import { ClaudeCodeIcon } from "@/icons";
@@ -13,7 +13,7 @@ import { LineIcon } from "./LineIcon";
 
 interface ClaudeCodeWindowProps extends WindowProps {
   /** Opens or focuses the App window a Skill launches. */
-  onOpenApp: (app: AppId) => void;
+  onOpenApp: (app: AppWindowId) => void;
 }
 
 /** The simulated Claude Code app: a sidebar of Claude projects and their Chats. */

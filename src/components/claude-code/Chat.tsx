@@ -7,7 +7,7 @@ import {
 } from "@/chat/replyState";
 import {
   claudeProjects,
-  type AppId,
+  type AppWindowId,
   type ClaudeProject,
   type ClaudeProjectId,
 } from "@/content/portfolio";
@@ -28,7 +28,7 @@ interface ChatProps {
    * Opens the App window a Skill launches. Without it (phones), Skills show
    * their content as cards inside the reply instead.
    */
-  onOpenApp?: (app: AppId) => void;
+  onOpenApp?: (app: AppWindowId) => void;
 }
 
 /** The single scripted Chat of a Claude project. */

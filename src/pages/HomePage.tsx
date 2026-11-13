@@ -1,63 +1,34 @@
 import { ApplicationsMenu } from "@/components/ApplicationsMenu";
+import { appWindowIds, appWindows } from "@/components/appWindows";
 import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
 import { PhoneClaudeCode } from "@/components/claude-code/PhoneClaudeCode";
 import { TopBar } from "@/components/TopBar";
-import type { AppId } from "@/content/portfolio";
+import type { AppWindowId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
 import type { WindowProps } from "@/types/window.types";
-import { ElementType, lazy, Suspense, useState } from "react";
+import { ElementType, Suspense, useState } from "react";
 
-// App windows load on first open, so they stay out of the initial bundle.
-const UbuntuSoftwareWindow = lazy(() =>
-  import("@/components/UbuntuSoftwareWindow").then((m) => ({
-    default: m.UbuntuSoftwareWindow,
-  })),
-);
-const FileManagerWindow = lazy(() =>
-  import("@/components/FileManagerWindow").then((m) => ({
-    default: m.FileManagerWindow,
-  })),
-);
-const GmailWindow = lazy(() =>
-  import("@/components/GmailWindow").then((m) => ({
-    default: m.GmailWindow,
-  })),
-);
-
-/** A window on the Desktop, named as the dock's data-value. */
-type ApplicationName =
-  "claudecode" | "ubuntusoftware" | "filemanager" | "gmail";
-
-const applicationForApp: Record<AppId, ApplicationName> = {
-  "ubuntu-software": "ubuntusoftware",
-  files: "filemanager",
-  gmail: "gmail",
-};
-
-const lazyWindows = [
-  ["ubuntusoftware", UbuntuSoftwareWindow],
-  ["filemanager", FileManagerWindow],
-  ["gmail", GmailWindow],
-] as const;
+/** A window on the Desktop: Claude Code or one of the App windows. */
+type DesktopWindowId = "claude-code" | AppWindowId;
 
 export const HomePage = () => {
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
   const [calendarDay, setCalendarDay] = useState<string>("");
 
   /** Open windows, back to front. Claude Code opens by default. */
-  const [stack, setStack] = useState<ApplicationName[]>(["claudecode"]);
+  const [stack, setStack] = useState<DesktopWindowId[]>(["claude-code"]);
   /** Windows opened at least once, so their code has been requested. */
-  const [loaded, setLoaded] = useState<ApplicationName[]>(["claudecode"]);
+  const [loaded, setLoaded] = useState<DesktopWindowId[]>(["claude-code"]);
 
   /** Opens the window, or brings it to the front when it's already open. */
-  const bringToFront = (name: ApplicationName) => {
+  const bringToFront = (name: DesktopWindowId) => {
     setStack((current) => [...current.filter((app) => app !== name), name]);
     setLoaded((current) =>
       current.includes(name) ? current : [...current, name],
     );
   };
 
-  const windowProps = (name: ApplicationName): WindowProps => ({
+  const windowProps = (name: DesktopWindowId): WindowProps => ({
     open: stack.includes(name),
     zIndex: (stack.indexOf(name) + 1) * 10,
     onClose: () => setStack((current) => current.filter((app) => app !== name)),
@@ -65,10 +36,6 @@ export const HomePage = () => {
       if (stack[stack.length - 1] !== name) bringToFront(name);
     },
   });
-
-  const handleOpenWindow = (name: string | undefined) => {
-    if (name) bringToFront(name as ApplicationName);
-  };
 
   const handleCalendarClick = (
     isCalendarOpen: boolean,
@@ -91,19 +58,21 @@ export const HomePage = () => {
       {/* Both shells render; CSS shows one of them (ADR-0002). */}
       <section className="desktop-shell h-screen w-screen overflow-hidden relative">
         <ClaudeCodeWindow
-          {...windowProps("claudecode")}
-          onOpenApp={(app) => bringToFront(applicationForApp[app])}
+          {...windowProps("claude-code")}
+          onOpenApp={bringToFront}
         />
-        {lazyWindows.map(
-          ([name, Window]) =>
-            loaded.includes(name) && (
-              <Suspense key={name} fallback={null}>
-                <Window {...windowProps(name)} />
+        {appWindowIds.map((id) => {
+          const { Window } = appWindows[id];
+          return (
+            loaded.includes(id) && (
+              <Suspense key={id} fallback={null}>
+                <Window {...windowProps(id)} />
               </Suspense>
-            ),
-        )}
+            )
+          );
+        })}
         <TopBar openCalendar={handleCalendarClick} />
-        <ApplicationsMenu openWindow={handleOpenWindow} />
+        <ApplicationsMenu openWindow={bringToFront} />
         {calendarOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">
             <div className="bg-ubuntu-top-bar text-white rounded-xl p-5 shadow-lg border border-gray-600">

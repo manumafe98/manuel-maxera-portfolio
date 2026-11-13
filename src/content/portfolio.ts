@@ -302,7 +302,7 @@ export type ClaudeProjectId =
   | "contact";
 
 /** The App windows a Skill can open. */
-export type AppId = "ubuntu-software" | "files" | "gmail";
+export type AppWindowId = "ubuntu-software" | "files" | "gmail";
 
 export interface Command {
   /** Slash-prefixed, lower case, as the visitor types it. */
