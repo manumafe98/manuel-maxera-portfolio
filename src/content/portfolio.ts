@@ -323,8 +323,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
   {
     id: "about-me",
     title: "Who is Manuel Maxera?",
-    intro:
-      "This is the **About Me** Chat. I can tell you who Manuel is, in full or in short.",
+    intro: "I can tell you who Manuel is, in full or in short.",
     commands: [aboutMeCommand, tldrCommand, downloadCvCommand, socialsCommand],
     chips: [aboutMeCommand.name, tldrCommand.name, downloadCvCommand.name],
   },
@@ -332,7 +331,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     id: "experience",
     title: "Manuel's career timeline",
     intro:
-      "This is the **Experience** Chat. I can show you what Manuel does now, or his whole career as a timeline.",
+      "I can show you what Manuel does now, or his whole career as a timeline.",
     commands: [
       showLatestExperienceCommand,
       showFullExperienceCommand,
@@ -344,7 +343,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     id: "projects",
     title: "Side projects showcase",
     intro:
-      "This is the **Projects** Chat. I can open the Software window with the Projects Manuel built, each with a link to its code.",
+      "I can open the Software window with the Projects Manuel built, each with a link to its code.",
     commands: [openProjectsCommand, socialsCommand],
     chips: [openProjectsCommand.name],
   },
@@ -352,15 +351,14 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     id: "skills",
     title: "Tech stack overview",
     intro:
-      "This is the **Skills** Chat. I can open the Files window with Manuel's tech stack, grouped by area.",
+      "I can open the Files window with Manuel's tech stack, grouped by area.",
     commands: [openSkillsCommand, socialsCommand],
     chips: [openSkillsCommand.name],
   },
   {
     id: "contact",
     title: "Reaching out to Manuel",
-    intro:
-      "This is the **Contact** Chat. I can open the Gmail window so you can send Manuel a message.",
+    intro: "I can open the Gmail window so you can send Manuel a message.",
     commands: [openContactCommand, socialsCommand],
     chips: [openContactCommand.name],
   },
