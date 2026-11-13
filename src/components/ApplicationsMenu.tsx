@@ -1,11 +1,6 @@
 import file_manager from "@/assets/file_manager.webp";
 import software_store from "@/assets/software_store.webp";
-import {
-  ClaudeCodeIcon,
-  GmailIcon,
-  MenuIcon,
-  VisualStudioCodeIcon,
-} from "@/icons";
+import { ClaudeCodeIcon, GmailIcon, MenuIcon } from "@/icons";
 
 interface ApplicationsMenuProps {
   openIconDialog: (dialog: string | undefined) => void;
@@ -21,11 +16,6 @@ export const ApplicationsMenu = ({ openIconDialog }: ApplicationsMenuProps) => {
       name: "Claude Code",
       dataValue: "claudecode",
       icon: ClaudeCodeIcon,
-    },
-    {
-      name: "Working Experience",
-      dataValue: "vscode",
-      icon: VisualStudioCodeIcon,
     },
     {
       name: "Contact Me",

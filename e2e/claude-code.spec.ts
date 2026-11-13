@@ -216,3 +216,19 @@ test("the /show-full-experience chip shows a fetch_experiences all tool call and
     "Led server and data migrations and implemented Ansible automation",
   );
 });
+
+test("the dock offers Claude Code, Software, Files and Gmail, and no VS Code", async ({
+  page,
+}) => {
+  const dock = page.getByRole("navigation", { name: "Dock" });
+
+  await expect(dock.getByRole("button")).toHaveText(
+    ["Claude Code", "Contact Me", "My Projects", "My Skills"].map(
+      (name) => new RegExp(name),
+    ),
+  );
+  await expect(
+    dock.getByRole("button", { name: "Working Experience" }),
+  ).toHaveCount(0);
+  await expect(page.getByText("Visual Studio Code")).toHaveCount(0);
+});
