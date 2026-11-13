@@ -5,7 +5,7 @@
   --color-ubuntu-dock: #1d1d1d;
   --color-ubuntu-main: #6e2047;
   --color-ubuntu-focus: #b33f4a;
-  --color-ubuntu-navbar: #1e1e1e;
+  --color-ubuntu-top-bar: #1e1e1e;
   --color-ubuntu-options: #2a2929;
   --color-ubuntu-terminal-bg: #320e24;
   --color-ubuntu-terminal-select: #3965a1;
@@ -33,7 +33,7 @@ calendar-month {
   }
 }
 
-.dialog-container {
+.window-frame {
   @apply inset-0 m-auto border border-solid border-black rounded-xl;
 }
 
@@ -42,7 +42,7 @@ calendar-month {
 }
 
 .calendar-icon {
-  @apply fill-current w-6 h-6 text-ubuntu-orange bg-ubuntu-navbar;
+  @apply fill-current w-6 h-6 text-ubuntu-orange bg-ubuntu-top-bar;
 }
 
 .project-icon {

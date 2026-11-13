@@ -7,11 +7,11 @@ import {
 } from "@/icons";
 import { useEffect, useState } from "react";
 
-interface ActivitiesBarProps {
+interface TopBarProps {
   openCalendar: (isCalendarOpen: boolean, calendarValue: string) => void;
 }
 
-export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
+export const TopBar = ({ openCalendar }: TopBarProps) => {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
@@ -63,7 +63,7 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
 
   const socialIcons = { LinkedIn: LinkedinIcon, GitHub: GithubIcon };
 
-  const activities = [
+  const menuLinks = [
     ...socialLinks.map((socialLink) => ({
       name: socialLink.name,
       href: socialLink.url,
@@ -84,7 +84,7 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
 
   return (
     // Above the App windows, whose z-index grows as they stack.
-    <div className="bg-ubuntu-navbar h-11 relative z-50">
+    <div className="bg-ubuntu-top-bar h-11 relative z-50">
       <div className="flex justify-between items-center mx-5">
         <span className="text-white select-none">Activities</span>
         <div
@@ -105,23 +105,23 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
             />
           </span>
           {menuOpen && (
-            <div className="absolute w-56 top-10 -left-32 mt-1 bg-ubuntu-navbar rounded-lg shadow-lg border border-gray-600">
+            <div className="absolute w-56 top-10 -left-32 mt-1 bg-ubuntu-top-bar rounded-lg shadow-lg border border-gray-600">
               <ul className="py-1 px-1">
-                {activities.map((activity, index) => (
+                {menuLinks.map((link, index) => (
                   <li key={index}>
                     <a
-                      href={activity.href}
+                      href={link.href}
                       target="_blank"
                       className="text-white hover:bg-gray-50/10 hover:rounded-xl flex gap-2 px-4 py-2 text-sm font-bold cursor-pointer"
-                      {...activity.props}
+                      {...link.props}
                     >
                       <span>
-                        <activity.icon
+                        <link.icon
                           aria-hidden="true"
                           className="white-icon w-4 h-4"
                         />
                       </span>
-                      {activity.name}
+                      {link.name}
                     </a>
                   </li>
                 ))}

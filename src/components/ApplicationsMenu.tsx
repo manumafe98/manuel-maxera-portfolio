@@ -3,12 +3,12 @@ import software_store from "@/assets/software_store.webp";
 import { ClaudeCodeIcon, GmailIcon, MenuIcon } from "@/icons";
 
 interface ApplicationsMenuProps {
-  openIconDialog: (dialog: string | undefined) => void;
+  openWindow: (name: string | undefined) => void;
 }
 
-export const ApplicationsMenu = ({ openIconDialog }: ApplicationsMenuProps) => {
+export const ApplicationsMenu = ({ openWindow }: ApplicationsMenuProps) => {
   const handleAppIconClick = (event: React.MouseEvent<HTMLElement>) => {
-    openIconDialog(event.currentTarget.dataset.value);
+    openWindow(event.currentTarget.dataset.value);
   };
 
   const applications = [

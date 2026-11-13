@@ -1,36 +1,31 @@
 import { projects } from "@/content/portfolio";
 import { GithubIcon, SearchIcon, WebLinkIcon } from "@/icons";
-import type { DialogProps } from "@/types/dialog.types";
-import { CloseDialog } from "./CloseDialog";
+import type { WindowProps } from "@/types/window.types";
+import { CloseWindowButton } from "./CloseWindowButton";
 import { initials } from "./initials";
 
-export const UbuntuSoftwareDialog = ({
+export const UbuntuSoftwareWindow = ({
   open,
   zIndex,
   onClose,
   onFocus,
-}: DialogProps) => {
-  const closeUbuntuSoftwareDialog = () => {
-    onClose();
-  };
-
+}: WindowProps) => {
   return (
     <dialog
       open={open}
       style={{ zIndex }}
       onPointerDown={onFocus}
       aria-label="Software"
-      className="dialog-container min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] bg-ubuntu-options"
+      className="window-frame min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] bg-ubuntu-options"
     >
-      <div className="flex items-center justify-between w-full h-10 bg-ubuntu-navbar rounded-t-lg border-b border-solid border-black">
+      <div className="flex items-center justify-between w-full h-10 bg-ubuntu-top-bar rounded-t-lg border-b border-solid border-black">
         <div className="flex items-center justify-center w-6 h-6 mx-3 bg-gray-50/20 rounded-md">
           <SearchIcon aria-hidden="true" className="white-icon w-5 h-5" />
         </div>
         <span className="text-white">Explore</span>
-        <CloseDialog
-          closeDialog={closeUbuntuSoftwareDialog}
-          buttonExtraStyles="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-          svgCustomStyle={undefined}
+        <CloseWindowButton
+          onClose={onClose}
+          className="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
         />
       </div>
       <div className="flex flex-col items-center justify-center pb-10">
@@ -39,7 +34,7 @@ export const UbuntuSoftwareDialog = ({
           {projects.map((project, index) => (
             <div
               key={index}
-              className="flex items-center gap-3 bg-ubuntu-navbar border border-solid border-black shadow-md rounded-xl p-4"
+              className="flex items-center gap-3 bg-ubuntu-top-bar border border-solid border-black shadow-md rounded-xl p-4"
             >
               {project.logo ? (
                 <img

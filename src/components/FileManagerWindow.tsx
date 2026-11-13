@@ -10,16 +10,16 @@ import {
   UnfilledArrowLeftIcon,
   UnfilledArrowRightIcon,
 } from "@/icons";
-import type { DialogProps } from "@/types/dialog.types";
-import { CloseDialog } from "./CloseDialog";
+import type { WindowProps } from "@/types/window.types";
+import { CloseWindowButton } from "./CloseWindowButton";
 import { skillIcons } from "./skillIcons";
 
-export const FileManagerDialog = ({
+export const FileManagerWindow = ({
   open,
   zIndex,
   onClose,
   onFocus,
-}: DialogProps) => {
+}: WindowProps) => {
   const fileManagerIcons = [
     {
       name: "Recent",
@@ -59,19 +59,15 @@ export const FileManagerDialog = ({
     },
   ];
 
-  const closeFileManagerDialog = () => {
-    onClose();
-  };
-
   return (
     <dialog
       open={open}
       style={{ zIndex }}
       onPointerDown={onFocus}
       aria-label="Files"
-      className="dialog-container min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] bg-ubuntu-options"
+      className="window-frame min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] bg-ubuntu-options"
     >
-      <div className="flex items-center justify-between w-full h-10 bg-ubuntu-navbar border-b border-solid border-black rounded-t-lg">
+      <div className="flex items-center justify-between w-full h-10 bg-ubuntu-top-bar border-b border-solid border-black rounded-t-lg">
         <div className="flex gap-2 mx-3">
           <div className="flex">
             <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
@@ -100,14 +96,13 @@ export const FileManagerDialog = ({
             <SearchIcon aria-hidden="true" className="white-icon w-6 h-6" />
           </div>
         </div>
-        <CloseDialog
-          closeDialog={closeFileManagerDialog}
-          buttonExtraStyles="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-          svgCustomStyle={undefined}
+        <CloseWindowButton
+          onClose={onClose}
+          className="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
         />
       </div>
       <div className="flex">
-        <div className="flex w-1/5 h-[48vh] bg-ubuntu-navbar opacity-85 border-r border-r-solid border-r-black rounded-b-lg">
+        <div className="flex w-1/5 h-[48vh] bg-ubuntu-top-bar opacity-85 border-r border-r-solid border-r-black rounded-b-lg">
           <div className="flex flex-col w-full my-2 gap-y-3">
             {fileManagerIcons.map((icon, index) => (
               <div

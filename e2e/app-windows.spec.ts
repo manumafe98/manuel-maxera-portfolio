@@ -231,7 +231,7 @@ test.describe("Top bar", () => {
 
 test.describe("lazy loading", () => {
   const windowChunk =
-    /\/(UbuntuSoftwareDialog|FileManagerDialog|GmailDialog)-[^/]*\.js$/;
+    /\/(UbuntuSoftwareWindow|FileManagerWindow|GmailWindow)-[^/]*\.js$/;
 
   test("the initial page load requests no App window code and no EmailJS code, which load once the windows open and a message is sent", async ({
     page,
@@ -276,9 +276,9 @@ test.describe("lazy loading", () => {
     const loaded = scripts.map((s) => s.url.match(windowChunk)?.[1]);
     expect(loaded).toEqual(
       expect.arrayContaining([
-        "UbuntuSoftwareDialog",
-        "FileManagerDialog",
-        "GmailDialog",
+        "UbuntuSoftwareWindow",
+        "FileManagerWindow",
+        "GmailWindow",
       ]),
     );
     const allBodies = await Promise.all(scripts.map((s) => s.body));

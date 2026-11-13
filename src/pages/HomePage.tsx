@@ -1,26 +1,26 @@
-import { ActivitiesBar } from "@/components/ActivitiesBar";
 import { ApplicationsMenu } from "@/components/ApplicationsMenu";
 import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
 import { PhoneClaudeCode } from "@/components/claude-code/PhoneClaudeCode";
+import { TopBar } from "@/components/TopBar";
 import type { AppId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
-import type { DialogProps } from "@/types/dialog.types";
+import type { WindowProps } from "@/types/window.types";
 import { ElementType, lazy, Suspense, useState } from "react";
 
 // App windows load on first open, so they stay out of the initial bundle.
-const UbuntuSoftwareDialog = lazy(() =>
-  import("@/components/UbuntuSoftwareDialog").then((m) => ({
-    default: m.UbuntuSoftwareDialog,
+const UbuntuSoftwareWindow = lazy(() =>
+  import("@/components/UbuntuSoftwareWindow").then((m) => ({
+    default: m.UbuntuSoftwareWindow,
   })),
 );
-const FileManagerDialog = lazy(() =>
-  import("@/components/FileManagerDialog").then((m) => ({
-    default: m.FileManagerDialog,
+const FileManagerWindow = lazy(() =>
+  import("@/components/FileManagerWindow").then((m) => ({
+    default: m.FileManagerWindow,
   })),
 );
-const GmailDialog = lazy(() =>
-  import("@/components/GmailDialog").then((m) => ({
-    default: m.GmailDialog,
+const GmailWindow = lazy(() =>
+  import("@/components/GmailWindow").then((m) => ({
+    default: m.GmailWindow,
   })),
 );
 
@@ -35,9 +35,9 @@ const applicationForApp: Record<AppId, ApplicationName> = {
 };
 
 const lazyWindows = [
-  ["ubuntusoftware", UbuntuSoftwareDialog],
-  ["filemanager", FileManagerDialog],
-  ["gmail", GmailDialog],
+  ["ubuntusoftware", UbuntuSoftwareWindow],
+  ["filemanager", FileManagerWindow],
+  ["gmail", GmailWindow],
 ] as const;
 
 export const HomePage = () => {
@@ -57,7 +57,7 @@ export const HomePage = () => {
     );
   };
 
-  const windowProps = (name: ApplicationName): DialogProps => ({
+  const windowProps = (name: ApplicationName): WindowProps => ({
     open: stack.includes(name),
     zIndex: (stack.indexOf(name) + 1) * 10,
     onClose: () => setStack((current) => current.filter((app) => app !== name)),
@@ -66,8 +66,8 @@ export const HomePage = () => {
     },
   });
 
-  const handleDialogPopUp = (dialog: string | undefined) => {
-    if (dialog) bringToFront(dialog as ApplicationName);
+  const handleOpenWindow = (name: string | undefined) => {
+    if (name) bringToFront(name as ApplicationName);
   };
 
   const handleCalendarClick = (
@@ -102,11 +102,11 @@ export const HomePage = () => {
               </Suspense>
             ),
         )}
-        <ActivitiesBar openCalendar={handleCalendarClick} />
-        <ApplicationsMenu openIconDialog={handleDialogPopUp} />
+        <TopBar openCalendar={handleCalendarClick} />
+        <ApplicationsMenu openWindow={handleOpenWindow} />
         {calendarOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">
-            <div className="bg-ubuntu-navbar text-white rounded-xl p-5 shadow-lg border border-gray-600">
+            <div className="bg-ubuntu-top-bar text-white rounded-xl p-5 shadow-lg border border-gray-600">
               <CalendarDate value={calendarDay}>
                 <LeftArrowIcon
                   className="calendar-icon"
