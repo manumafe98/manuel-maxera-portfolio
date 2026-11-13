@@ -1,3 +1,4 @@
+import type { ToolTechSkill } from "@/content/portfolio";
 import {
   AmazonWebServicesIcon,
   AwsBedrockIcon,
@@ -40,10 +41,11 @@ import type { ComponentType, SVGProps } from "react";
 /**
  * The logo of each Tech skill in the Tech skill grid, by name. Logos come from
  * svgl (dark-theme variants where it has two); herdr's comes from its own
- * repo; tools svgl lacks get a monogram tile.
+ * repo; tools svgl lacks get a monogram tile. Keyed by every tool Tech skill,
+ * so a tool added to the content without a logo fails type-checking.
  */
 export const techSkillIcons: Record<
-  string,
+  ToolTechSkill,
   ComponentType<SVGProps<SVGSVGElement>>
 > = {
   Python: PythonIcon,
