@@ -1,0 +1,9 @@
+# Build settings live in the repo so deploy previews and production build
+# exactly like a local `npm run build`.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Vite 8 needs Node 20.19+ or 22.12+; Netlify's old default (18) can't run it.
+  NODE_VERSION = "22"
