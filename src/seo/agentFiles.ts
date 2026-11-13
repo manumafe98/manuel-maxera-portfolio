@@ -96,6 +96,29 @@ const sitemapXml = () =>
     "",
   ].join("\n");
 
+/** The Claude Code palette's background (claude-code.css). */
+const darkBackground = "#1f1e1d";
+
+const webManifest = () =>
+  JSON.stringify(
+    {
+      name: `${profile.name} | ${profile.title}`,
+      short_name: profile.name,
+      description: profile.shortSummary,
+      start_url: "/",
+      display: "standalone",
+      background_color: darkBackground,
+      theme_color: darkBackground,
+      icons: [
+        { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { src: "/icon-512.png", sizes: "512x512", type: "image/png" },
+        { src: "/favicon.svg", sizes: "any", type: "image/svg+xml" },
+      ],
+    },
+    null,
+    2,
+  );
+
 /**
  * The files for crawlers and agents, keyed by the path the site serves them
  * at, generated from the content module. scripts/prerender.js writes them
@@ -105,4 +128,5 @@ export const agentFiles = (): Record<string, string> => ({
   "llms.txt": llmsTxt(),
   "robots.txt": robotsTxt(),
   "sitemap.xml": sitemapXml(),
+  "site.webmanifest": webManifest(),
 });
