@@ -1,5 +1,6 @@
 import type { Project } from "@/content/portfolio";
-import { GithubIcon, WebLinkIcon } from "@/icons";
+import { GithubIcon } from "@/icons/GithubIcon";
+import { WebLinkIcon } from "@/icons/WebLinkIcon";
 import type { MouseEvent } from "react";
 import { initials } from "./initials";
 

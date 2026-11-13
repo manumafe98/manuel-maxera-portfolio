@@ -1,14 +1,12 @@
-import {
-  DocumentsIcon,
-  DownloadsIcon,
-  HomeIcon,
-  RecentIcon,
-  SearchIcon,
-  StarredIcon,
-  TechSkillsIcon,
-  UnfilledArrowLeftIcon,
-  UnfilledArrowRightIcon,
-} from "@/icons";
+import { DocumentsIcon } from "@/icons/DocumentsIcon";
+import { DownloadsIcon } from "@/icons/DownloadsIcon";
+import { HomeIcon } from "@/icons/HomeIcon";
+import { RecentIcon } from "@/icons/RecentIcon";
+import { SearchIcon } from "@/icons/SearchIcon";
+import { StarredIcon } from "@/icons/StarredIcon";
+import { TechSkillsIcon } from "@/icons/TechSkillsIcon";
+import { UnfilledArrowLeftIcon } from "@/icons/UnfilledArrowLeftIcon";
+import { UnfilledArrowRightIcon } from "@/icons/UnfilledArrowRightIcon";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
 import { TechSkillGrid } from "./TechSkillGrid";

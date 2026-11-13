@@ -3,7 +3,7 @@ import {
   type AppWindowId,
   type ClaudeProjectId,
 } from "@/content/portfolio";
-import { ClaudeCodeIcon } from "@/icons";
+import { ClaudeCodeIcon } from "@/icons/ClaudeCodeIcon";
 import type { WindowProps } from "@/types/window.types";
 import { useState } from "react";
 import { CloseWindowButton } from "../CloseWindowButton";

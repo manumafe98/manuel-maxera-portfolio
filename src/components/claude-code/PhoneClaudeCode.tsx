@@ -1,5 +1,5 @@
 import { claudeProjects, type ClaudeProjectId } from "@/content/portfolio";
-import { ClaudeCodeIcon } from "@/icons";
+import { ClaudeCodeIcon } from "@/icons/ClaudeCodeIcon";
 import { useEffect, useRef, useState } from "react";
 import { Chat } from "./Chat";
 import "./claude-code.css";

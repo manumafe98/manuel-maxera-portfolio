@@ -1,4 +1,4 @@
-import { XMarkIcon } from "@/icons";
+import { XMarkIcon } from "@/icons/XMarkIcon";
 
 interface CloseWindowButtonProps {
   onClose: () => void;

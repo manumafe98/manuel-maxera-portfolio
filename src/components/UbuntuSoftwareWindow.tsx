@@ -1,5 +1,5 @@
 import { projects } from "@/content/portfolio";
-import { SearchIcon } from "@/icons";
+import { SearchIcon } from "@/icons/SearchIcon";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
 import { ProjectCard } from "./ProjectCard";

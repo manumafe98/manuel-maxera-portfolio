@@ -1,7 +1,7 @@
 import file_manager from "@/assets/file_manager.webp";
 import software_store from "@/assets/software_store.webp";
 import type { AppWindowId } from "@/content/portfolio";
-import { GmailIcon } from "@/icons";
+import { GmailIcon } from "@/icons/GmailIcon";
 import type { WindowProps } from "@/types/window.types";
 import {
   lazy,

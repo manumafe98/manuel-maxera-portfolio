@@ -1,5 +1,5 @@
 import { ContactForm } from "@/contact/ContactForm";
-import { GmailIcon } from "@/icons";
+import { GmailIcon } from "@/icons/GmailIcon";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
 
