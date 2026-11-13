@@ -94,7 +94,7 @@ export const HomePage = () => {
             )
           );
         })}
-        <TopBar onToggleCalendar={toggleCalendar} />
+        <TopBar calendarOpen={calendarOpen} onToggleCalendar={toggleCalendar} />
         <ApplicationsMenu openWindow={bringToFront} />
         {calendarOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">

@@ -5,7 +5,7 @@ import {
   GithubIcon,
   LinkedinIcon,
 } from "@/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 /** How often the clock refreshes. It shows minutes, so a few seconds late is fine. */
 const CLOCK_TICK_MS = 15_000;
@@ -23,14 +23,42 @@ const clockText = (now: Date) =>
     .replace(",", "")
     .toLowerCase();
 
+/** The outline a Top bar button shows on keyboard focus. */
+const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ubuntu-orange";
+
 interface TopBarProps {
-  /** Called on every click of the clock; the Desktop opens or closes the calendar. */
+  /** Whether the Desktop shows the calendar, for the clock's aria-expanded. */
+  calendarOpen: boolean;
+  /** Called on every press of the clock; the Desktop opens or closes the calendar. */
   onToggleCalendar: () => void;
 }
 
-export const TopBar = ({ onToggleCalendar }: TopBarProps) => {
+export const TopBar = ({ calendarOpen, onToggleCalendar }: TopBarProps) => {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const socials = useRef<HTMLDivElement>(null);
+  const socialsButton = useRef<HTMLButtonElement>(null);
+  const menuId = useId();
+
+  // While the Socials menu is open, Escape or a press outside it closes it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+      socialsButton.current?.focus();
+    };
+    const closeOnOutsidePress = (event: PointerEvent) => {
+      if (!socials.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("pointerdown", closeOnOutsidePress);
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("pointerdown", closeOnOutsidePress);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const updateTime = () => setFormattedDate(clockText(new Date()));
@@ -56,34 +84,39 @@ export const TopBar = ({ onToggleCalendar }: TopBarProps) => {
     },
   ];
 
-  const handleMenuOpen = () => {
-    setMenuOpen(!menuOpen);
-  };
-
   return (
     // Above the App windows, whose z-index grows as they stack.
     <div className="bg-ubuntu-top-bar h-11 relative z-50">
       <div className="flex justify-between items-center mx-5">
         <span className="text-white select-none">Activities</span>
-        <div
-          className="rounded-3xl p-2 text-white hover:bg-gray-50/10 cursor-pointer select-none"
+        <button
+          type="button"
+          aria-expanded={calendarOpen}
+          className={`rounded-3xl p-2 text-white hover:bg-gray-50/10 cursor-pointer select-none ${focusRing}`}
           onClick={onToggleCalendar}
         >
           {formattedDate}
-        </div>
-        <div
-          className="rounded-3xl p-1.5 relative hover:bg-gray-50/10 my-1 cursor-pointer select-none"
-          onClick={handleMenuOpen}
-        >
-          <span className="flex items-center gap-2 text-white">
+        </button>
+        <div ref={socials} className="relative my-1">
+          <button
+            ref={socialsButton}
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls={menuOpen ? menuId : undefined}
+            className={`flex items-center gap-2 rounded-3xl p-1.5 text-white hover:bg-gray-50/10 cursor-pointer select-none ${focusRing}`}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
             Socials
             <FilledArrowDownIcon
               aria-hidden="true"
               className="white-icon w-5 h-5"
             />
-          </span>
+          </button>
           {menuOpen && (
-            <div className="absolute w-56 top-10 -left-32 mt-1 bg-ubuntu-top-bar rounded-lg shadow-lg border border-gray-600">
+            <div
+              id={menuId}
+              className="absolute w-56 top-10 -left-32 mt-1 bg-ubuntu-top-bar rounded-lg shadow-lg border border-gray-600"
+            >
               <ul className="py-1 px-1">
                 {menuLinks.map((link, index) => (
                   <li key={index}>
