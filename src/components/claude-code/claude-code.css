@@ -604,6 +604,9 @@
   background: rgb(255 255 255 / 0.07);
 }
 
+/* `.cc-answer ul` would otherwise give these disc bullets, and in a flex
+   row the GitHub bullet lands on the end of "LinkedIn". */
+.cc-answer ul.cc-links,
 .cc-links {
   display: flex;
   gap: 12px;
