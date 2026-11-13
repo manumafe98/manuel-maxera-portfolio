@@ -55,6 +55,8 @@ export const ProjectCard = ({
         <img
           src={project.logo.src}
           alt={project.logo.alt}
+          width={project.logo.width}
+          height={project.logo.height}
           className={style.logo}
           loading="lazy"
         />
