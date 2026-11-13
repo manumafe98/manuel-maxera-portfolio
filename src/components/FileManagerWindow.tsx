@@ -117,7 +117,7 @@ export const FileManagerWindow = ({
             ))}
           </div>
         </div>
-        <div className="flex-1 h-[48vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-50/15 scrollbar-track-transparent">
+        <div className="flex-1 h-[48vh] overflow-y-auto thin-scrollbar">
           <TechSkillGrid frame="window" />
         </div>
       </div>
