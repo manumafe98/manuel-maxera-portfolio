@@ -1,11 +1,12 @@
 import { profile } from "@/content/portfolio";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
 const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
-/** How long a success or error notice stays on screen. */
-const NOTICE_MS = 6000;
+/** A field of the contact form. */
+export type ContactField = "email" | "message";
 
+/** The result of the last send, shown under the Send button. */
 export interface ContactNotice {
   text: string;
   success: boolean;
@@ -22,66 +23,85 @@ const sendWithEmailJs = async (fromEmail: string, message: string) => {
   );
 };
 
+/** The error of each invalid field, in form order. */
+const fieldErrors = (senderEmail: string, message: string) => {
+  const errors: Partial<Record<ContactField, string>> = {};
+  if (!validEmailRegex.test(senderEmail.trim())) {
+    errors.email = "Enter a valid email address, like name@example.com.";
+  }
+  if (!message.trim()) errors.message = "Write a message before sending.";
+  return errors;
+};
+
 /**
- * The contact form shared by the Gmail window and the phone contact card:
- * its fields, validation, EmailJS sending and the notice it reports.
+ * The contact form's state: its fields, validation, EmailJS sending and the
+ * notice it reports. On a validation error it focuses the first invalid field.
  */
 export const useContactForm = () => {
   const [senderEmail, setSenderEmail] = useState("");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<ContactField, string>>>(
+    {},
+  );
   const [notice, setNotice] = useState<ContactNotice | null>(null);
-  const hideNotice = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => () => clearTimeout(hideNotice.current), []);
-
-  const notify = (text: string, success: boolean) => {
-    setNotice({ text, success });
-    clearTimeout(hideNotice.current);
-    hideNotice.current = setTimeout(() => setNotice(null), NOTICE_MS);
-  };
-
-  const validationError = () => {
-    if (!validEmailRegex.test(senderEmail.trim())) {
-      return "Enter a valid email address, like name@example.com.";
-    }
-    if (!message.trim()) return "Write a message before sending.";
-    return null;
-  };
+  const emailRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
 
   const sendEmail = async () => {
-    const error = validationError();
-    if (error) {
-      notify(error, false);
-      return;
-    }
+    const found = fieldErrors(senderEmail, message);
+    setErrors(found);
+    setNotice(null);
+    if (found.email) return emailRef.current?.focus();
+    if (found.message) return messageRef.current?.focus();
 
     setSending(true);
     try {
       await sendWithEmailJs(senderEmail.trim(), message);
-      notify("Message sent. Manuel will reply to your email.", true);
+      setNotice({
+        text: "Message sent. Manuel will reply to your email.",
+        success: true,
+      });
     } catch (error) {
       console.error("EmailJS send failed", error);
-      notify(
-        `Your message couldn't be sent. Try again, or email ${profile.email}.`,
-        false,
-      );
+      setNotice({
+        text: `Your message couldn't be sent. Try again, or email ${profile.email}.`,
+        success: false,
+      });
     } finally {
       setSending(false);
     }
   };
 
+  /** Editing a field clears its error. */
+  const clearError = (field: ContactField) =>
+    setErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+
   return {
     senderEmail,
-    setSenderEmail,
+    setSenderEmail: (value: string) => {
+      setSenderEmail(value);
+      clearError("email");
+    },
     message,
-    setMessage,
+    setMessage: (value: string) => {
+      setMessage(value);
+      clearError("message");
+    },
     sending,
+    errors,
     notice,
+    emailRef,
+    messageRef,
     /** The form's submit handler. */
     onSubmit: (event: FormEvent) => {
       event.preventDefault();
-      sendEmail();
+      void sendEmail();
     },
   };
 };

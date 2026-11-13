@@ -310,29 +310,41 @@ test.describe("contact form", () => {
     await gmail.getByRole("button", { name: "Send" }).click();
   };
 
-  test("an invalid email address is rejected with a clear message and nothing is sent", async ({
+  test("an invalid email address focuses the email field, marks it aria-invalid and describes it with the error, and nothing is sent", async ({
     page,
   }) => {
     await routeEmailJs(page, 200);
+    const email = appWindow(page, "Gmail").getByRole("textbox", {
+      name: "Your email",
+    });
 
     await fill(page, "not-an-email", "Hello Manuel");
 
-    await expect(appWindow(page, "Gmail").getByRole("alert")).toHaveText(
+    await expect(email).toBeFocused();
+    await expect(email).toHaveAttribute("aria-invalid", "true");
+    await expect(email).toHaveAccessibleDescription(
       "Enter a valid email address, like name@example.com.",
     );
     expect(sends).toEqual([]);
   });
 
-  test("an empty message is rejected with a clear message and nothing is sent", async ({
+  test("an empty message focuses the message field, marks it aria-invalid and describes it with the error, and nothing is sent", async ({
     page,
   }) => {
     await routeEmailJs(page, 200);
+    const gmail = appWindow(page, "Gmail");
+    const message = gmail.getByRole("textbox", { name: "Message" });
 
     await fill(page, "recruiter@example.com", "   ");
 
-    await expect(appWindow(page, "Gmail").getByRole("alert")).toHaveText(
+    await expect(message).toBeFocused();
+    await expect(message).toHaveAttribute("aria-invalid", "true");
+    await expect(message).toHaveAccessibleDescription(
       "Write a message before sending.",
     );
+    await expect(
+      gmail.getByRole("textbox", { name: "Your email" }),
+    ).not.toHaveAttribute("aria-invalid", "true");
     expect(sends).toEqual([]);
   });
 
