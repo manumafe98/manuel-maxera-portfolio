@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("Claude Code opens on load with the Welcome Chat active and its intro, chip and scripted-reply placeholder", async ({
+test("Claude Code opens on load with the Welcome Chat active, its intro saying replies are scripted, its chip and a short placeholder", async ({
   page,
 }) => {
   const welcome = chat(page, "Getting started with Manuel's portfolio");
@@ -32,9 +32,9 @@ test("Claude Code opens on load with the Welcome Chat active and its intro, chip
   ).toBeVisible();
   await expect(
     welcome.getByRole("combobox", { name: "Message" }),
-  ).toHaveAttribute(
-    "placeholder",
-    "Type / for commands. Replies are scripted, no live model.",
+  ).toHaveAttribute("placeholder", "Type / for commands");
+  await expect(welcome).toContainText(
+    "Replies here are scripted, with no live model behind them.",
   );
 });
 

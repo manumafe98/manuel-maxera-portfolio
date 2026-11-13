@@ -243,7 +243,7 @@ export const Chat = ({
               value={input}
               onChange={(event) => changeInput(event.target.value)}
               onKeyDown={onMenuKey}
-              placeholder="Type / for commands. Replies are scripted, no live model."
+              placeholder="Type / for commands"
             />
             <div className="cc-composer-row">
               <span className="cc-icon-btn" aria-hidden="true">

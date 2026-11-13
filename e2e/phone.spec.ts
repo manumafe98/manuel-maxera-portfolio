@@ -496,3 +496,26 @@ test("on a phone a reply in the Welcome Chat still scrolls the Chat down to show
     welcome.getByRole("link", { name: /Manuel_Maxera_Resume\.pdf/ }),
   ).toBeInViewport();
 });
+
+test("on a phone the input's placeholder fits the input without being cut off", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const input = chat(page, WELCOME).getByRole("combobox", { name: "Message" });
+
+  // An input's scrollWidth ignores its placeholder, so measure the text.
+  const fit = await input.evaluate((element: HTMLInputElement) => {
+    const style = getComputedStyle(element);
+    const context = document.createElement("canvas").getContext("2d")!;
+    context.font = style.font;
+    const room =
+      element.clientWidth -
+      parseFloat(style.paddingLeft) -
+      parseFloat(style.paddingRight);
+    return {
+      textWidth: context.measureText(element.placeholder).width,
+      room,
+    };
+  });
+  expect(fit.textWidth).toBeLessThanOrEqual(fit.room);
+});

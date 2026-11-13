@@ -377,6 +377,8 @@ export const claudeProjects: ClaudeProject[] = [
     title: "Getting started with Manuel's portfolio",
     intro: `Hi! This is **${profile.name}**'s portfolio, running as a Claude Code session. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
 
+Replies here are scripted, with no live model behind them.
+
 Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar (the ☰ menu on phones) or from the links below, run a Command from the chips, or type \`/\` to start.`,
     commands: [openContactCommand, downloadCvCommand, socialsCommand],
     chips: [openContactCommand.name, downloadCvCommand.name],
