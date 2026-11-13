@@ -463,3 +463,36 @@ test("the menu button, the drawer's Chats, the chips, the input and Send are at 
     expect((await recent.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
 });
+
+/** The scrolling message list of a Chat. */
+const messageList = (page: Page, title: string) =>
+  chat(page, title).locator(".cc-messages");
+
+test("on a short phone screen the Welcome Chat opens scrolled to its first line, though its intro is taller than the Chat", async ({
+  page,
+}) => {
+  // Short enough that the Welcome intro overflows the Chat.
+  await page.setViewportSize({ width: 412, height: 480 });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+
+  const scroll = await messageList(page, WELCOME).evaluate((list) => ({
+    top: list.scrollTop,
+    overflows: list.scrollHeight > list.clientHeight,
+  }));
+  expect(scroll).toEqual({ top: 0, overflows: true });
+});
+
+test("on a phone a reply in the Welcome Chat still scrolls the Chat down to show it", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const welcome = chat(page, WELCOME);
+
+  await welcome.getByRole("button", { name: "/download-cv" }).click();
+
+  await expect(
+    welcome.getByRole("link", { name: /Manuel_Maxera_Resume\.pdf/ }),
+  ).toBeInViewport();
+});

@@ -57,7 +57,9 @@ export const Chat = ({
 
   useEffect(() => () => streamRef.current?.stop(), []);
 
+  // Follow the latest message, but open at the intro's first line.
   useEffect(() => {
+    if (messages.length === 0) return;
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages]);
 
