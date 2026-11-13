@@ -7,6 +7,22 @@ import {
 } from "@/icons";
 import { useEffect, useState } from "react";
 
+/** How often the clock refreshes. It shows minutes, so a few seconds late is fine. */
+const CLOCK_TICK_MS = 15_000;
+
+/** The clock's text, such as "nov 13 17:45". */
+const clockText = (now: Date) =>
+  now
+    .toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    })
+    .replace(",", "")
+    .toLowerCase();
+
 interface TopBarProps {
   openCalendar: (isCalendarOpen: boolean, calendarValue: string) => void;
 }
@@ -17,33 +33,9 @@ export const TopBar = ({ openCalendar }: TopBarProps) => {
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const months = [
-        "jan",
-        "feb",
-        "mar",
-        "apr",
-        "may",
-        "jun",
-        "jul",
-        "aug",
-        "sep",
-        "oct",
-        "nov",
-        "dec",
-      ];
-      const month = months[now.getMonth()];
-      const day = now.getDate().toString().padStart(2, "0");
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-
-      setFormattedDate(`${month} ${day} ${hours}:${minutes}`);
-    };
-
+    const updateTime = () => setFormattedDate(clockText(new Date()));
     updateTime();
-    const timer = setInterval(updateTime, 1000);
-
+    const timer = setInterval(updateTime, CLOCK_TICK_MS);
     return () => clearInterval(timer);
   }, []);
 
