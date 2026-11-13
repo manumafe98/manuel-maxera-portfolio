@@ -576,3 +576,24 @@ test("on a phone no Chat intro mentions windows or the sidebar, and each names e
     expect(new Set(commands).size, title).toBe(commands.length);
   }
 });
+
+test("on a phone the long lines of a tool result wrap instead of scrolling sideways", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await menuButton(page).click();
+  await recents(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const aboutMe = chat(page, "Who is Manuel Maxera?");
+  await aboutMe.getByRole("button", { name: "/tldr" }).click();
+  const result = aboutMe.locator(".cc-tool-body");
+  // get_profile's shortSummary is one JSON line far wider than a phone.
+  await expect(result).toContainText("cloud infrastructure.");
+
+  const size = await result.evaluate((element) => ({
+    scrollWidth: element.scrollWidth,
+    clientWidth: element.clientWidth,
+  }));
+  expect(size.scrollWidth).toBeLessThanOrEqual(size.clientWidth);
+});

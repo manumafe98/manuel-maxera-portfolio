@@ -471,8 +471,8 @@
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--cc-muted);
-  white-space: pre;
-  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* bottom: chips and composer */
