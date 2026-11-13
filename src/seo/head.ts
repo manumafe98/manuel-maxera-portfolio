@@ -92,5 +92,26 @@ const heads: Record<PageId, () => string[]> = {
   ],
 };
 
+/**
+ * Cloudflare Web Analytics: one deferred script, no cookies. The token's JSON
+ * is attribute-escaped; the browser decodes it before the beacon reads it.
+ */
+const analyticsBeacon = (token: string) =>
+  `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon="${escapeHtml(
+    JSON.stringify({ token }),
+  )}"></script>`;
+
+export interface HeadOptions {
+  /** The Cloudflare Web Analytics token. Without it, no beacon is added. */
+  analyticsToken?: string;
+}
+
 /** The tags for a page's <head>, generated from the content module. */
-export const headFor = (page: PageId): string => heads[page]().join("\n    ");
+export const headFor = (
+  page: PageId,
+  { analyticsToken }: HeadOptions = {},
+): string =>
+  [
+    ...heads[page](),
+    ...(analyticsToken ? [analyticsBeacon(analyticsToken)] : []),
+  ].join("\n    ");
