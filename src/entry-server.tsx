@@ -8,6 +8,8 @@ import { pages, type PageId } from "./pages/pages";
 import { headFor } from "./seo/head";
 import { NoscriptContent } from "./seo/NoscriptContent";
 
+export { agentFiles } from "./seo/agentFiles";
+
 const toHtml = async (node: ReactNode) => {
   const { prelude } = await prerender(node);
   return new Response(prelude).text();

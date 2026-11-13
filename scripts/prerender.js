@@ -17,7 +17,7 @@ const outputFiles = {
   "not-found": "404.html",
 };
 
-const { render } = await import(
+const { agentFiles, render } = await import(
   pathToFileURL(path.join(serverBuild, "entry-server.js")).href
 );
 const template = await readFile(path.join(dist, "index.html"), "utf8");
@@ -40,6 +40,11 @@ for (const [page, file] of Object.entries(outputFiles)) {
   );
   await writeFile(path.join(dist, file), output);
   console.log(`pre-rendered ${page} -> dist/${file}`);
+}
+
+for (const [file, content] of Object.entries(agentFiles())) {
+  await writeFile(path.join(dist, file), content);
+  console.log(`generated dist/${file}`);
 }
 
 await rm(serverBuild, { recursive: true, force: true });
