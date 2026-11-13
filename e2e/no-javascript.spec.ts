@@ -82,6 +82,27 @@ test.describe("with JavaScript disabled", () => {
     ).toHaveAttribute("href", "mailto:manumaxerapro@gmail.com");
   });
 
+  test("/ HTML, read with or without its noscript block, starts with an H1 and never skips a heading level going deeper", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    // Parsers that treat <noscript> as text only see the headings in #root.
+    for (const scope of ["body", "#root"]) {
+      const levels = await page
+        .locator(scope)
+        .locator("h1, h2, h3, h4, h5, h6")
+        .evaluateAll((headings) =>
+          headings.map((heading) => Number(heading.tagName[1])),
+        );
+
+      expect(levels[0], scope).toBe(1);
+      const skips = levels.filter(
+        (level, i) => i > 0 && level > levels[i - 1] + 1,
+      );
+      expect(skips, `${scope}: ${levels.join(" ")}`).toEqual([]);
+    }
+  });
+
   test("/ HTML has one title, a description, a canonical URL and lang=en", async ({
     page,
   }) => {

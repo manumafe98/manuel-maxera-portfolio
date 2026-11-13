@@ -45,10 +45,12 @@ export const ClaudeCodeWindow = ({
       className="window-frame cc-window"
     >
       <header className="cc-titlebar">
-        <div className="cc-title">
+        {/* The page's first heading in the raw HTML: the Chat titles below
+            are H2s under it, so heading levels stay sequential. */}
+        <h1 className="cc-title">
           <ClaudeCodeIcon width={16} height={16} aria-hidden="true" />
           Claude Code
-        </div>
+        </h1>
         <CloseWindowButton
           onClose={onClose}
           className="bg-gray-50/10 hover:bg-gray-50/20"
