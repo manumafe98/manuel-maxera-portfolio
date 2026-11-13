@@ -58,6 +58,9 @@ export const useContactForm = () => {
     setSending(true);
     try {
       await sendWithEmailJs(senderEmail.trim(), message);
+      // Keep the email for a follow-up, but clear the message so a second
+      // click can't send it twice.
+      setMessage("");
       setNotice({
         text: "Message sent. Manuel will reply to your email.",
         success: true,

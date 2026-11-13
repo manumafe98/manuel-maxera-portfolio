@@ -367,6 +367,24 @@ test.describe("contact card", () => {
     });
   });
 
+  test("after a successful send the contact card's message field is empty and its email field keeps the address", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await send(card, "recruiter@example.com", "Let's talk about a role.");
+
+    await expect(card.getByRole("status")).toHaveText(
+      "Message sent. Manuel will reply to your email.",
+    );
+    await expect(card.getByRole("textbox", { name: "Message" })).toHaveValue(
+      "",
+    );
+    await expect(card.getByRole("textbox", { name: "Your email" })).toHaveValue(
+      "recruiter@example.com",
+    );
+  });
+
   test("the contact card reports failure when the EmailJS request fails", async ({
     page,
   }) => {

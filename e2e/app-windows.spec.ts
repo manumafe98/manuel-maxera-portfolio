@@ -365,6 +365,25 @@ test.describe("contact form", () => {
     });
   });
 
+  test("after a successful send the message field is empty and the email field keeps the address", async ({
+    page,
+  }) => {
+    await routeEmailJs(page, 200);
+    const gmail = appWindow(page, "Gmail");
+
+    await fill(page, "recruiter@example.com", "Let's talk about a role.");
+
+    await expect(gmail.getByRole("status")).toHaveText(
+      "Message sent. Manuel will reply to your email.",
+    );
+    await expect(gmail.getByRole("textbox", { name: "Message" })).toHaveValue(
+      "",
+    );
+    await expect(
+      gmail.getByRole("textbox", { name: "Your email" }),
+    ).toHaveValue("recruiter@example.com");
+  });
+
   test("a failed EmailJS request makes the form report failure", async ({
     page,
   }) => {
@@ -376,6 +395,18 @@ test.describe("contact form", () => {
       "Your message couldn't be sent. Try again, or email manumaxerapro@gmail.com.",
     );
     expect(sends).toHaveLength(1);
+  });
+
+  test("the Gmail window shows visible Your email and Message labels and a mailto link to Manuel's address", async ({
+    page,
+  }) => {
+    const gmail = appWindow(page, "Gmail");
+
+    await expect(gmail.getByText("Your email", { exact: true })).toBeVisible();
+    await expect(gmail.getByText("Message", { exact: true })).toBeVisible();
+    await expect(
+      gmail.getByRole("link", { name: "Email manumaxerapro@gmail.com" }),
+    ).toHaveAttribute("href", "mailto:manumaxerapro@gmail.com");
   });
 
   test("the form shows the privacy note with a link to /privacy", async ({
