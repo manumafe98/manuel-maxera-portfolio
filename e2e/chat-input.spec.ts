@@ -123,7 +123,7 @@ test.describe("the / list", () => {
   });
 });
 
-test("/tldr typed in the experience Chat names the about-me Claude project, and its link opens that Claude project's Chat", async ({
+test('/tldr typed in the experience Chat names the "Who is Manuel Maxera?" Chat and the about-me Claude project, and its button opens that Chat', async ({
   page,
 }) => {
   await openChat(page, "Manuel's career timeline");
@@ -135,9 +135,11 @@ test("/tldr typed in the experience Chat names the about-me Claude project, and 
     name: "Reply",
   });
   await expect(reply).toContainText(
-    "/tldr lives in the about-me Claude project",
+    "/tldr lives in Who is Manuel Maxera? (about-me)",
   );
-  await reply.getByRole("button", { name: "Open about-me" }).click();
+  await reply
+    .getByRole("button", { name: "Open Who is Manuel Maxera?" })
+    .click();
 
   await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
   await expect(chat(page, "Manuel's career timeline")).toBeHidden();
@@ -196,20 +198,30 @@ for (const title of [
   });
 }
 
-test("while a reply streams, neither the chips, the input nor the / list can start another Command", async ({
+test("while a reply streams, the input takes typing but neither Enter, Send, the chips nor the / list start a second reply, and the typed text waits in the input", async ({
   page,
 }) => {
   await openChat(page, "Who is Manuel Maxera?");
   const aboutMe = chat(page, "Who is Manuel Maxera?");
   const input = commandInput(page, "Who is Manuel Maxera?");
-  await input.fill("/");
-  await commandList(page, "Who is Manuel Maxera?")
-    .getByRole("option", { name: /\/about-me/ })
-    .click();
+  const reply = aboutMe.getByRole("article", { name: "Reply" });
+  await aboutMe.getByRole("button", { name: "/about-me" }).click();
+  await expect(reply).toHaveAttribute("aria-busy", "true");
 
-  await expect(input).toBeDisabled();
+  await input.fill("/tldr");
+  await input.press("Enter");
+
+  await expect(input).toHaveValue("/tldr");
   await expect(commandList(page, "Who is Manuel Maxera?")).toBeHidden();
+  await expect(aboutMe.getByRole("button", { name: "Send" })).toBeDisabled();
   await expect(aboutMe.getByRole("button", { name: "/tldr" })).toBeDisabled();
+  await expect(reply).toHaveAttribute("aria-busy", "true");
   await expect(aboutMe).toContainText("Italian: Elementary (A2)");
-  await expect(aboutMe.getByRole("article", { name: "Reply" })).toHaveCount(1);
+  await expect(reply).toHaveAttribute("aria-busy", "false");
+  await expect(reply).toHaveCount(1);
+  await expect(input).toHaveValue("/tldr");
+
+  await input.press("Enter");
+
+  await expect(reply).toHaveCount(2);
 });

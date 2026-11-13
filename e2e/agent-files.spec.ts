@@ -30,7 +30,7 @@ test("/sitemap.xml is XML listing the absolute URLs of / and /privacy", async ({
   expect(locations).toEqual([SITE_URL, `${SITE_URL}privacy`]);
 });
 
-test("/llms.txt is markdown in llms.txt form with Manuel's name, current role, every Project and his contact links", async ({
+test("/llms.txt is markdown in llms.txt form with Manuel's name, current role, every Project and his contact links, describing the site as the Claude Code app and not a session", async ({
   request,
 }) => {
   const response = await request.get("/llms.txt");
@@ -53,6 +53,11 @@ test("/llms.txt is markdown in llms.txt form with Manuel's name, current role, e
   ]) {
     expect(body).toMatch(new RegExp(`^### ${project}$`, "m"));
   }
+  const portfolioLink = body
+    .split(/\r?\n/)
+    .find((line) => line.startsWith("- [Portfolio]("));
+  expect(portfolioLink).toMatch(/Claude Code app/);
+  expect(portfolioLink).not.toMatch(/session/i);
   expect(body).toContain("(https://github.com/manumafe98/HoytsX)");
   expect(body).toContain("(https://www.linkedin.com/in/manuel-maxera/)");
   expect(body).toContain("manumaxerapro@gmail.com");

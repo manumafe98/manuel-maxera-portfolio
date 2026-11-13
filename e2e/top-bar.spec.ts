@@ -34,7 +34,7 @@ const clockButton = (page: Page) =>
   page.getByRole("button", { name: /^[a-z]{3} \d{2} \d{2}:\d{2}$/ });
 
 const socialsButton = (page: Page) =>
-  page.getByRole("button", { name: "Socials" });
+  page.getByRole("button", { name: "Socials", exact: true });
 
 test("the Top bar clock is a button: Enter opens the calendar with aria-expanded true and Space closes it with aria-expanded false", async ({
   page,

@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
   await page.goto("/");
 });
 
-test("Claude Code opens on load with the Welcome Chat active and its intro, chip and scripted-reply placeholder", async ({
+test("Claude Code opens on load with the Welcome Chat active, its intro saying replies are scripted, its chip and a short placeholder", async ({
   page,
 }) => {
   const welcome = chat(page, "Getting started with Manuel's portfolio");
@@ -32,9 +32,9 @@ test("Claude Code opens on load with the Welcome Chat active and its intro, chip
   ).toBeVisible();
   await expect(
     welcome.getByRole("combobox", { name: "Message" }),
-  ).toHaveAttribute(
-    "placeholder",
-    "Type / for commands. Replies are scripted, no live model.",
+  ).toHaveAttribute("placeholder", "Type / for commands");
+  await expect(welcome).toContainText(
+    "Replies here are scripted, with no live model behind them.",
   );
 });
 
@@ -65,7 +65,7 @@ test("the about-me link in the Welcome intro opens the about-me Chat and marks i
   ).toHaveAttribute("aria-current", "page");
 });
 
-test("the /tldr chip locks the input, shows thinking that folds into 'Thought for', a get_profile tool call, then the short summary", async ({
+test("the /tldr chip keeps the input editable while it shows thinking that folds into 'Thought for', a get_profile tool call, then the short summary", async ({
   page,
 }) => {
   await sidebar(page)
@@ -76,7 +76,12 @@ test("the /tldr chip locks the input, shows thinking that folds into 'Thought fo
 
   await aboutMe.getByRole("button", { name: "/tldr" }).click();
 
-  await expect(input).toBeDisabled();
+  await expect(aboutMe.getByRole("article", { name: "Reply" })).toHaveAttribute(
+    "aria-busy",
+    "true",
+  );
+  // Checked once, not retried, so it can't pass by waiting for the reply to end.
+  expect(await input.isEditable()).toBe(true);
   await expect(aboutMe.getByText(/^Thought for \d+s$/)).toBeVisible();
   await expect(aboutMe).toContainText(
     'mcp__portfolio__get_profile({ format: "short" })',
@@ -84,7 +89,6 @@ test("the /tldr chip locks the input, shows thinking that folds into 'Thought fo
   await expect(aboutMe).toContainText(
     "Background in full-stack product engineering and cloud infrastructure.",
   );
-  await expect(input).toBeEnabled();
 });
 
 test("typing /about-me and pressing Enter streams the full background", async ({
@@ -120,9 +124,10 @@ test("clicking a reply while it streams shows its full answer at once", async ({
   await expect(aboutMe).toContainText("Italian: Elementary (A2)", {
     timeout: 1000,
   });
-  await expect(
-    aboutMe.getByRole("combobox", { name: "Message" }),
-  ).toBeEnabled();
+  await expect(aboutMe.getByRole("article", { name: "Reply" })).toHaveAttribute(
+    "aria-busy",
+    "false",
+  );
 });
 
 test("/download-cv in the Welcome Chat shows a download card that downloads the CV PDF", async ({
@@ -322,4 +327,63 @@ test.describe("sidebar", () => {
     ).toBeHidden();
     await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
   });
+});
+
+test("on desktop the Welcome intro points to the sidebar, not the phone's ☰ menu, and never says session", async ({
+  page,
+}) => {
+  const welcome = chat(page, "Getting started with Manuel's portfolio");
+
+  await expect(welcome.getByText(/in the sidebar/)).toBeVisible();
+  await expect(welcome.getByText(/☰/)).toBeHidden();
+  expect(await welcome.innerText()).not.toMatch(/session/i);
+});
+
+test("the /socials chip in the Welcome Chat links LinkedIn and GitHub", async ({
+  page,
+}) => {
+  const welcome = chat(page, "Getting started with Manuel's portfolio");
+
+  await welcome.getByRole("button", { name: "/socials" }).click();
+
+  const reply = welcome.getByRole("article", { name: "Reply" });
+  await expect(reply.getByRole("link", { name: "LinkedIn" })).toBeVisible();
+  await expect(reply.getByRole("link", { name: "GitHub" })).toBeVisible();
+});
+
+test("the sidebar's decorative New, Search, Artifacts and Customize are muted, show the default cursor and can't be focused", async ({
+  page,
+}) => {
+  const nav = claudeCode(page).locator(".cc-nav");
+  for (const name of ["New", "Search", "Artifacts", "Customize"]) {
+    const item = nav.getByText(name, { exact: true });
+    const look = await item.evaluate((element) => ({
+      color: getComputedStyle(element).color,
+      cursor: getComputedStyle(element).cursor,
+      focusable: element.matches("a, button, input, [tabindex]"),
+    }));
+    // rgb(155, 151, 143) is the palette's muted text, #9b978f.
+    expect(look, name).toEqual({
+      color: "rgb(155, 151, 143)",
+      cursor: "default",
+      focusable: false,
+    });
+  }
+});
+
+test("the About Me Chat's footer names the repository manuel-maxera-portfolio, and its Opus 5.5 and Auto chips have no chevrons", async ({
+  page,
+}) => {
+  await sidebar(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const chips = chat(page, "Who is Manuel Maxera?").locator(".cc-foot-chip");
+
+  await expect(chips).toHaveText([
+    "manuel-maxera-portfolio",
+    "Opus 5.5",
+    "Auto",
+  ]);
+  await expect(chips.nth(1).locator("svg")).toHaveCount(0);
+  await expect(chips.nth(2).locator("svg")).toHaveCount(0);
 });

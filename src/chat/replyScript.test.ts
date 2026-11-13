@@ -334,7 +334,7 @@ describe("Skills shown as cards (phones)", () => {
       command: "/open-projects",
       skill: "open-projects",
       app: "ubuntu-software",
-      summary: "Here are Manuel's 5 Projects, each linking to its code:",
+      summary: "Here are Manuel's 5 projects, each linking to its code:",
     },
     {
       projectId: "skills",
@@ -425,25 +425,29 @@ describe("a Command from another Claude project", () => {
       projectId: "experience",
       command: "/tldr",
       ownerId: "about-me",
+      ownerTitle: "Who is Manuel Maxera?",
     },
     {
       projectId: "about-me",
       command: "/open-projects",
       ownerId: "projects",
+      ownerTitle: "Side projects showcase",
     },
     {
       projectId: "about-me",
       command: "/open-contact",
       ownerId: "contact",
+      ownerTitle: "Reaching out to Manuel",
     },
     {
       projectId: "skills",
       command: "  /SHOW-LATEST-EXPERIENCE ",
       ownerId: "experience",
+      ownerTitle: "Manuel's career timeline",
     },
   ])(
-    "$command in $projectId runs nothing and answers that it lives in the $ownerId Claude project, with a link to open it",
-    async ({ projectId, command, ownerId }) => {
+    '$command in $projectId runs nothing and answers that it lives in the "$ownerTitle" Chat of the $ownerId Claude project, with a link to open it',
+    async ({ projectId, command, ownerId, ownerTitle }) => {
       const events = await runToEnd(projectId, command);
 
       expect(phases(events)).toEqual([
@@ -453,7 +457,9 @@ describe("a Command from another Claude project", () => {
         "answer-block",
         "done",
       ]);
-      expect(answerText(events)).toContain(`**${ownerId}** Claude project`);
+      expect(answerText(events)).toContain(
+        `lives in **${ownerTitle}** (\`${ownerId}\`)`,
+      );
       expect(events[events.length - 2]).toEqual({
         type: "answer-block",
         block: {

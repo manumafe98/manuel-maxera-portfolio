@@ -7,7 +7,6 @@ const lineIcons = {
   chevron: "M9 6l6 6-6 6",
   folder:
     "M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
-  down: "M6 9l6 6 6-6",
   up: "M12 19V5M5 12l7-7 7 7",
   file: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5",
   download: "M12 4v11M7 10l5 5 5-5M5 20h14",

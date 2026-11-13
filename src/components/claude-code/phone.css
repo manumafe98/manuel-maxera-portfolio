@@ -62,7 +62,8 @@
   display: flex;
 }
 .ph-shell .cc-chat-head,
-.ph-shell .cc-footer {
+.ph-shell .cc-footer,
+.ph-shell .cc-desktop-only {
   display: none;
 }
 .ph-shell .cc-messages {
@@ -71,6 +72,9 @@
 }
 .ph-shell .cc-answer {
   font-size: 15px;
+}
+.ph-shell .cc-phone-only {
+  display: inline;
 }
 .ph-shell .cc-user-msg {
   font-size: 14px;
@@ -85,12 +89,13 @@
   scrollbar-width: none;
 }
 .ph-shell .cc-chip {
+  display: inline-flex;
+  align-items: center;
   flex: none;
   min-height: 44px;
   padding: 0 14px;
   font-size: 13px;
 }
-.ph-shell .cc-link,
 .ph-shell .cc-thought,
 .ph-shell .cc-tool-head {
   min-height: 44px;

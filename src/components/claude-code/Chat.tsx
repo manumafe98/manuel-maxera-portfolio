@@ -7,6 +7,7 @@ import {
 } from "@/chat/replyState";
 import {
   claudeProjects,
+  repository,
   type AppWindowId,
   type ClaudeProject,
   type ClaudeProjectId,
@@ -57,7 +58,9 @@ export const Chat = ({
 
   useEffect(() => () => streamRef.current?.stop(), []);
 
+  // Follow the latest message, but open at the intro's first line.
   useEffect(() => {
+    if (messages.length === 0) return;
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages]);
 
@@ -134,6 +137,16 @@ export const Chat = ({
         <div className="cc-column">
           <div className="cc-answer">
             <Markdown text={project.intro} />
+            {project.layoutHint && (
+              <div className="cc-block">
+                <span className="cc-desktop-only">
+                  {project.layoutHint.desktop}
+                </span>
+                <span className="cc-phone-only">
+                  {project.layoutHint.phone}
+                </span>
+              </div>
+            )}
             <div className="cc-block">
               <div>Commands I understand:</div>
               <ul>
@@ -147,11 +160,11 @@ export const Chat = ({
             {links.length > 0 && (
               <div className="cc-block">
                 <div>Claude projects:</div>
-                <ul>
+                <ul className="cc-project-chips">
                   {links.map((link) => (
                     <li key={link.id}>
                       <button
-                        className="cc-link"
+                        className="cc-chip"
                         onClick={() => onOpenClaudeProject(link.id)}
                       >
                         {link.id}
@@ -161,9 +174,6 @@ export const Chat = ({
                 </ul>
               </div>
             )}
-            <div className="cc-block">
-              Click a chip below or type a Command.
-            </div>
           </div>
           {messages.map((message) =>
             message.kind === "user" ? (
@@ -239,10 +249,9 @@ export const Chat = ({
               }
               autoComplete="off"
               value={input}
-              disabled={streaming}
               onChange={(event) => changeInput(event.target.value)}
               onKeyDown={onMenuKey}
-              placeholder="Type / for commands. Replies are scripted, no live model."
+              placeholder="Type / for commands"
             />
             <div className="cc-composer-row">
               <span className="cc-icon-btn" aria-hidden="true">
@@ -261,14 +270,10 @@ export const Chat = ({
           <div className="cc-footer" aria-hidden="true">
             <span className="cc-foot-chip">
               <LineIcon name="folder" />
-              {project.id}
+              {repository.name}
             </span>
-            <span className="cc-foot-chip">
-              Opus 5.5 <LineIcon name="down" />
-            </span>
-            <span className="cc-foot-chip">
-              Auto <LineIcon name="down" />
-            </span>
+            <span className="cc-foot-chip">Opus 5.5</span>
+            <span className="cc-foot-chip">Auto</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import type { AnswerBlock } from "@/chat/replyScript";
 import type { ReplyState } from "@/chat/replyState";
-import type { ClaudeProjectId } from "@/content/portfolio";
+import { claudeProjects, type ClaudeProjectId } from "@/content/portfolio";
 import { Suspense, useState, type MouseEvent } from "react";
 import { appWindows } from "../appWindows";
 import { LoadError, LoadErrorBoundary } from "../LoadErrorBoundary";
@@ -104,7 +104,7 @@ const AnswerBlockView = ({
             onOpenClaudeProject(block.id);
           }}
         >
-          Open {block.id}
+          Open {claudeProjects.find((p) => p.id === block.id)?.title}
         </button>
       );
   }

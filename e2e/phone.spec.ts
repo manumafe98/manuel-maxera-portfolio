@@ -135,7 +135,7 @@ test("tapping outside the drawer closes it and keeps the open Chat", async ({
   await expect(chat(page, WELCOME)).toBeVisible();
 });
 
-test("on a phone the /tldr chip shows thinking that folds into 'Thought for', a get_profile tool call, then streams the short summary", async ({
+test("on a phone the /tldr chip keeps the input editable while it shows thinking that folds into 'Thought for', a get_profile tool call, then streams the short summary", async ({
   page,
 }) => {
   await page.goto("/");
@@ -149,9 +149,10 @@ test("on a phone the /tldr chip shows thinking that folds into 'Thought for', a 
 
   const reply = aboutMe.getByRole("article", { name: "Reply" });
   await expect(reply).toHaveAttribute("aria-busy", "true");
-  await expect(
-    aboutMe.getByRole("combobox", { name: "Message" }),
-  ).toBeDisabled();
+  // Checked once, not retried, so it can't pass by waiting for the reply to end.
+  expect(
+    await aboutMe.getByRole("combobox", { name: "Message" }).isEditable(),
+  ).toBe(true);
   await expect(reply.getByText(/^Thought for \d+s$/)).toBeVisible();
   await expect(reply).toContainText(
     'mcp__portfolio__get_profile({ format: "short" })',
@@ -160,9 +161,6 @@ test("on a phone the /tldr chip shows thinking that folds into 'Thought for', a 
     "Background in full-stack product engineering and cloud infrastructure.",
   );
   await expect(reply).toHaveAttribute("aria-busy", "false");
-  await expect(
-    aboutMe.getByRole("combobox", { name: "Message" }),
-  ).toBeEnabled();
 });
 
 test("typing /about-me in the phone composer and tapping Send streams the full background", async ({
@@ -211,7 +209,7 @@ test.describe("Skill cards", () => {
     );
 
     await expect(reply).toContainText(
-      "Here are Manuel's 5 Projects, each linking to its code:",
+      "Here are Manuel's 5 projects, each linking to its code:",
     );
     await expect(reply).not.toContainText("Opened Software");
     const cards = reply
@@ -464,4 +462,138 @@ test("the menu button, the drawer's Chats, the chips, the input and Send are at 
     const recent = recents(page).getByRole("button", { name: title });
     expect((await recent.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   }
+});
+
+/** The scrolling message list of a Chat. */
+const messageList = (page: Page, title: string) =>
+  chat(page, title).locator(".cc-messages");
+
+test("on a short phone screen the Welcome Chat opens scrolled to its first line, though its intro is taller than the Chat", async ({
+  page,
+}) => {
+  // Short enough that the Welcome intro overflows the Chat.
+  await page.setViewportSize({ width: 412, height: 480 });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+
+  const scroll = await messageList(page, WELCOME).evaluate((list) => ({
+    top: list.scrollTop,
+    overflows: list.scrollHeight > list.clientHeight,
+  }));
+  expect(scroll).toEqual({ top: 0, overflows: true });
+});
+
+test("on a phone a reply in the Welcome Chat still scrolls the Chat down to show it", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const welcome = chat(page, WELCOME);
+
+  await welcome.getByRole("button", { name: "/download-cv" }).click();
+
+  await expect(
+    welcome.getByRole("link", { name: /Manuel_Maxera_Resume\.pdf/ }),
+  ).toBeInViewport();
+});
+
+test("on a phone the input's placeholder fits the input without being cut off", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const input = chat(page, WELCOME).getByRole("combobox", { name: "Message" });
+
+  // An input's scrollWidth ignores its placeholder, so measure the text.
+  const fit = await input.evaluate((element: HTMLInputElement) => {
+    const style = getComputedStyle(element);
+    const context = document.createElement("canvas").getContext("2d")!;
+    context.font = style.font;
+    const room =
+      element.clientWidth -
+      parseFloat(style.paddingLeft) -
+      parseFloat(style.paddingRight);
+    return {
+      textWidth: context.measureText(element.placeholder).width,
+      room,
+    };
+  });
+  expect(fit.textWidth).toBeLessThanOrEqual(fit.room);
+});
+
+test("on a phone the Welcome links to the five Claude projects wrap as one row of 44px chips, not a stack of rows", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const welcome = chat(page, WELCOME);
+  const boxes = [];
+  for (const id of [
+    "about-me",
+    "experience",
+    "projects",
+    "skills",
+    "contact",
+  ]) {
+    boxes.push(
+      (await welcome
+        .getByRole("button", { name: id, exact: true })
+        .boundingBox())!,
+    );
+  }
+
+  for (const box of boxes) expect(box.height).toBeGreaterThanOrEqual(44);
+  expect(boxes[1].y).toBe(boxes[0].y);
+  expect(boxes[1].x).toBeGreaterThan(boxes[0].x);
+  const rows = new Set(boxes.map((box) => Math.round(box.y)));
+  expect(rows.size).toBeLessThanOrEqual(2);
+});
+
+test("on a phone the Welcome intro points to the ☰ menu, not the desktop sidebar, and never says session", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const welcome = chat(page, WELCOME);
+
+  await expect(welcome.getByText(/☰/)).toBeVisible();
+  await expect(welcome.getByText(/in the sidebar/)).toBeHidden();
+  expect(await welcome.innerText()).not.toMatch(/session/i);
+});
+
+test("on a phone no Chat intro mentions windows or the sidebar, and each names each of its Commands at most once", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const title of CHAT_TITLES) {
+    await menuButton(page).click();
+    await recents(page).getByRole("button", { name: title }).click();
+    const intro = await chat(page, title)
+      .locator(".cc-answer")
+      .first()
+      .innerText();
+
+    expect(intro, title).not.toMatch(/window|sidebar/i);
+    const commands = intro.match(/\/[a-z-]+/g) ?? [];
+    expect(commands.length, title).toBeGreaterThan(0);
+    expect(new Set(commands).size, title).toBe(commands.length);
+  }
+});
+
+test("on a phone the long lines of a tool result wrap instead of scrolling sideways", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await menuButton(page).click();
+  await recents(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const aboutMe = chat(page, "Who is Manuel Maxera?");
+  await aboutMe.getByRole("button", { name: "/tldr" }).click();
+  const result = aboutMe.locator(".cc-tool-body");
+  // get_profile's shortSummary is one JSON line far wider than a phone.
+  await expect(result).toContainText("cloud infrastructure.");
+
+  const size = await result.evaluate((element) => ({
+    scrollWidth: element.scrollWidth,
+    clientWidth: element.clientWidth,
+  }));
+  expect(size.scrollWidth).toBeLessThanOrEqual(size.clientWidth);
 });
