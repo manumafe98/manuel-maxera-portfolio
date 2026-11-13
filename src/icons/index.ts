@@ -1,5 +1,6 @@
 export * from "./AmazonWebServicesIcon";
 export * from "./CheckMarkIcon";
+export * from "./ClaudeCodeIcon";
 export * from "./CurriculumIcon";
 export * from "./DialogXMarkIcon";
 export * from "./DockerIcon";
@@ -30,7 +31,6 @@ export * from "./SkillsIcon";
 export * from "./SolidityIcon";
 export * from "./SpringIcon";
 export * from "./StarredIcon";
-export * from "./SublimeTextIcon";
 export * from "./TailwindCssIcon";
 export * from "./TypeScriptIcon";
 export * from "./UnfilledArrowDownIcon";

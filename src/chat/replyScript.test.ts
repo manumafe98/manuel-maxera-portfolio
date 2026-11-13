@@ -92,7 +92,7 @@ describe("About Me", () => {
     expect(toolCall(events)).toMatchObject({
       name: "mcp__portfolio__get_resume",
     });
-    expect(events.at(-2)).toEqual({
+    expect(events[events.length - 2]).toEqual({
       type: "answer-block",
       block: {
         kind: "download-card",
@@ -155,7 +155,7 @@ describe("skip and stop", () => {
       if (events.length === 2) stream.skip();
     }
 
-    expect(events.at(-1)).toEqual({ type: "done" });
+    expect(events[events.length - 1]).toEqual({ type: "done" });
     expect(answerText(events)).toContain(
       "Background in full-stack product engineering and cloud infrastructure.",
     );

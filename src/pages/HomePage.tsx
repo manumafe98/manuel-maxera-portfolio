@@ -1,13 +1,12 @@
 import jammy_wallpaper from "@/assets/jammy_wallpaper.webp";
 import { ActivitiesBar } from "@/components/ActivitiesBar";
 import { ApplicationsMenu } from "@/components/ApplicationsMenu";
-import { CloseDialog } from "@/components/CloseDialog";
+import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
 import { FileManagerDialog } from "@/components/FileManagerDialog";
 import { GmailDialog } from "@/components/GmailDialog";
-import { SublimeDialog } from "@/components/SublimeDialog";
 import { UbuntuSoftwareDialog } from "@/components/UbuntuSoftwareDialog";
 import { VsCodeDialog } from "@/components/VsCodeDialog";
-import { LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon } from "@/icons";
+import { LeftArrowIcon, RightArrowIcon } from "@/icons";
 import "cally";
 import { ElementType, RefObject, useEffect, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
@@ -16,40 +15,24 @@ export const HomePage = () => {
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(
     window.innerWidth < 1024,
   );
-  const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
   const [calendarDay, setCalendarDay] = useState<string>("");
   const openGmailDialogRef = useRef<HTMLDialogElement>(null);
   const openUbuntuSoftwareDialogRef = useRef<HTMLDialogElement>(null);
-  const openTerminalDialogRef = useRef<HTMLDialogElement>(null);
-  const openSublimeDialogRef = useRef<HTMLDialogElement>(null);
+  const openClaudeCodeDialogRef = useRef<HTMLDialogElement>(null);
   const openVsCodeDialogRef = useRef<HTMLDialogElement>(null);
   const openFileManagerDialogRef = useRef<HTMLDialogElement>(null);
   const location = useLocation();
 
-  const options = [
-    "About Me",
-    "Professional Experience",
-    "My Projects",
-    "My Skills",
-    "Contact Me",
-  ];
-
   type ApplicationName =
-    | "gmail"
-    | "terminal"
-    | "sublime"
-    | "ubuntusoftware"
-    | "filemanager"
-    | "vscode";
+    "gmail" | "claudecode" | "ubuntusoftware" | "filemanager" | "vscode";
 
   const applicationToRefRelation: Record<
     ApplicationName,
     RefObject<HTMLDialogElement | null>
   > = {
     gmail: openGmailDialogRef,
-    terminal: openTerminalDialogRef,
-    sublime: openSublimeDialogRef,
+    claudecode: openClaudeCodeDialogRef,
     ubuntusoftware: openUbuntuSoftwareDialogRef,
     filemanager: openFileManagerDialogRef,
     vscode: openVsCodeDialogRef,
@@ -57,8 +40,7 @@ export const HomePage = () => {
 
   const [dialogStack, setDialogStack] = useState<string[]>([]);
   const zIndexRef = useRef<Record<string, number>>({
-    terminal: 0,
-    sublime: 0,
+    claudecode: 0,
     vscode: 0,
     gmail: 0,
     ubuntusoftware: 0,
@@ -90,76 +72,15 @@ export const HomePage = () => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  const handleArrowFunctionality = (
-    event: KeyboardEvent,
-    arrowType: string,
-  ) => {
-    event.preventDefault();
-    const index =
-      arrowType === "Up"
-        ? (selectedIndex - 1 + options.length) % options.length
-        : (selectedIndex + 1) % options.length;
-    setSelectedIndex(index);
-  };
-
-  const handleArrowKeyPress = (event: KeyboardEvent) => {
-    if (event.key === "ArrowDown") {
-      handleArrowFunctionality(event, "Down");
-    } else if (event.key === "ArrowUp") {
-      handleArrowFunctionality(event, "Up");
-    }
-  };
-
-  const handleEnterKeyPress = (event: KeyboardEvent) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const app = options[selectedIndex];
-      switch (app) {
-        case "About Me":
-          openSublimeDialogRef.current?.show();
-          setDialogStack((prevStack) => [...prevStack, "sublime"]);
-          break;
-        case "Professional Experience":
-          openVsCodeDialogRef.current?.show();
-          setDialogStack((prevStack) => [...prevStack, "vscode"]);
-          break;
-        case "My Projects":
-          openUbuntuSoftwareDialogRef.current?.show();
-          setDialogStack((prevStack) => [...prevStack, "ubuntusoftware"]);
-          break;
-        case "My Skills":
-          openFileManagerDialogRef.current?.show();
-          setDialogStack((prevStack) => [...prevStack, "filemanager"]);
-          break;
-        case "Contact Me":
-          openGmailDialogRef.current?.show();
-          setDialogStack((prevStack) => [...prevStack, "gmail"]);
-          break;
-      }
-    }
-  };
-
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      handleArrowKeyPress(event);
-      handleEnterKeyPress(event);
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [selectedIndex]);
-
-  useEffect(() => {
-    if (openTerminalDialogRef.current) {
-      openTerminalDialogRef.current.show();
+    if (openClaudeCodeDialogRef.current) {
+      openClaudeCodeDialogRef.current.show();
       setDialogStack((prevStack) => {
-        const newStack = prevStack.filter((app) => app !== "terminal");
-        return [...newStack, "terminal"];
+        const newStack = prevStack.filter((app) => app !== "claudecode");
+        return [...newStack, "claudecode"];
       });
     }
-  }, [openTerminalDialogRef]);
+  }, [openClaudeCodeDialogRef]);
 
   const handleDialogPopUp = (dialog: string | undefined) => {
     const appName = dialog?.toLowerCase().replace(" ", "") as ApplicationName;
@@ -199,10 +120,6 @@ export const HomePage = () => {
     }
   };
 
-  const closeTerminalDialog = () => {
-    closeDialog(openTerminalDialogRef, "terminal");
-  };
-
   const CalendarDate = "calendar-date" as ElementType;
   const CalendarMonth = "calendar-month" as ElementType;
 
@@ -212,62 +129,8 @@ export const HomePage = () => {
         <Navigate to="/unavailable" state={{ from: location }} replace />
       )}
       <section className="h-screen w-screen overflow-hidden relative">
-        <dialog
-          ref={openTerminalDialogRef}
-          className="dialog-container min-h-[50vh] min-w-[40vw] max-xl:min-w-[60vw] bg-ubuntu-terminal-bg focus:outline-none"
-        >
-          <div className="flex items-center justify-between w-full h-10 bg-ubuntu-navbar rounded-t-lg border-b border-solid border-black">
-            <div className="w-6 h-6 mx-3">
-              <span className="hidden">hidden</span>
-            </div>
-            <span className="text-white font-bold">/bin/bash</span>
-            <CloseDialog
-              closeDialog={closeTerminalDialog}
-              buttonExtraStyles="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
-              svgCustomStyle={undefined}
-            />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex">
-              <div className="flex items-center justify-center h-5 w-36 bg-ubuntu-options">
-                <span className="text-white mx-3">manuel@Ubuntu</span>
-              </div>
-              <div className="flex items-center justify-center h-5 w-8 bg-ubuntu-terminal-select">
-                <span>~</span>
-              </div>
-              <div className="w-0 h-0 border-l-[12px] border-l-ubuntu-terminal-select border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent"></div>
-              <span className="text-white mx-2">sh ./start_portfolio</span>
-            </div>
-            <div className="flex gap-2 ml-1">
-              <span className="text-green-500">?</span>
-              <span className="text-white font-bold">
-                Please select an option:
-              </span>
-              <span className="text-white opacity-60">
-                (use arrow keys and enter)
-              </span>
-            </div>
-            <div className="flex flex-col">
-              {options.map((option, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center italic ${
-                    selectedIndex === index
-                      ? "text-blue-500"
-                      : "text-white ml-5 opacity-80"
-                  }`}
-                >
-                  {selectedIndex === index && (
-                    <UnfilledArrowRightIcon className="fill-current text-blue-500 w-5 h-5" />
-                  )}
-                  <span>{option}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </dialog>
+        <ClaudeCodeWindow ref={openClaudeCodeDialogRef} onClose={closeDialog} />
         <VsCodeDialog ref={openVsCodeDialogRef} onClose={closeDialog} />
-        <SublimeDialog ref={openSublimeDialogRef} onClose={closeDialog} />
         <UbuntuSoftwareDialog
           ref={openUbuntuSoftwareDialogRef}
           onClose={closeDialog}
