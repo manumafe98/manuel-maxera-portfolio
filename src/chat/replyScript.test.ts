@@ -341,7 +341,7 @@ describe("Skills shown as cards (phones)", () => {
       command: "/open-skills",
       skill: "open-skills",
       app: "files",
-      summary: "Here are Manuel's 38 skills in 6 areas:",
+      summary: "Here are Manuel's 35 skills:",
     },
     {
       projectId: "contact",

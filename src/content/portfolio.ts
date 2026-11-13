@@ -211,9 +211,30 @@ export const skillAreas: SkillArea[] = [
   },
   {
     area: "AI developer tooling",
-    skills: ["Devin", "Windsurf", "Codex", "Opencode"],
+    skills: ["Devin", "Windsurf", "Codex", "Opencode", "Claude Code", "herdr"],
   },
 ];
+
+/**
+ * CV skills that are practices rather than tools. They have no logo, so the
+ * skills grid leaves them out; llms.txt and the no-JavaScript page still list
+ * them under their areas.
+ */
+const practices = new Set([
+  "RAG",
+  "Prompt engineering",
+  "LLM evaluation",
+  "Vector search",
+  "Embeddings",
+]);
+
+/**
+ * The tools from every area as one flat list, in CV order: what the Files
+ * window and the phone skills card show.
+ */
+export const gridSkills: string[] = skillAreas
+  .flatMap((area) => area.skills)
+  .filter((skill) => !practices.has(skill));
 
 export const education: Education[] = [
   {
@@ -302,7 +323,7 @@ const openProjectsCommand: Command = {
 };
 const openSkillsCommand: Command = {
   name: "/open-skills",
-  description: "open the Files window with his skills grouped by area",
+  description: "open the Files window with his skills",
 };
 const openContactCommand: Command = {
   name: "/open-contact",
@@ -355,8 +376,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
   {
     id: "skills",
     title: "Tech stack overview",
-    intro:
-      "I can open the Files window with Manuel's tech stack, grouped by area.",
+    intro: "I can open the Files window with Manuel's tech stack.",
     commands: [openSkillsCommand, socialsCommand],
     chips: [openSkillsCommand.name],
   },

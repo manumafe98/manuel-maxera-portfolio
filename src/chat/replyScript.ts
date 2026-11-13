@@ -10,9 +10,9 @@ import {
   cv,
   education,
   experience,
+  gridSkills,
   profile,
   projects,
-  skillAreas,
   socialLinks,
   spokenLanguages,
   type AppId,
@@ -116,8 +116,6 @@ const skill =
         ? [wording.cards.summary, { kind: "skill-card", app }]
         : [wording.windows.summary],
   });
-
-const skillCount = skillAreas.reduce((n, area) => n + area.skills.length, 0);
 
 const scripts: Record<string, (skills: SkillsShownAs) => Script> = {
   "/about-me": () => ({
@@ -228,17 +226,16 @@ Run \`/show-full-experience\` to see his whole career.`,
   "/open-skills": skill(
     "open-skills",
     "files",
-    { app: "files", areas: skillAreas.map((a) => a.area) },
+    { app: "files", skills: gridSkills.length },
     {
       windows: {
         thinking:
-          "They want Manuel's tech stack. I'll launch the Files window with his skills grouped by area.",
-        summary: `Opened **Files** with ${skillCount} skills in ${skillAreas.length} areas.`,
+          "They want Manuel's tech stack. I'll launch the Files window with his skills.",
+        summary: `Opened **Files** with ${gridSkills.length} skills.`,
       },
       cards: {
-        thinking:
-          "They want Manuel's tech stack. I'll show his skills grouped by area.",
-        summary: `Here are Manuel's ${skillCount} skills in ${skillAreas.length} areas:`,
+        thinking: "They want Manuel's tech stack. I'll show his skills.",
+        summary: `Here are Manuel's ${gridSkills.length} skills:`,
       },
     },
   ),

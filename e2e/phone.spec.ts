@@ -253,43 +253,23 @@ test.describe("Skill cards", () => {
     expect((await hoytsx.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   });
 
-  test("on a phone /open-skills shows the skills as tag chips grouped by area, Python with its icon, and opens no App window", async ({
+  test("on a phone /open-skills shows all 35 skills as one list of tag chips with no area headings, each with an icon, Claude Code and herdr included, and opens no App window", async ({
     page,
   }) => {
     const reply = await runSkill(page, "Tech stack overview", "/open-skills");
 
-    await expect(reply).toContainText(
-      "Here are Manuel's 38 skills in 6 areas:",
+    await expect(reply).toContainText("Here are Manuel's 35 skills:");
+    await expect(reply.getByRole("heading")).toHaveCount(0);
+    const chips = reply
+      .getByRole("list", { name: "Skills" })
+      .getByRole("listitem");
+    await expect(chips).toHaveCount(35);
+    await expect(chips.filter({ hasText: /^Claude Code$/ })).toHaveCount(1);
+    await expect(chips.filter({ hasText: /^herdr$/ })).toHaveCount(1);
+    const chipsWithoutIcon = await chips.evaluateAll(
+      (items) => items.filter((item) => !item.querySelector("svg, img")).length,
     );
-    await expect(reply.getByRole("heading")).toHaveText([
-      "Languages",
-      "Frameworks",
-      "AI engineering",
-      "Search and backend",
-      "Quality and observability",
-      "AI developer tooling",
-    ]);
-    await expect(
-      reply.getByRole("list", { name: "Languages" }).getByRole("listitem"),
-    ).toHaveText([
-      "Python",
-      "PHP",
-      "TypeScript",
-      "Java",
-      "Solidity",
-      "JavaScript",
-    ]);
-    await expect(
-      reply
-        .getByRole("list", { name: "AI developer tooling" })
-        .getByRole("listitem"),
-    ).toHaveText(["Devin", "Windsurf", "Codex", "Opencode"]);
-    await expect(
-      reply
-        .getByRole("listitem")
-        .filter({ hasText: /^Python$/ })
-        .locator("svg"),
-    ).toBeVisible();
+    expect(chipsWithoutIcon).toBe(0);
     await expect(anyAppWindow(page)).toHaveCount(0);
   });
 });
