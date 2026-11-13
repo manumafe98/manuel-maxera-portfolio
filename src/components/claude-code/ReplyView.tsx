@@ -1,4 +1,6 @@
+import type { AnswerBlock } from "@/chat/replyScript";
 import type { ReplyState } from "@/chat/replyState";
+import type { ClaudeProjectId } from "@/content/portfolio";
 import { useState, type MouseEvent } from "react";
 import { LineIcon } from "./LineIcon";
 import { Markdown } from "./Markdown";
@@ -9,9 +11,95 @@ interface ReplyViewProps {
   reply: ReplyState;
   /** Called when the visitor clicks the reply while it's still streaming. */
   onSkip: () => void;
+  onOpenClaudeProject: (id: ClaudeProjectId) => void;
 }
 
-export const ReplyView = ({ reply, onSkip }: ReplyViewProps) => {
+/** Links inside a reply must not also trigger skip-to-end. */
+const stopPropagation = (event: MouseEvent) => event.stopPropagation();
+
+const AnswerBlockView = ({
+  block,
+  onOpenClaudeProject,
+}: {
+  block: AnswerBlock;
+  onOpenClaudeProject: (id: ClaudeProjectId) => void;
+}) => {
+  switch (block.kind) {
+    case "timeline":
+      return (
+        <ol className="cc-timeline" aria-label="Experience timeline">
+          {block.roles.map((role) => (
+            <li key={`${role.company}-${role.title}`}>
+              <h3>
+                {role.title} · {role.company}
+              </h3>
+              <div className="cc-muted">
+                {role.dates} · {role.location}
+              </div>
+              <ul>
+                {role.achievements.map((achievement) => (
+                  <li key={achievement}>{achievement}</li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ol>
+      );
+    case "download-card":
+      return (
+        <a
+          className="cc-download"
+          href={block.href}
+          download={block.fileName}
+          onClick={stopPropagation}
+        >
+          <span className="cc-download-icon">
+            <LineIcon name="file" />
+          </span>
+          <span className="cc-download-text">
+            <span className="cc-download-name">{block.fileName}</span>
+            <span className="cc-muted">PDF · Download</span>
+          </span>
+          <LineIcon name="download" />
+        </a>
+      );
+    case "links":
+      return (
+        <ul className="cc-links">
+          {block.links.map((link) => (
+            <li key={link.url}>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={stopPropagation}
+              >
+                {link.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      );
+    case "claude-project-link":
+      return (
+        <button
+          className="cc-chip cc-project-link"
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenClaudeProject(block.id);
+          }}
+        >
+          Open {block.displayName}
+        </button>
+      );
+  }
+};
+
+export const ReplyView = ({
+  reply,
+  onSkip,
+  onOpenClaudeProject,
+}: ReplyViewProps) => {
   const [thinkingOpen, setThinkingOpen] = useState(false);
   const [toolOpen, setToolOpen] = useState(true);
   const thinkingDone = reply.thinkingSeconds !== null;
@@ -99,47 +187,12 @@ export const ReplyView = ({ reply, onSkip }: ReplyViewProps) => {
           {reply.answer.map((part, index) =>
             part.type === "text" ? (
               <Markdown key={index} text={part.text} />
-            ) : part.block.kind === "timeline" ? (
-              <ol
-                key={index}
-                className="cc-timeline"
-                aria-label="Experience timeline"
-              >
-                {part.block.roles.map((role) => (
-                  <li key={`${role.company}-${role.title}`}>
-                    <h3>
-                      {role.title} · {role.company}
-                    </h3>
-                    <div className="cc-muted">
-                      {role.dates} · {role.location}
-                    </div>
-                    <ul>
-                      {role.achievements.map((achievement) => (
-                        <li key={achievement}>{achievement}</li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
-              </ol>
             ) : (
-              <a
+              <AnswerBlockView
                 key={index}
-                className="cc-download"
-                href={part.block.href}
-                download={part.block.fileName}
-                onClick={(event) => event.stopPropagation()}
-              >
-                <span className="cc-download-icon">
-                  <LineIcon name="file" />
-                </span>
-                <span className="cc-download-text">
-                  <span className="cc-download-name">
-                    {part.block.fileName}
-                  </span>
-                  <span className="cc-muted">PDF · Download</span>
-                </span>
-                <LineIcon name="download" />
-              </a>
+                block={part.block}
+                onOpenClaudeProject={onOpenClaudeProject}
+              />
             ),
           )}
           {!reply.done && <span className="cc-caret" />}

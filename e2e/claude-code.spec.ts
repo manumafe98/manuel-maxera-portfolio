@@ -29,7 +29,7 @@ test("Claude Code opens on load with the Welcome Chat active and its intro, chip
     welcome.getByRole("button", { name: "/download-cv" }),
   ).toBeVisible();
   await expect(
-    welcome.getByRole("textbox", { name: "Message" }),
+    welcome.getByRole("combobox", { name: "Message" }),
   ).toHaveAttribute(
     "placeholder",
     "Type / for commands. Replies are scripted, no live model.",
@@ -62,7 +62,7 @@ test("the /tldr chip locks the input, shows thinking that folds into 'Thought fo
 }) => {
   await sidebar(page).getByRole("button", { name: "About Me" }).click();
   const aboutMe = chat(page, "About Me");
-  const input = aboutMe.getByRole("textbox", { name: "Message" });
+  const input = aboutMe.getByRole("combobox", { name: "Message" });
 
   await aboutMe.getByRole("button", { name: "/tldr" }).click();
 
@@ -82,7 +82,7 @@ test("typing /about-me and pressing Enter streams the full background", async ({
 }) => {
   await sidebar(page).getByRole("button", { name: "About Me" }).click();
   const aboutMe = chat(page, "About Me");
-  const input = aboutMe.getByRole("textbox", { name: "Message" });
+  const input = aboutMe.getByRole("combobox", { name: "Message" });
 
   await input.fill("/about-me");
   await input.press("Enter");
@@ -106,7 +106,9 @@ test("clicking a reply while it streams shows its full answer at once", async ({
   await expect(aboutMe).toContainText("Italian: Elementary (A2)", {
     timeout: 1000,
   });
-  await expect(aboutMe.getByRole("textbox", { name: "Message" })).toBeEnabled();
+  await expect(
+    aboutMe.getByRole("combobox", { name: "Message" }),
+  ).toBeEnabled();
 });
 
 test("/download-cv in the Welcome Chat shows a download card that downloads the CV PDF", async ({
