@@ -149,11 +149,11 @@ export const Chat = ({
             {links.length > 0 && (
               <div className="cc-block">
                 <div>Claude projects:</div>
-                <ul>
+                <ul className="cc-project-chips">
                   {links.map((link) => (
                     <li key={link.id}>
                       <button
-                        className="cc-link"
+                        className="cc-chip"
                         onClick={() => onOpenClaudeProject(link.id)}
                       >
                         {link.id}

@@ -247,13 +247,21 @@
   background: var(--cc-raised);
   color: #e6a68c;
 }
-.cc-answer a,
-.cc-link {
+.cc-answer a {
   color: var(--cc-accent);
   cursor: pointer;
 }
-.cc-link:hover {
-  text-decoration: underline;
+/* Links to other Claude projects: one wrapping row of chips. */
+.cc-answer ul.cc-project-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 0;
+  list-style: none;
+}
+.cc-answer ul.cc-project-chips > li {
+  margin: 0;
 }
 .cc-caret {
   display: inline-block;

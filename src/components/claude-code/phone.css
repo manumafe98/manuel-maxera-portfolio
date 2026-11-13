@@ -85,12 +85,13 @@
   scrollbar-width: none;
 }
 .ph-shell .cc-chip {
+  display: inline-flex;
+  align-items: center;
   flex: none;
   min-height: 44px;
   padding: 0 14px;
   font-size: 13px;
 }
-.ph-shell .cc-link,
 .ph-shell .cc-thought,
 .ph-shell .cc-tool-head {
   min-height: 44px;

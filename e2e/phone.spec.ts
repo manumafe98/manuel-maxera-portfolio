@@ -519,3 +519,30 @@ test("on a phone the input's placeholder fits the input without being cut off", 
   });
   expect(fit.textWidth).toBeLessThanOrEqual(fit.room);
 });
+
+test("on a phone the Welcome links to the five Claude projects wrap as one row of 44px chips, not a stack of rows", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const welcome = chat(page, WELCOME);
+  const boxes = [];
+  for (const id of [
+    "about-me",
+    "experience",
+    "projects",
+    "skills",
+    "contact",
+  ]) {
+    boxes.push(
+      (await welcome
+        .getByRole("button", { name: id, exact: true })
+        .boundingBox())!,
+    );
+  }
+
+  for (const box of boxes) expect(box.height).toBeGreaterThanOrEqual(44);
+  expect(boxes[1].y).toBe(boxes[0].y);
+  expect(boxes[1].x).toBeGreaterThan(boxes[0].x);
+  const rows = new Set(boxes.map((box) => Math.round(box.y)));
+  expect(rows.size).toBeLessThanOrEqual(2);
+});
