@@ -9,7 +9,7 @@ import { UbuntuSoftwareDialog } from "@/components/UbuntuSoftwareDialog";
 import { VsCodeDialog } from "@/components/VsCodeDialog";
 import { LeftArrowIcon, RightArrowIcon, UnfilledArrowRightIcon } from "@/icons";
 import "cally";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { ElementType, RefObject, useEffect, useRef, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
 export const HomePage = () => {
@@ -56,7 +56,7 @@ export const HomePage = () => {
   };
 
   const [dialogStack, setDialogStack] = useState<string[]>([]);
-  const [zIndex, setZIndex] = useState<Record<string, number>>({
+  const zIndexRef = useRef<Record<string, number>>({
     terminal: 0,
     sublime: 0,
     vscode: 0,
@@ -66,27 +66,19 @@ export const HomePage = () => {
   });
 
   useEffect(() => {
-    const newZIndex: Record<string, number> = {};
     dialogStack.forEach((dialog, index) => {
-      newZIndex[dialog] = (index + 1) * 10;
+      zIndexRef.current[dialog] = (index + 1) * 10;
     });
 
-    setZIndex((prevZIndex) => ({
-      ...prevZIndex,
-      ...newZIndex,
-    }));
-  }, [dialogStack]);
-
-  useEffect(() => {
     (Object.keys(applicationToRefRelation) as ApplicationName[]).forEach(
       (appName) => {
         if (applicationToRefRelation[appName].current) {
           applicationToRefRelation[appName].current!.style.zIndex =
-            `${zIndex[appName]}`;
+            `${zIndexRef.current[appName]}`;
         }
       },
     );
-  }, [zIndex]);
+  }, [dialogStack]);
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -189,10 +181,7 @@ export const HomePage = () => {
     setDialogStack((prevStack) =>
       prevStack.filter((app) => app !== dialogName),
     );
-    setZIndex((prevZIndex) => ({
-      ...prevZIndex,
-      [dialogName]: 0,
-    }));
+    zIndexRef.current[dialogName] = 0;
 
     if (dialogRef && "current" in dialogRef) {
       dialogRef.current?.close();
@@ -214,8 +203,8 @@ export const HomePage = () => {
     closeDialog(openTerminalDialogRef, "terminal");
   };
 
-  const CalendarDate = "calendar-date" as any;
-  const CalendarMonth = "calendar-month" as any;
+  const CalendarDate = "calendar-date" as ElementType;
+  const CalendarMonth = "calendar-month" as ElementType;
 
   return (
     <>
