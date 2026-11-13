@@ -350,3 +350,40 @@ test("the /socials chip in the Welcome Chat links LinkedIn and GitHub", async ({
   await expect(reply.getByRole("link", { name: "LinkedIn" })).toBeVisible();
   await expect(reply.getByRole("link", { name: "GitHub" })).toBeVisible();
 });
+
+test("the sidebar's decorative New, Search, Artifacts and Customize are muted, show the default cursor and can't be focused", async ({
+  page,
+}) => {
+  const nav = claudeCode(page).locator(".cc-nav");
+  for (const name of ["New", "Search", "Artifacts", "Customize"]) {
+    const item = nav.getByText(name, { exact: true });
+    const look = await item.evaluate((element) => ({
+      color: getComputedStyle(element).color,
+      cursor: getComputedStyle(element).cursor,
+      focusable: element.matches("a, button, input, [tabindex]"),
+    }));
+    // rgb(155, 151, 143) is the palette's muted text, #9b978f.
+    expect(look, name).toEqual({
+      color: "rgb(155, 151, 143)",
+      cursor: "default",
+      focusable: false,
+    });
+  }
+});
+
+test("the About Me Chat's footer names the repository manuel-maxera-portfolio, and its Opus 5.5 and Auto chips have no chevrons", async ({
+  page,
+}) => {
+  await sidebar(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const chips = chat(page, "Who is Manuel Maxera?").locator(".cc-foot-chip");
+
+  await expect(chips).toHaveText([
+    "manuel-maxera-portfolio",
+    "Opus 5.5",
+    "Auto",
+  ]);
+  await expect(chips.nth(1).locator("svg")).toHaveCount(0);
+  await expect(chips.nth(2).locator("svg")).toHaveCount(0);
+});

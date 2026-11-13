@@ -300,6 +300,9 @@ export const site = {
   url: "https://manuel-maxera.netlify.app/",
 };
 
+/** This portfolio's code repository, named in the Chat footer. */
+export const repository = { name: "manuel-maxera-portfolio" };
+
 export const cv = {
   path: "/files/Manuel_Maxera_Resume.pdf",
   fileName: "Manuel_Maxera_Resume.pdf",

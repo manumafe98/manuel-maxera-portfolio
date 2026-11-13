@@ -95,8 +95,10 @@
   border-radius: 6px;
   text-align: left;
 }
-.cc-nav-item svg {
+/* New, Search, Artifacts and Customize are decoration, so they stay muted. */
+.cc-nav-item {
   color: var(--cc-muted);
+  cursor: default;
 }
 .cc-projects {
   flex: 1;

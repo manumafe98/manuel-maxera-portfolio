@@ -7,6 +7,7 @@ import {
 } from "@/chat/replyState";
 import {
   claudeProjects,
+  repository,
   type AppWindowId,
   type ClaudeProject,
   type ClaudeProjectId,
@@ -269,14 +270,10 @@ export const Chat = ({
           <div className="cc-footer" aria-hidden="true">
             <span className="cc-foot-chip">
               <LineIcon name="folder" />
-              {project.id}
+              {repository.name}
             </span>
-            <span className="cc-foot-chip">
-              Opus 5.5 <LineIcon name="down" />
-            </span>
-            <span className="cc-foot-chip">
-              Auto <LineIcon name="down" />
-            </span>
+            <span className="cc-foot-chip">Opus 5.5</span>
+            <span className="cc-foot-chip">Auto</span>
           </div>
         </div>
       </div>
