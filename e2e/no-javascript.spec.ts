@@ -127,7 +127,7 @@ test.describe("with JavaScript disabled", () => {
     );
     await expect(meta("name", "twitter:card")).toHaveAttribute(
       "content",
-      "summary",
+      "summary_large_image",
     );
     await expect(meta("name", "twitter:title")).toHaveAttribute(
       "content",
@@ -137,6 +137,41 @@ test.describe("with JavaScript disabled", () => {
       "content",
       /AI Engineer at Avature/,
     );
+  });
+
+  test("/ HTML has an absolute 1200x630 Open Graph image with alt text, shared with the Twitter card, and it loads as a PNG", async ({
+    page,
+    request,
+  }) => {
+    await page.goto("/");
+    const meta = (attr: string, key: string) =>
+      page.locator(`meta[${attr}="${key}"]`);
+    const OG_IMAGE = `${SITE_URL}og-image.png`;
+
+    await expect(meta("property", "og:image")).toHaveAttribute(
+      "content",
+      OG_IMAGE,
+    );
+    await expect(meta("property", "og:image:width")).toHaveAttribute(
+      "content",
+      "1200",
+    );
+    await expect(meta("property", "og:image:height")).toHaveAttribute(
+      "content",
+      "630",
+    );
+    await expect(meta("property", "og:image:alt")).toHaveAttribute(
+      "content",
+      /Manuel Maxera, AI Engineer/,
+    );
+    await expect(meta("name", "twitter:image")).toHaveAttribute(
+      "content",
+      OG_IMAGE,
+    );
+    // The live URL isn't this build, so load the same path from the server.
+    const image = await request.get(new URL(OG_IMAGE).pathname);
+    expect(image.status()).toBe(200);
+    expect(image.headers()["content-type"]).toBe("image/png");
   });
 
   test("/ HTML has a JSON-LD Person with Manuel's job, employer, city and profile links", async ({

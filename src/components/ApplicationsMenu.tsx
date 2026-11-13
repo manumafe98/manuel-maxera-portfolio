@@ -26,13 +26,11 @@ export const ApplicationsMenu = ({ openIconDialog }: ApplicationsMenuProps) => {
       name: "My Projects",
       dataValue: "ubuntusoftware",
       imgSrc: software_store,
-      imgAlt: "Ubuntu Store App Icon",
     },
     {
       name: "My Skills",
       dataValue: "filemanager",
       imgSrc: file_manager,
-      imgAlt: "Ubuntu File Manager App Icon",
     },
   ];
 
@@ -51,13 +49,9 @@ export const ApplicationsMenu = ({ openIconDialog }: ApplicationsMenuProps) => {
               data-value={application.dataValue}
             >
               {application.icon ? (
-                <application.icon className="w-14 h-14" />
+                <application.icon aria-hidden="true" className="w-14 h-14" />
               ) : (
-                <img
-                  src={application.imgSrc}
-                  alt={application.imgAlt}
-                  className="w-14 h-14"
-                />
+                <img src={application.imgSrc} alt="" className="w-14 h-14" />
               )}
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-black text-white px-2 py-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap select-none">
                 {application.name}
@@ -67,7 +61,7 @@ export const ApplicationsMenu = ({ openIconDialog }: ApplicationsMenuProps) => {
         ))}
       </ul>
       <div className="flex justify-center">
-        <MenuIcon className="white-icon w-14 h-14" />
+        <MenuIcon aria-hidden="true" className="white-icon w-14 h-14" />
       </div>
     </nav>
   );

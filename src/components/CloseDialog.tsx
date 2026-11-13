@@ -20,7 +20,10 @@ export const CloseDialog = ({
       onClick={closeDialog}
       aria-label={label}
     >
-      <XMarkIcon className={svgCustomStyle ?? `white-icon w-4 h-4`} />
+      <XMarkIcon
+        aria-hidden="true"
+        className={svgCustomStyle ?? `white-icon w-4 h-4`}
+      />
     </button>
   );
 };

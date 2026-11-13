@@ -75,20 +75,29 @@ export const FileManagerDialog = ({
         <div className="flex gap-2 mx-3">
           <div className="flex">
             <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
-              <UnfilledArrowLeftIcon className="white-icon w-6 h-6" />
+              <UnfilledArrowLeftIcon
+                aria-hidden="true"
+                className="white-icon w-6 h-6"
+              />
             </div>
             <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-30 border border-solid border-black">
-              <UnfilledArrowRightIcon className="white-icon w-6 h-6" />
+              <UnfilledArrowRightIcon
+                aria-hidden="true"
+                className="white-icon w-6 h-6"
+              />
             </div>
           </div>
           <div className="flex items-center justify-start gap-2 w-80 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
             <span>
-              <SkillsIcon className="white-icon ml-2 w-6 h-6" />
+              <SkillsIcon
+                aria-hidden="true"
+                className="white-icon ml-2 w-6 h-6"
+              />
             </span>
             <span className="text-white text-md font-bold">Skills</span>
           </div>
           <div className="flex items-center justify-center w-8 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
-            <SearchIcon className="white-icon w-6 h-6" />
+            <SearchIcon aria-hidden="true" className="white-icon w-6 h-6" />
           </div>
         </div>
         <CloseDialog
@@ -105,7 +114,10 @@ export const FileManagerDialog = ({
                 key={index}
                 className={`flex items-center px-3 ${icon.styles}`}
               >
-                <icon.icon className={`white-icon ${icon.iconSize}`} />
+                <icon.icon
+                  aria-hidden="true"
+                  className={`white-icon ${icon.iconSize}`}
+                />
                 <span className="text-white text-sm">{icon.name}</span>
               </div>
             ))}
@@ -124,6 +136,7 @@ export const FileManagerDialog = ({
                   return (
                     <div key={skill} className="flex flex-col items-center">
                       <SkillIcon
+                        aria-hidden="true"
                         className={`${skill === "Hardhat" ? "mb-1.5" : "w-12 h-12"} ${hasOwnIcon ? "" : "white-icon opacity-80"} transition-transform duration-300 hover:scale-110`}
                       />
                       <span className="text-white text-md text-center">

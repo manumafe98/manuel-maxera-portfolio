@@ -18,6 +18,30 @@ test.describe("with JavaScript disabled", () => {
     );
   });
 
+  test("/privacy explains the cookie-free Cloudflare analytics, the contact form data sent to EmailJS, and how to ask questions", async ({
+    page,
+  }) => {
+    await page.goto("/privacy");
+    const main = page.getByRole("main");
+
+    const analytics = main.getByRole("region", { name: "Analytics" });
+    await expect(analytics).toContainText("Cloudflare Web Analytics");
+    await expect(analytics).toContainText(/doesn't use cookies/);
+    await expect(analytics).toContainText(/aggregated/);
+
+    const contactForm = main.getByRole("region", { name: "Contact form" });
+    await expect(contactForm).toContainText("EmailJS");
+    await expect(contactForm).toContainText(/email address and your message/);
+    await expect(contactForm).toContainText(/only to reply/);
+
+    await expect(main).toContainText(/no cookies/i);
+    await expect(main).toContainText(/never sold/);
+    await expect(
+      main.getByRole("link", { name: "manumaxerapro@gmail.com" }),
+    ).toHaveAttribute("href", "mailto:manumaxerapro@gmail.com");
+    await expect(main).toContainText(/Last updated: \d{1,2} \w+ \d{4}/);
+  });
+
   test("an unknown path responds 404 with the custom 404 page and a link home", async ({
     page,
   }) => {
