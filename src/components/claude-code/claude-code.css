@@ -98,9 +98,16 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  width: 100%;
   padding: 7px 6px 3px;
+  border-radius: 6px;
   font-size: 11.5px;
   color: var(--cc-faint);
+  text-align: left;
+  cursor: pointer;
+}
+.cc-project:hover {
+  color: var(--cc-muted);
 }
 .cc-chev {
   display: inline-grid;
@@ -117,6 +124,12 @@
   padding-left: 22px;
   color: var(--cc-muted);
   cursor: pointer;
+}
+.cc-chat-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .cc-chat-link:hover {
   background: #252422;
@@ -586,5 +599,8 @@
   .cc-caret,
   .cc-dot.is-running {
     animation: none;
+  }
+  .cc-chev {
+    transition: none;
   }
 }

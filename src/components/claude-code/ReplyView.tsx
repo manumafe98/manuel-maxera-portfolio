@@ -89,7 +89,7 @@ const AnswerBlockView = ({
             onOpenClaudeProject(block.id);
           }}
         >
-          Open {block.displayName}
+          Open {block.id}
         </button>
       );
   }

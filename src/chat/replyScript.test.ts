@@ -363,29 +363,25 @@ describe("a Command from another Claude project", () => {
       projectId: "experience",
       command: "/tldr",
       ownerId: "about-me",
-      owner: "About Me",
     },
     {
       projectId: "about-me",
       command: "/open-projects",
       ownerId: "projects",
-      owner: "Projects",
     },
     {
       projectId: "about-me",
       command: "/open-contact",
       ownerId: "contact",
-      owner: "Contact",
     },
     {
       projectId: "skills",
       command: "  /SHOW-LATEST-EXPERIENCE ",
       ownerId: "experience",
-      owner: "Experience",
     },
   ])(
-    "$command in $projectId runs nothing and answers that it lives in the $owner Chat, with a link to open it",
-    async ({ projectId, command, ownerId, owner }) => {
+    "$command in $projectId runs nothing and answers that it lives in the $ownerId Claude project, with a link to open it",
+    async ({ projectId, command, ownerId }) => {
       const events = await runToEnd(projectId, command);
 
       expect(phases(events)).toEqual([
@@ -395,13 +391,12 @@ describe("a Command from another Claude project", () => {
         "answer-block",
         "done",
       ]);
-      expect(answerText(events)).toContain(`**${owner}** Chat`);
+      expect(answerText(events)).toContain(`**${ownerId}** Claude project`);
       expect(events[events.length - 2]).toEqual({
         type: "answer-block",
         block: {
           kind: "claude-project-link",
           id: ownerId,
-          displayName: owner,
         },
       });
     },

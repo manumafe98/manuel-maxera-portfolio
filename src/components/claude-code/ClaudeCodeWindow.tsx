@@ -27,6 +27,14 @@ export const ClaudeCodeWindow = ({
   const [activeId, setActiveId] = useState<ClaudeProjectId>(
     claudeProjects[0].id,
   );
+  const [folded, setFolded] = useState<ReadonlySet<ClaudeProjectId>>(new Set());
+
+  const toggleFolded = (id: ClaudeProjectId) =>
+    setFolded((current) => {
+      const next = new Set(current);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
 
   return (
     <dialog
@@ -70,23 +78,37 @@ export const ClaudeCodeWindow = ({
           </div>
           <nav aria-label="Claude projects" className="cc-projects">
             <ul>
-              {claudeProjects.map((project) => (
-                <li key={project.id}>
-                  <div className="cc-project">
-                    <span className="cc-chev is-open">
-                      <LineIcon name="chevron" />
-                    </span>
-                    {project.id}
-                  </div>
-                  <button
-                    className="cc-chat-link"
-                    aria-current={project.id === activeId ? "page" : undefined}
-                    onClick={() => setActiveId(project.id)}
-                  >
-                    {project.displayName}
-                  </button>
-                </li>
-              ))}
+              {claudeProjects.map((project) => {
+                const open = !folded.has(project.id);
+                const chatsId = `cc-chats-${project.id}`;
+                return (
+                  <li key={project.id}>
+                    <button
+                      className="cc-project"
+                      aria-expanded={open}
+                      aria-controls={chatsId}
+                      onClick={() => toggleFolded(project.id)}
+                    >
+                      <span className={open ? "cc-chev is-open" : "cc-chev"}>
+                        <LineIcon name="chevron" />
+                      </span>
+                      {project.id}
+                    </button>
+                    <div id={chatsId} hidden={!open}>
+                      <button
+                        className="cc-chat-link"
+                        aria-current={
+                          project.id === activeId ? "page" : undefined
+                        }
+                        onClick={() => setActiveId(project.id)}
+                        title={project.title}
+                      >
+                        <span className="cc-chat-title">{project.title}</span>
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </nav>
           <div className="cc-user" aria-hidden="true">

@@ -5,8 +5,8 @@ test.skip(({ isMobile }) => isMobile, "desktop-only behaviour");
 const claudeCode = (page: Page) =>
   page.getByRole("dialog", { name: "Claude Code" });
 
-const chat = (page: Page, displayName: string) =>
-  claudeCode(page).getByRole("region", { name: displayName });
+const chat = (page: Page, title: string) =>
+  claudeCode(page).getByRole("region", { name: title });
 
 const sidebar = (page: Page) =>
   claudeCode(page).getByRole("navigation", { name: "Claude projects" });
@@ -18,11 +18,13 @@ test.beforeEach(async ({ page }) => {
 test("Claude Code opens on load with the Welcome Chat active and its intro, chip and scripted-reply placeholder", async ({
   page,
 }) => {
-  const welcome = chat(page, "Welcome");
+  const welcome = chat(page, "Getting started with Manuel's portfolio");
 
   await expect(welcome).toBeVisible();
   await expect(
-    sidebar(page).getByRole("button", { name: "Welcome" }),
+    sidebar(page).getByRole("button", {
+      name: "Getting started with Manuel's portfolio",
+    }),
   ).toHaveAttribute("aria-current", "page");
   await expect(welcome).toContainText("Manuel Maxera's portfolio");
   await expect(
@@ -36,32 +38,40 @@ test("Claude Code opens on load with the Welcome Chat active and its intro, chip
   );
 });
 
-test("clicking About Me in the sidebar shows the About Me Chat and hides Welcome", async ({
+test('clicking "Who is Manuel Maxera?" in the sidebar shows that Chat and hides the Welcome Chat', async ({
   page,
 }) => {
-  await sidebar(page).getByRole("button", { name: "About Me" }).click();
+  await sidebar(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
 
-  await expect(chat(page, "About Me")).toBeVisible();
-  await expect(chat(page, "About Me")).toContainText("/tldr");
-  await expect(chat(page, "Welcome")).toBeHidden();
+  await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
+  await expect(chat(page, "Who is Manuel Maxera?")).toContainText("/tldr");
+  await expect(
+    chat(page, "Getting started with Manuel's portfolio"),
+  ).toBeHidden();
 });
 
-test("the About Me link in the Welcome intro opens the About Me Chat", async ({
+test("the about-me link in the Welcome intro opens the about-me Chat and marks it current in the sidebar", async ({
   page,
 }) => {
-  await chat(page, "Welcome").getByRole("button", { name: "About Me" }).click();
+  await chat(page, "Getting started with Manuel's portfolio")
+    .getByRole("button", { name: "about-me", exact: true })
+    .click();
 
-  await expect(chat(page, "About Me")).toBeVisible();
+  await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
   await expect(
-    sidebar(page).getByRole("button", { name: "About Me" }),
+    sidebar(page).getByRole("button", { name: "Who is Manuel Maxera?" }),
   ).toHaveAttribute("aria-current", "page");
 });
 
 test("the /tldr chip locks the input, shows thinking that folds into 'Thought for', a get_profile tool call, then the short summary", async ({
   page,
 }) => {
-  await sidebar(page).getByRole("button", { name: "About Me" }).click();
-  const aboutMe = chat(page, "About Me");
+  await sidebar(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const aboutMe = chat(page, "Who is Manuel Maxera?");
   const input = aboutMe.getByRole("combobox", { name: "Message" });
 
   await aboutMe.getByRole("button", { name: "/tldr" }).click();
@@ -80,8 +90,10 @@ test("the /tldr chip locks the input, shows thinking that folds into 'Thought fo
 test("typing /about-me and pressing Enter streams the full background", async ({
   page,
 }) => {
-  await sidebar(page).getByRole("button", { name: "About Me" }).click();
-  const aboutMe = chat(page, "About Me");
+  await sidebar(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const aboutMe = chat(page, "Who is Manuel Maxera?");
   const input = aboutMe.getByRole("combobox", { name: "Message" });
 
   await input.fill("/about-me");
@@ -97,8 +109,10 @@ test("typing /about-me and pressing Enter streams the full background", async ({
 test("clicking a reply while it streams shows its full answer at once", async ({
   page,
 }) => {
-  await sidebar(page).getByRole("button", { name: "About Me" }).click();
-  const aboutMe = chat(page, "About Me");
+  await sidebar(page)
+    .getByRole("button", { name: "Who is Manuel Maxera?" })
+    .click();
+  const aboutMe = chat(page, "Who is Manuel Maxera?");
 
   await aboutMe.getByRole("button", { name: "/about-me" }).click();
   await aboutMe.getByRole("article", { name: "Reply" }).click();
@@ -114,7 +128,7 @@ test("clicking a reply while it streams shows its full answer at once", async ({
 test("/download-cv in the Welcome Chat shows a download card that downloads the CV PDF", async ({
   page,
 }) => {
-  const welcome = chat(page, "Welcome");
+  const welcome = chat(page, "Getting started with Manuel's portfolio");
   await welcome.getByRole("button", { name: "/download-cv" }).click();
 
   const downloading = page.waitForEvent("download");
@@ -142,7 +156,9 @@ test("Claude Code reopens from the dock after being closed", async ({
     .getByRole("button", { name: "Claude Code" })
     .click();
 
-  await expect(chat(page, "Welcome")).toBeVisible();
+  await expect(
+    chat(page, "Getting started with Manuel's portfolio"),
+  ).toBeVisible();
 });
 
 test("the dock no longer offers the Terminal or Sublime apps", async ({
@@ -155,24 +171,26 @@ test("the dock no longer offers the Terminal or Sublime apps", async ({
   await expect(dock.getByRole("button", { name: "About Me" })).toHaveCount(0);
 });
 
-test("the Experience link in the Welcome intro opens the Experience Chat", async ({
+test("the experience link in the Welcome intro opens the experience Chat and marks it current in the sidebar", async ({
   page,
 }) => {
-  await chat(page, "Welcome")
-    .getByRole("button", { name: "Experience" })
+  await chat(page, "Getting started with Manuel's portfolio")
+    .getByRole("button", { name: "experience", exact: true })
     .click();
 
-  await expect(chat(page, "Experience")).toBeVisible();
+  await expect(chat(page, "Manuel's career timeline")).toBeVisible();
   await expect(
-    sidebar(page).getByRole("button", { name: "Experience" }),
+    sidebar(page).getByRole("button", { name: "Manuel's career timeline" }),
   ).toHaveAttribute("aria-current", "page");
 });
 
 test("the /show-latest-experience chip shows a fetch_experiences latest tool call and the current AI Engineer role at Avature with its achievements", async ({
   page,
 }) => {
-  await sidebar(page).getByRole("button", { name: "Experience" }).click();
-  const experience = chat(page, "Experience");
+  await sidebar(page)
+    .getByRole("button", { name: "Manuel's career timeline" })
+    .click();
+  const experience = chat(page, "Manuel's career timeline");
 
   await experience
     .getByRole("button", { name: "/show-latest-experience" })
@@ -193,8 +211,10 @@ test("the /show-latest-experience chip shows a fetch_experiences latest tool cal
 test("the /show-full-experience chip shows a fetch_experiences all tool call and a timeline of every role, newest first", async ({
   page,
 }) => {
-  await sidebar(page).getByRole("button", { name: "Experience" }).click();
-  const experience = chat(page, "Experience");
+  await sidebar(page)
+    .getByRole("button", { name: "Manuel's career timeline" })
+    .click();
+  const experience = chat(page, "Manuel's career timeline");
 
   await experience
     .getByRole("button", { name: "/show-full-experience" })
@@ -233,4 +253,73 @@ test("the dock offers Claude Code, Software, Files and Gmail, and no VS Code", a
     dock.getByRole("button", { name: "Working Experience" }),
   ).toHaveCount(0);
   await expect(page.getByText("Visual Studio Code")).toHaveCount(0);
+});
+
+test.describe("sidebar", () => {
+  for (const { id, title } of [
+    {
+      id: "manuel-maxera-portfolio",
+      title: "Getting started with Manuel's portfolio",
+    },
+    { id: "about-me", title: "Who is Manuel Maxera?" },
+    { id: "experience", title: "Manuel's career timeline" },
+    { id: "projects", title: "Side projects showcase" },
+    { id: "skills", title: "Tech stack overview" },
+    { id: "contact", title: "Reaching out to Manuel" },
+  ]) {
+    test(`the "${title}" Chat under ${id} opens from the sidebar with its title and Claude project in the header`, async ({
+      page,
+    }) => {
+      await sidebar(page).getByRole("button", { name: title }).click();
+
+      const opened = chat(page, title);
+      await expect(opened).toBeVisible();
+      await expect(opened.getByRole("heading", { level: 2 })).toHaveText(title);
+      await expect(opened.locator("header")).toContainText(id);
+    });
+  }
+
+  test("clicking the experience Claude project folds away its Chat entry and clicking again shows it", async ({
+    page,
+  }) => {
+    const toggle = sidebar(page).getByRole("button", {
+      name: "experience",
+      exact: true,
+    });
+    const entry = sidebar(page).getByRole("button", {
+      name: "Manuel's career timeline",
+    });
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(entry).toBeVisible();
+
+    await toggle.click();
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(entry).toBeHidden();
+    await expect(
+      sidebar(page).getByRole("button", { name: "Who is Manuel Maxera?" }),
+    ).toBeVisible();
+
+    await toggle.click();
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(entry).toBeVisible();
+  });
+
+  test("folding the Claude project of the open Chat keeps that Chat open in the main pane", async ({
+    page,
+  }) => {
+    await sidebar(page)
+      .getByRole("button", { name: "Who is Manuel Maxera?" })
+      .click();
+
+    await sidebar(page)
+      .getByRole("button", { name: "about-me", exact: true })
+      .click();
+
+    await expect(
+      sidebar(page).getByRole("button", { name: "Who is Manuel Maxera?" }),
+    ).toBeHidden();
+    await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
+  });
 });

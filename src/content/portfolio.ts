@@ -260,8 +260,8 @@ export interface Command {
 
 export interface ClaudeProject {
   id: ClaudeProjectId;
-  /** The name of the project's one Chat, shown in the sidebar and header. */
-  displayName: string;
+  /** The title of the project's one Chat, shown in the sidebar and header. */
+  title: string;
   /** Opening message of the Chat. The Commands list is added after it. */
   intro: string;
   commands: Command[];
@@ -312,7 +312,7 @@ const socialsCommand: Command = {
 export const claudeProjects: ClaudeProject[] = [
   {
     id: "manuel-maxera-portfolio",
-    displayName: "Welcome",
+    title: "Getting started with Manuel's portfolio",
     intro: `Hi! This is **${profile.name}**'s portfolio, running as a Claude Code session. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
 
 Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar or from the links below, run a Command from the chips, or type \`/\` to start.`,
@@ -322,17 +322,16 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
   },
   {
     id: "about-me",
-    displayName: "About Me",
-    intro:
-      "This is the **About Me** Chat. I can tell you who Manuel is, in full or in short.",
+    title: "Who is Manuel Maxera?",
+    intro: "I can tell you who Manuel is, in full or in short.",
     commands: [aboutMeCommand, tldrCommand, downloadCvCommand, socialsCommand],
     chips: [aboutMeCommand.name, tldrCommand.name, downloadCvCommand.name],
   },
   {
     id: "experience",
-    displayName: "Experience",
+    title: "Manuel's career timeline",
     intro:
-      "This is the **Experience** Chat. I can show you what Manuel does now, or his whole career as a timeline.",
+      "I can show you what Manuel does now, or his whole career as a timeline.",
     commands: [
       showLatestExperienceCommand,
       showFullExperienceCommand,
@@ -342,25 +341,24 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
   },
   {
     id: "projects",
-    displayName: "Projects",
+    title: "Side projects showcase",
     intro:
-      "This is the **Projects** Chat. I can open the Software window with the Projects Manuel built, each with a link to its code.",
+      "I can open the Software window with the Projects Manuel built, each with a link to its code.",
     commands: [openProjectsCommand, socialsCommand],
     chips: [openProjectsCommand.name],
   },
   {
     id: "skills",
-    displayName: "Skills",
+    title: "Tech stack overview",
     intro:
-      "This is the **Skills** Chat. I can open the Files window with Manuel's tech stack, grouped by area.",
+      "I can open the Files window with Manuel's tech stack, grouped by area.",
     commands: [openSkillsCommand, socialsCommand],
     chips: [openSkillsCommand.name],
   },
   {
     id: "contact",
-    displayName: "Contact",
-    intro:
-      "This is the **Contact** Chat. I can open the Gmail window so you can send Manuel a message.",
+    title: "Reaching out to Manuel",
+    intro: "I can open the Gmail window so you can send Manuel a message.",
     commands: [openContactCommand, socialsCommand],
     chips: [openContactCommand.name],
   },

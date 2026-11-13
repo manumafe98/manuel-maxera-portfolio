@@ -5,8 +5,8 @@ test.skip(({ isMobile }) => isMobile, "desktop-only behaviour");
 const claudeCode = (page: Page) =>
   page.getByRole("dialog", { name: "Claude Code" });
 
-const chat = (page: Page, displayName: string) =>
-  claudeCode(page).getByRole("region", { name: displayName });
+const chat = (page: Page, title: string) =>
+  claudeCode(page).getByRole("region", { name: title });
 
 const sidebar = (page: Page) =>
   claudeCode(page).getByRole("navigation", { name: "Claude projects" });
@@ -26,21 +26,21 @@ const expectInFront = (locator: Locator) =>
 test.describe("Skills", () => {
   for (const { project, command, skill, app, window } of [
     {
-      project: "Projects",
+      project: "Side projects showcase",
       command: "/open-projects",
       skill: "open-projects",
       app: "ubuntu-software",
       window: "Software",
     },
     {
-      project: "Skills",
+      project: "Tech stack overview",
       command: "/open-skills",
       skill: "open-skills",
       app: "files",
       window: "Files",
     },
     {
-      project: "Contact",
+      project: "Reaching out to Manuel",
       command: "/open-contact",
       skill: "open-contact",
       app: "gmail",
@@ -65,21 +65,28 @@ test.describe("Skills", () => {
     });
   }
 
-  test("the sidebar lists Projects, Skills and Contact, and the Welcome intro links to each", async ({
+  test("the Welcome intro links to the projects, skills and contact Claude projects, and each link opens that Claude project's Chat", async ({
     page,
   }) => {
     await page.goto("/");
 
-    for (const name of ["Projects", "Skills", "Contact"]) {
-      await chat(page, "Welcome")
-        .getByRole("button", { name, exact: true })
+    for (const { id, title } of [
+      { id: "projects", title: "Side projects showcase" },
+      { id: "skills", title: "Tech stack overview" },
+      { id: "contact", title: "Reaching out to Manuel" },
+    ]) {
+      await chat(page, "Getting started with Manuel's portfolio")
+        .getByRole("button", { name: id, exact: true })
         .click();
-      await expect(chat(page, name)).toBeVisible();
-      await expect(sidebar(page).getByRole("button", { name })).toHaveAttribute(
-        "aria-current",
-        "page",
-      );
-      await sidebar(page).getByRole("button", { name: "Welcome" }).click();
+      await expect(chat(page, title)).toBeVisible();
+      await expect(
+        sidebar(page).getByRole("button", { name: title }),
+      ).toHaveAttribute("aria-current", "page");
+      await sidebar(page)
+        .getByRole("button", {
+          name: "Getting started with Manuel's portfolio",
+        })
+        .click();
     }
   });
 
@@ -87,7 +94,7 @@ test.describe("Skills", () => {
     page,
   }) => {
     await page.goto("/");
-    const welcome = chat(page, "Welcome");
+    const welcome = chat(page, "Getting started with Manuel's portfolio");
     await expect(
       welcome.getByRole("button", { name: "/download-cv" }),
     ).toBeVisible();
@@ -102,8 +109,10 @@ test.describe("Skills", () => {
     page,
   }) => {
     await page.goto("/");
-    await sidebar(page).getByRole("button", { name: "Projects" }).click();
-    const projects = chat(page, "Projects");
+    await sidebar(page)
+      .getByRole("button", { name: "Side projects showcase" })
+      .click();
+    const projects = chat(page, "Side projects showcase");
     const chip = projects.getByRole("button", { name: "/open-projects" });
     await chip.click();
     await expect(appWindow(page, "Software")).toBeVisible();
@@ -207,7 +216,9 @@ test.describe("lazy loading", () => {
 
     await page.goto("/");
     await page.waitForLoadState("networkidle");
-    await expect(chat(page, "Welcome")).toBeVisible();
+    await expect(
+      chat(page, "Getting started with Manuel's portfolio"),
+    ).toBeVisible();
     const initial = [...scripts];
     const initialBodies = await Promise.all(initial.map((s) => s.body));
 

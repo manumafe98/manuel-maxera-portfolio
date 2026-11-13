@@ -120,13 +120,9 @@ export const Chat = ({
   );
 
   return (
-    <section
-      aria-label={project.displayName}
-      hidden={!active}
-      className="cc-chat"
-    >
+    <section aria-label={project.title} hidden={!active} className="cc-chat">
       <header className="cc-chat-head">
-        <h2>{project.displayName}</h2>
+        <h2>{project.title}</h2>
         <span className="cc-muted">· {project.id}</span>
       </header>
       <div className="cc-messages" ref={listRef}>
@@ -153,7 +149,7 @@ export const Chat = ({
                         className="cc-link"
                         onClick={() => onOpenClaudeProject(link.id)}
                       >
-                        {link.displayName}
+                        {link.id}
                       </button>
                     </li>
                   ))}
