@@ -303,6 +303,11 @@ const openContactCommand: Command = {
   name: "/open-contact",
   description: "open the Gmail window to send Manuel a message",
 };
+/** Available in every Chat. */
+const socialsCommand: Command = {
+  name: "/socials",
+  description: "Manuel's LinkedIn and GitHub links",
+};
 
 export const claudeProjects: ClaudeProject[] = [
   {
@@ -311,7 +316,7 @@ export const claudeProjects: ClaudeProject[] = [
     intro: `Hi! This is **${profile.name}**'s portfolio, running as a Claude Code session. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
 
 Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar or from the links below, run a Command from the chips, or type \`/\` to start.`,
-    commands: [openContactCommand, downloadCvCommand],
+    commands: [openContactCommand, downloadCvCommand, socialsCommand],
     chips: [openContactCommand.name, downloadCvCommand.name],
     links: ["about-me", "experience", "projects", "skills", "contact"],
   },
@@ -320,7 +325,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     displayName: "About Me",
     intro:
       "This is the **About Me** Chat. I can tell you who Manuel is, in full or in short.",
-    commands: [aboutMeCommand, tldrCommand, downloadCvCommand],
+    commands: [aboutMeCommand, tldrCommand, downloadCvCommand, socialsCommand],
     chips: [aboutMeCommand.name, tldrCommand.name, downloadCvCommand.name],
   },
   {
@@ -328,7 +333,11 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     displayName: "Experience",
     intro:
       "This is the **Experience** Chat. I can show you what Manuel does now, or his whole career as a timeline.",
-    commands: [showLatestExperienceCommand, showFullExperienceCommand],
+    commands: [
+      showLatestExperienceCommand,
+      showFullExperienceCommand,
+      socialsCommand,
+    ],
     chips: [showLatestExperienceCommand.name, showFullExperienceCommand.name],
   },
   {
@@ -336,7 +345,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     displayName: "Projects",
     intro:
       "This is the **Projects** Chat. I can open the Software window with the Projects Manuel built, each with a link to its code.",
-    commands: [openProjectsCommand],
+    commands: [openProjectsCommand, socialsCommand],
     chips: [openProjectsCommand.name],
   },
   {
@@ -344,7 +353,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     displayName: "Skills",
     intro:
       "This is the **Skills** Chat. I can open the Files window with Manuel's tech stack, grouped by area.",
-    commands: [openSkillsCommand],
+    commands: [openSkillsCommand, socialsCommand],
     chips: [openSkillsCommand.name],
   },
   {
@@ -352,7 +361,7 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     displayName: "Contact",
     intro:
       "This is the **Contact** Chat. I can open the Gmail window so you can send Manuel a message.",
-    commands: [openContactCommand],
+    commands: [openContactCommand, socialsCommand],
     chips: [openContactCommand.name],
   },
 ];

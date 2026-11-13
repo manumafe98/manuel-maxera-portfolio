@@ -13,10 +13,13 @@ import {
   profile,
   projects,
   skillAreas,
+  socialLinks,
   spokenLanguages,
   type AppId,
   type ClaudeProject,
+  type ClaudeProjectId,
   type ExperienceEntry,
+  type SocialLink,
 } from "@/content/portfolio";
 
 export interface TimelineRole {
@@ -31,7 +34,11 @@ export interface TimelineRole {
 export type AnswerBlock =
   | { kind: "download-card"; fileName: string; href: string }
   /** Roles newest first. */
-  | { kind: "timeline"; roles: TimelineRole[] };
+  | { kind: "timeline"; roles: TimelineRole[] }
+  /** External links, opened in a new tab. */
+  | { kind: "links"; links: SocialLink[] }
+  /** A link that opens another Claude project's Chat. */
+  | { kind: "claude-project-link"; id: ClaudeProjectId; displayName: string };
 
 export type ReplyEvent =
   | { type: "thinking"; text: string }
@@ -211,6 +218,20 @@ Run \`/show-full-experience\` to see his whole career.`,
       { app: "gmail", opened: "contact form" },
       "Opened **Gmail** with a contact form. Write your email and a message, and Manuel will reply.",
     ),
+
+  "/socials": () => ({
+    thinking:
+      "They want to follow Manuel elsewhere. I'll fetch his social links.",
+    tool: {
+      name: "mcp__portfolio__get_socials",
+      args: "",
+      result: json(socialLinks),
+    },
+    answer: [
+      "Here's where to find Manuel:",
+      { kind: "links", links: socialLinks },
+    ],
+  }),
 };
 
 const fallback = (project: ClaudeProject): Script => ({
@@ -222,7 +243,30 @@ ${project.commands.map((c) => `- \`${c.name}\`: ${c.description}`).join("\n")}`,
   ],
 });
 
-const normalize = (input: string) => input.trim().toLowerCase();
+const elsewhere = (command: string, owner: ClaudeProject): Script => ({
+  thinking: `That Command isn't in this Chat. It belongs to another Claude project.`,
+  answer: [
+    `\`${command}\` lives in the **${owner.displayName}** Chat. Open it to run the Command there:`,
+    {
+      kind: "claude-project-link",
+      id: owner.id,
+      displayName: owner.displayName,
+    },
+  ],
+});
+
+/**
+ * The Claude project that has `command`, other than `current`. Searched from
+ * the end so a topic Claude project wins over Welcome, which repeats the
+ * call-to-action Commands of About Me and Contact.
+ */
+const ownerOf = (command: string, current: ClaudeProject) =>
+  [...claudeProjects]
+    .reverse()
+    .find((p) => p !== current && p.commands.some((c) => c.name === command));
+
+/** How a typed Command is compared: trimmed and lower case. */
+export const normalize = (input: string) => input.trim().toLowerCase();
 
 /** Splits text into word-sized pieces, grouped so a long text streams in about `ticks` events. */
 const chunk = (text: string, ticks: number) => {
@@ -308,7 +352,13 @@ export const replyTo = (
 
   const command = normalize(rawInput);
   const known = project.commands.some((c) => c.name === command);
-  const steps = plan(known ? scripts[command]() : fallback(project), random);
+  const owner = known ? undefined : ownerOf(command, project);
+  const script = known
+    ? scripts[command]()
+    : owner
+      ? elsewhere(command, owner)
+      : fallback(project);
+  const steps = plan(script, random);
 
   let skipped = false;
   let stopped = false;

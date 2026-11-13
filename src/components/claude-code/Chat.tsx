@@ -137,6 +137,7 @@ export const Chat = ({
                 key={message.id}
                 reply={message.reply}
                 onSkip={() => streamRef.current?.skip()}
+                onOpenClaudeProject={onOpenClaudeProject}
               />
             ),
           )}

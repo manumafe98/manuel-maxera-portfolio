@@ -180,7 +180,7 @@ test.describe("Top bar", () => {
     await dock(page).getByRole("button", { name: "Contact Me" }).click();
     await expect(appWindow(page, "Gmail")).toBeVisible();
 
-    await page.getByText("Socials").click();
+    await page.getByText("Socials", { exact: true }).click();
 
     for (const name of ["LinkedIn", "GitHub", "Download Curriculum"]) {
       await expectInFront(page.getByRole("link", { name }));

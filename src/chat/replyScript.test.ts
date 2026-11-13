@@ -320,3 +320,90 @@ describe("Skills", () => {
     },
   );
 });
+
+describe("/socials", () => {
+  test.each(["manuel-maxera-portfolio", "about-me", "experience", "contact"])(
+    "/socials in %s calls mcp__portfolio__get_socials() and ends with Manuel's LinkedIn and GitHub links",
+    async (projectId) => {
+      const events = await runToEnd(projectId, "/socials");
+
+      expect(phases(events)).toEqual([
+        "thinking",
+        "thinking-done",
+        "tool-call",
+        "tool-result",
+        "answer-chunk",
+        "answer-block",
+        "done",
+      ]);
+      expect(toolCall(events)).toMatchObject({
+        name: "mcp__portfolio__get_socials",
+        args: "",
+      });
+      expect(events[events.length - 2]).toEqual({
+        type: "answer-block",
+        block: {
+          kind: "links",
+          links: [
+            {
+              name: "LinkedIn",
+              url: "https://www.linkedin.com/in/manuelmaxera/",
+            },
+            { name: "GitHub", url: "https://github.com/manumafe98" },
+          ],
+        },
+      });
+    },
+  );
+});
+
+describe("a Command from another Claude project", () => {
+  test.each([
+    {
+      projectId: "experience",
+      command: "/tldr",
+      ownerId: "about-me",
+      owner: "About Me",
+    },
+    {
+      projectId: "about-me",
+      command: "/open-projects",
+      ownerId: "projects",
+      owner: "Projects",
+    },
+    {
+      projectId: "about-me",
+      command: "/open-contact",
+      ownerId: "contact",
+      owner: "Contact",
+    },
+    {
+      projectId: "skills",
+      command: "  /SHOW-LATEST-EXPERIENCE ",
+      ownerId: "experience",
+      owner: "Experience",
+    },
+  ])(
+    "$command in $projectId runs nothing and answers that it lives in the $owner Chat, with a link to open it",
+    async ({ projectId, command, ownerId, owner }) => {
+      const events = await runToEnd(projectId, command);
+
+      expect(phases(events)).toEqual([
+        "thinking",
+        "thinking-done",
+        "answer-chunk",
+        "answer-block",
+        "done",
+      ]);
+      expect(answerText(events)).toContain(`**${owner}** Chat`);
+      expect(events[events.length - 2]).toEqual({
+        type: "answer-block",
+        block: {
+          kind: "claude-project-link",
+          id: ownerId,
+          displayName: owner,
+        },
+      });
+    },
+  );
+});
