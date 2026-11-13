@@ -1,18 +1,18 @@
-import { gridSkills } from "@/content/portfolio";
+import { gridTechSkills } from "@/content/portfolio";
 import {
   DocumentsIcon,
   DownloadsIcon,
   HomeIcon,
   RecentIcon,
   SearchIcon,
-  SkillsIcon,
   StarredIcon,
+  TechSkillsIcon,
   UnfilledArrowLeftIcon,
   UnfilledArrowRightIcon,
 } from "@/icons";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
-import { skillIcons } from "./skillIcons";
+import { techSkillIcons } from "./techSkillIcons";
 
 export const FileManagerWindow = ({
   open,
@@ -53,7 +53,7 @@ export const FileManagerWindow = ({
     },
     {
       name: "Skills",
-      icon: SkillsIcon,
+      icon: TechSkillsIcon,
       iconSize: "w-5 h-5",
       styles: "h-8 gap-2 bg-gray-50/20",
     },
@@ -85,7 +85,7 @@ export const FileManagerWindow = ({
           </div>
           <div className="flex items-center justify-start gap-2 w-80 h-8 bg-gray-50/20 rounded-md opacity-80 border border-solid border-black">
             <span>
-              <SkillsIcon
+              <TechSkillsIcon
                 aria-hidden="true"
                 className="white-icon ml-2 w-6 h-6"
               />
@@ -123,16 +123,16 @@ export const FileManagerWindow = ({
             aria-label="Skills"
             className="grid grid-cols-7 gap-y-4 mx-4 my-4"
           >
-            {gridSkills.map((skill) => {
-              const SkillIcon = skillIcons[skill];
+            {gridTechSkills.map((techSkill) => {
+              const TechSkillIcon = techSkillIcons[techSkill];
               return (
-                <li key={skill} className="flex flex-col items-center">
-                  <SkillIcon
+                <li key={techSkill} className="flex flex-col items-center">
+                  <TechSkillIcon
                     aria-hidden="true"
-                    className={`${skill === "Hardhat" ? "mb-1.5" : "w-12 h-12"} transition-transform duration-300 hover:scale-110`}
+                    className={`${techSkill === "Hardhat" ? "mb-1.5" : "w-12 h-12"} transition-transform duration-300 hover:scale-110`}
                   />
                   <span className="text-white text-md text-center">
-                    {skill}
+                    {techSkill}
                   </span>
                 </li>
               );

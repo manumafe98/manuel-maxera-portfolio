@@ -42,9 +42,9 @@ export interface Project {
   liveUrl?: string;
 }
 
-export interface SkillArea {
+export interface TechSkillArea {
   area: string;
-  skills: string[];
+  techSkills: string[];
 }
 
 export interface SocialLink {
@@ -169,18 +169,32 @@ export const projects: Project[] = [
   },
 ];
 
-export const skillAreas: SkillArea[] = [
+export const techSkillAreas: TechSkillArea[] = [
   {
     area: "Languages",
-    skills: ["Python", "PHP", "TypeScript", "Java", "Solidity", "JavaScript"],
+    techSkills: [
+      "Python",
+      "PHP",
+      "TypeScript",
+      "Java",
+      "Solidity",
+      "JavaScript",
+    ],
   },
   {
     area: "Frameworks",
-    skills: ["FastAPI", "Hardhat", "Foundry", "React", "Spring", "Tailwind"],
+    techSkills: [
+      "FastAPI",
+      "Hardhat",
+      "Foundry",
+      "React",
+      "Spring",
+      "Tailwind",
+    ],
   },
   {
     area: "AI engineering",
-    skills: [
+    techSkills: [
       "LangGraph",
       "LangChain",
       "MCP",
@@ -193,11 +207,17 @@ export const skillAreas: SkillArea[] = [
   },
   {
     area: "Search and backend",
-    skills: ["Elasticsearch", "Vector search", "Embeddings", "Redis", "Celery"],
+    techSkills: [
+      "Elasticsearch",
+      "Vector search",
+      "Embeddings",
+      "Redis",
+      "Celery",
+    ],
   },
   {
     area: "Quality and observability",
-    skills: [
+    techSkills: [
       "GitLab CI",
       "Docker",
       "OpenTelemetry",
@@ -211,14 +231,21 @@ export const skillAreas: SkillArea[] = [
   },
   {
     area: "AI developer tooling",
-    skills: ["Devin", "Windsurf", "Codex", "Opencode", "Claude Code", "herdr"],
+    techSkills: [
+      "Devin",
+      "Windsurf",
+      "Codex",
+      "Opencode",
+      "Claude Code",
+      "herdr",
+    ],
   },
 ];
 
 /**
- * CV skills that are practices rather than tools. They have no logo, so the
- * skills grid leaves them out; llms.txt and the no-JavaScript page still list
- * them under their areas.
+ * CV Tech skills that are practices rather than tools. They have no logo, so
+ * the Tech skill grid leaves them out; llms.txt and the no-JavaScript page
+ * still list them under their areas.
  */
 const practices = new Set([
   "RAG",
@@ -230,11 +257,11 @@ const practices = new Set([
 
 /**
  * The tools from every area as one flat list, in CV order: what the Files
- * window and the phone skills card show.
+ * window and the phone Tech skills card show.
  */
-export const gridSkills: string[] = skillAreas
-  .flatMap((area) => area.skills)
-  .filter((skill) => !practices.has(skill));
+export const gridTechSkills: string[] = techSkillAreas
+  .flatMap((area) => area.techSkills)
+  .filter((techSkill) => !practices.has(techSkill));
 
 export const education: Education[] = [
   {

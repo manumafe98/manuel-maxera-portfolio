@@ -3,8 +3,8 @@ import {
   experience,
   profile,
   projects,
-  skillAreas,
   socialLinks,
+  techSkillAreas,
 } from "@/content/portfolio";
 
 /**
@@ -71,12 +71,12 @@ export const NoscriptContent = () => (
 
     <section aria-labelledby="noscript-skills">
       <h2 id="noscript-skills">Skills</h2>
-      {skillAreas.map((area) => (
+      {techSkillAreas.map((area) => (
         <div key={area.area}>
           <h3>{area.area}</h3>
           <ul>
-            {area.skills.map((skill) => (
-              <li key={skill}>{skill}</li>
+            {area.techSkills.map((techSkill) => (
+              <li key={techSkill}>{techSkill}</li>
             ))}
           </ul>
         </div>

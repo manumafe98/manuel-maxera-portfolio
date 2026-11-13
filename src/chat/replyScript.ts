@@ -10,7 +10,7 @@ import {
   cv,
   education,
   experience,
-  gridSkills,
+  gridTechSkills,
   profile,
   projects,
   socialLinks,
@@ -226,16 +226,16 @@ Run \`/show-full-experience\` to see his whole career.`,
   "/open-skills": skill(
     "open-skills",
     "files",
-    { app: "files", skills: gridSkills.length },
+    { app: "files", skills: gridTechSkills.length },
     {
       windows: {
         thinking:
           "They want Manuel's tech stack. I'll launch the Files window with his skills.",
-        summary: `Opened **Files** with ${gridSkills.length} skills.`,
+        summary: `Opened **Files** with ${gridTechSkills.length} skills.`,
       },
       cards: {
         thinking: "They want Manuel's tech stack. I'll show his skills.",
-        summary: `Here are Manuel's ${gridSkills.length} skills:`,
+        summary: `Here are Manuel's ${gridTechSkills.length} skills:`,
       },
     },
   ),

@@ -5,9 +5,9 @@ import {
   profile,
   projects,
   site,
-  skillAreas,
   socialLinks,
   spokenLanguages,
+  techSkillAreas,
 } from "@/content/portfolio";
 
 const absolute = (path: string) => new URL(path, site.url).href;
@@ -60,7 +60,9 @@ const llmsTxt = () =>
     ]),
     "## Skills",
     "",
-    ...skillAreas.map(({ area, skills }) => `- ${area}: ${skills.join(", ")}`),
+    ...techSkillAreas.map(
+      ({ area, techSkills }) => `- ${area}: ${techSkills.join(", ")}`,
+    ),
     "",
     "## Education",
     "",

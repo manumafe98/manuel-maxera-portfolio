@@ -1,8 +1,8 @@
-import { gridSkills, projects, type AppId } from "@/content/portfolio";
+import { gridTechSkills, projects, type AppId } from "@/content/portfolio";
 import { GithubIcon, WebLinkIcon } from "@/icons";
 import type { MouseEvent } from "react";
 import { initials } from "../initials";
-import { skillIcons } from "../skillIcons";
+import { techSkillIcons } from "../techSkillIcons";
 import { ContactCard } from "./ContactCard";
 
 /** Links inside a reply must not also trigger skip-to-end. */
@@ -59,15 +59,15 @@ const ProjectsCard = () => (
   </ul>
 );
 
-const SkillsCard = () => (
-  <div className="cc-card cc-skills">
+const TechSkillsCard = () => (
+  <div className="cc-card cc-tech-skills">
     <ul aria-label="Skills" className="cc-tags">
-      {gridSkills.map((skill) => {
-        const Icon = skillIcons[skill];
+      {gridTechSkills.map((techSkill) => {
+        const Icon = techSkillIcons[techSkill];
         return (
-          <li key={skill} className="cc-tag">
+          <li key={techSkill} className="cc-tag">
             <Icon aria-hidden="true" />
-            {skill}
+            {techSkill}
           </li>
         );
       })}
@@ -81,7 +81,7 @@ export const SkillCard = ({ app }: { app: AppId }) => {
     case "ubuntu-software":
       return <ProjectsCard />;
     case "files":
-      return <SkillsCard />;
+      return <TechSkillsCard />;
     case "gmail":
       return <ContactCard />;
   }
