@@ -2,6 +2,8 @@ import { ApplicationsMenu } from "@/components/ApplicationsMenu";
 import { appWindowIds, appWindows } from "@/components/appWindows";
 import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
 import { PhoneClaudeCode } from "@/components/claude-code/PhoneClaudeCode";
+import { CloseWindowButton } from "@/components/CloseWindowButton";
+import { LoadError, LoadErrorBoundary } from "@/components/LoadErrorBoundary";
 import { TopBar } from "@/components/TopBar";
 import type { AppWindowId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
@@ -62,12 +64,32 @@ export const HomePage = () => {
           onOpenApp={bringToFront}
         />
         {appWindowIds.map((id) => {
-          const { Window } = appWindows[id];
+          const { Window, dock } = appWindows[id];
+          const props = windowProps(id);
           return (
             loaded.includes(id) && (
-              <Suspense key={id} fallback={null}>
-                <Window {...windowProps(id)} />
-              </Suspense>
+              <LoadErrorBoundary
+                key={id}
+                fallback={
+                  <dialog
+                    open={props.open}
+                    style={{ zIndex: props.zIndex }}
+                    onPointerDown={props.onFocus}
+                    aria-label={dock.label}
+                    className="window-frame h-fit flex items-center gap-4 p-4 bg-ubuntu-options text-white"
+                  >
+                    <LoadError />
+                    <CloseWindowButton
+                      onClose={props.onClose}
+                      className="bg-gray-50/20 hover:bg-gray-50/15"
+                    />
+                  </dialog>
+                }
+              >
+                <Suspense fallback={null}>
+                  <Window {...props} />
+                </Suspense>
+              </LoadErrorBoundary>
             )
           );
         })}

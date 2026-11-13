@@ -3,6 +3,7 @@ import type { ReplyState } from "@/chat/replyState";
 import type { ClaudeProjectId } from "@/content/portfolio";
 import { Suspense, useState, type MouseEvent } from "react";
 import { appWindows } from "../appWindows";
+import { LoadError, LoadErrorBoundary } from "../LoadErrorBoundary";
 import { LineIcon } from "./LineIcon";
 import { Markdown } from "./Markdown";
 
@@ -85,11 +86,13 @@ const AnswerBlockView = ({
       // Skill cards only show on phones, so their code loads when a Skill runs.
       const { Card } = appWindows[block.app];
       return (
-        <Suspense
-          fallback={<div className="cc-muted cc-shimmer">Loading…</div>}
-        >
-          <Card />
-        </Suspense>
+        <LoadErrorBoundary fallback={<LoadError />}>
+          <Suspense
+            fallback={<div className="cc-muted cc-shimmer">Loading…</div>}
+          >
+            <Card />
+          </Suspense>
+        </LoadErrorBoundary>
       );
     }
     case "claude-project-link":
