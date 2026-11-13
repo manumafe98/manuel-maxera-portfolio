@@ -21,6 +21,11 @@ export interface Profile {
   shortSummary: string;
   /** The career from the first role to the current one, as a short phrase. */
   careerPath: string;
+  /**
+   * Topics for the JSON-LD Person's knowsAbout. Each must also appear in the
+   * page text (the summary and Tech skills), so the claim is visible.
+   */
+  knowsAbout: readonly string[];
 }
 
 export interface ExperienceEntry {
@@ -76,6 +81,14 @@ export const profile: Profile = {
   shortSummary:
     "AI Engineer at Avature building production LLM agents and MCP integrations with Python, FastAPI, LangGraph and AWS Bedrock. Background in full-stack product engineering and cloud infrastructure.",
   careerPath: "from Unix sysadmin to AI engineer",
+  knowsAbout: [
+    "LLM agents",
+    "Model Context Protocol",
+    "Python",
+    "FastAPI",
+    "LangGraph",
+    "AWS Bedrock",
+  ],
 };
 
 export const experience: ExperienceEntry[] = [

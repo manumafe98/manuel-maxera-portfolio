@@ -215,6 +215,32 @@ test.describe("with JavaScript disabled", () => {
     });
     expect(person.sameAs).toEqual(expect.arrayContaining([LINKEDIN, GITHUB]));
   });
+
+  test("/ HTML has a JSON-LD Person whose knowsAbout terms all appear in the page text", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    const person = JSON.parse(
+      (await page
+        .locator('script[type="application/ld+json"]')
+        .textContent()) ?? "",
+    );
+    const pageText = await page.locator("body").innerText();
+
+    expect(person.knowsAbout).toEqual(
+      expect.arrayContaining([
+        "LLM agents",
+        "Model Context Protocol",
+        "Python",
+        "FastAPI",
+        "LangGraph",
+        "AWS Bedrock",
+      ]),
+    );
+    for (const term of person.knowsAbout) {
+      expect(pageText, term).toContain(term);
+    }
+  });
 });
 
 test("with JavaScript on, the noscript content is not shown", async ({
