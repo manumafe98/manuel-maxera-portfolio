@@ -6,7 +6,7 @@ export type TechSkillGridFrame = "window" | "chat";
 
 const styles = {
   window: {
-    list: "grid grid-cols-7 gap-y-4 mx-4 my-4",
+    list: "grid grid-cols-7 gap-y-4 mx-4 mt-4 mb-12",
     item: "flex flex-col items-center",
     icon: "w-12 h-12 transition-transform duration-300 hover:scale-110",
     name: "text-white text-md text-center",

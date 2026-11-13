@@ -164,6 +164,45 @@ test.describe("Skills", () => {
   });
 });
 
+test.describe("at 1280x720", () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+
+  test("the Files window fits the screen, cuts off no skill label, and shows the top of the next row of logos to hint that the grid scrolls", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await dock(page).getByRole("button", { name: "My Skills" }).click();
+    const files = appWindow(page, "Files");
+    const grid = files.getByRole("list", { name: "Skills" });
+    await expect(grid).toBeVisible();
+
+    const layout = await grid.evaluate((list) => {
+      const scroller = list.parentElement!;
+      const view = scroller.getBoundingClientRect();
+      const items = [...list.querySelectorAll("li")].map((item) => ({
+        icon: item.querySelector("svg, img")!.getBoundingClientRect(),
+        label: item.querySelector("span")!.getBoundingClientRect(),
+      }));
+      return {
+        windowBottom: scroller.closest("dialog")!.getBoundingClientRect()
+          .bottom,
+        scrolls: scroller.scrollHeight > scroller.clientHeight,
+        cutLabels: items.filter(
+          ({ label }) => label.top < view.bottom && label.bottom > view.bottom,
+        ).length,
+        peekingIcons: items.filter(
+          ({ icon }) => icon.top < view.bottom && icon.bottom > view.bottom,
+        ).length,
+      };
+    });
+
+    expect(layout.windowBottom).toBeLessThanOrEqual(720);
+    expect(layout.scrolls).toBe(true);
+    expect(layout.cutLabels).toBe(0);
+    expect(layout.peekingIcons).toBeGreaterThan(0);
+  });
+});
+
 test.describe("dock", () => {
   for (const { button, window } of [
     { button: "My Projects", window: "Software" },
