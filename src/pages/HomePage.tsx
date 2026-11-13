@@ -2,13 +2,45 @@ import jammy_wallpaper from "@/assets/jammy_wallpaper.webp";
 import { ActivitiesBar } from "@/components/ActivitiesBar";
 import { ApplicationsMenu } from "@/components/ApplicationsMenu";
 import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
-import { FileManagerDialog } from "@/components/FileManagerDialog";
-import { GmailDialog } from "@/components/GmailDialog";
-import { UbuntuSoftwareDialog } from "@/components/UbuntuSoftwareDialog";
+import type { AppId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
+import type { DialogProps } from "@/types/dialog.types";
 import "cally";
-import { ElementType, RefObject, useEffect, useRef, useState } from "react";
+import { ElementType, lazy, Suspense, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+
+// App windows load on first open, so they stay out of the initial bundle.
+const UbuntuSoftwareDialog = lazy(() =>
+  import("@/components/UbuntuSoftwareDialog").then((m) => ({
+    default: m.UbuntuSoftwareDialog,
+  })),
+);
+const FileManagerDialog = lazy(() =>
+  import("@/components/FileManagerDialog").then((m) => ({
+    default: m.FileManagerDialog,
+  })),
+);
+const GmailDialog = lazy(() =>
+  import("@/components/GmailDialog").then((m) => ({
+    default: m.GmailDialog,
+  })),
+);
+
+/** A window on the Desktop, named as the dock's data-value. */
+type ApplicationName =
+  "claudecode" | "ubuntusoftware" | "filemanager" | "gmail";
+
+const applicationForApp: Record<AppId, ApplicationName> = {
+  "ubuntu-software": "ubuntusoftware",
+  files: "filemanager",
+  gmail: "gmail",
+};
+
+const lazyWindows = [
+  ["ubuntusoftware", UbuntuSoftwareDialog],
+  ["filemanager", FileManagerDialog],
+  ["gmail", GmailDialog],
+] as const;
 
 export const HomePage = () => {
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(
@@ -16,47 +48,12 @@ export const HomePage = () => {
   );
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
   const [calendarDay, setCalendarDay] = useState<string>("");
-  const openGmailDialogRef = useRef<HTMLDialogElement>(null);
-  const openUbuntuSoftwareDialogRef = useRef<HTMLDialogElement>(null);
-  const openClaudeCodeDialogRef = useRef<HTMLDialogElement>(null);
-  const openFileManagerDialogRef = useRef<HTMLDialogElement>(null);
   const location = useLocation();
 
-  type ApplicationName =
-    "gmail" | "claudecode" | "ubuntusoftware" | "filemanager";
-
-  const applicationToRefRelation: Record<
-    ApplicationName,
-    RefObject<HTMLDialogElement | null>
-  > = {
-    gmail: openGmailDialogRef,
-    claudecode: openClaudeCodeDialogRef,
-    ubuntusoftware: openUbuntuSoftwareDialogRef,
-    filemanager: openFileManagerDialogRef,
-  };
-
-  const [dialogStack, setDialogStack] = useState<string[]>([]);
-  const zIndexRef = useRef<Record<string, number>>({
-    claudecode: 0,
-    gmail: 0,
-    ubuntusoftware: 0,
-    filemanager: 0,
-  });
-
-  useEffect(() => {
-    dialogStack.forEach((dialog, index) => {
-      zIndexRef.current[dialog] = (index + 1) * 10;
-    });
-
-    (Object.keys(applicationToRefRelation) as ApplicationName[]).forEach(
-      (appName) => {
-        if (applicationToRefRelation[appName].current) {
-          applicationToRefRelation[appName].current!.style.zIndex =
-            `${zIndexRef.current[appName]}`;
-        }
-      },
-    );
-  }, [dialogStack]);
+  /** Open windows, back to front. Claude Code opens by default. */
+  const [stack, setStack] = useState<ApplicationName[]>(["claudecode"]);
+  /** Windows opened at least once, so their code has been requested. */
+  const [loaded, setLoaded] = useState<ApplicationName[]>(["claudecode"]);
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -68,41 +65,25 @@ export const HomePage = () => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  useEffect(() => {
-    if (openClaudeCodeDialogRef.current) {
-      openClaudeCodeDialogRef.current.show();
-      setDialogStack((prevStack) => {
-        const newStack = prevStack.filter((app) => app !== "claudecode");
-        return [...newStack, "claudecode"];
-      });
-    }
-  }, [openClaudeCodeDialogRef]);
-
-  const handleDialogPopUp = (dialog: string | undefined) => {
-    const appName = dialog?.toLowerCase().replace(" ", "") as ApplicationName;
-
-    setDialogStack((prevStack) => {
-      const newStack = prevStack.filter((app) => app !== appName);
-      return [...newStack, appName];
-    });
-
-    if (applicationToRefRelation[appName].current) {
-      applicationToRefRelation[appName].current.show();
-    }
+  /** Opens the window, or brings it to the front when it's already open. */
+  const bringToFront = (name: ApplicationName) => {
+    setStack((current) => [...current.filter((app) => app !== name), name]);
+    setLoaded((current) =>
+      current.includes(name) ? current : [...current, name],
+    );
   };
 
-  const closeDialog = (
-    dialogRef: React.ForwardedRef<HTMLDialogElement>,
-    dialogName: string,
-  ) => {
-    setDialogStack((prevStack) =>
-      prevStack.filter((app) => app !== dialogName),
-    );
-    zIndexRef.current[dialogName] = 0;
+  const windowProps = (name: ApplicationName): DialogProps => ({
+    open: stack.includes(name),
+    zIndex: (stack.indexOf(name) + 1) * 10,
+    onClose: () => setStack((current) => current.filter((app) => app !== name)),
+    onFocus: () => {
+      if (stack[stack.length - 1] !== name) bringToFront(name);
+    },
+  });
 
-    if (dialogRef && "current" in dialogRef) {
-      dialogRef.current?.close();
-    }
+  const handleDialogPopUp = (dialog: string | undefined) => {
+    if (dialog) bringToFront(dialog as ApplicationName);
   };
 
   const handleCalendarClick = (
@@ -125,16 +106,18 @@ export const HomePage = () => {
         <Navigate to="/unavailable" state={{ from: location }} replace />
       )}
       <section className="h-screen w-screen overflow-hidden relative">
-        <ClaudeCodeWindow ref={openClaudeCodeDialogRef} onClose={closeDialog} />
-        <UbuntuSoftwareDialog
-          ref={openUbuntuSoftwareDialogRef}
-          onClose={closeDialog}
+        <ClaudeCodeWindow
+          {...windowProps("claudecode")}
+          onOpenApp={(app) => bringToFront(applicationForApp[app])}
         />
-        <FileManagerDialog
-          ref={openFileManagerDialogRef}
-          onClose={closeDialog}
-        />
-        <GmailDialog ref={openGmailDialogRef} onClose={closeDialog} />
+        {lazyWindows.map(
+          ([name, Window]) =>
+            loaded.includes(name) && (
+              <Suspense key={name} fallback={null}>
+                <Window {...windowProps(name)} />
+              </Suspense>
+            ),
+        )}
         <ActivitiesBar openCalendar={handleCalendarClick} />
         <ApplicationsMenu openIconDialog={handleDialogPopUp} />
         <img

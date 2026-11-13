@@ -29,6 +29,13 @@ export default defineConfig({
     command: `npm run build && npm run preview -- --port ${port} --strictPort`,
     url: `http://localhost:${port}`,
     reuseExistingServer: false,
+    // Placeholder EmailJS settings so the contact form sends a request,
+    // which the tests intercept with page.route. No real email is sent.
+    env: {
+      EMAILJS_SERVICE_ID: "service_e2e",
+      EMAILJS_TEMPLATE_ID: "template_e2e",
+      EMAILJS_USER_PUBLIC_KEY: "public_key_e2e",
+    },
     timeout: 120_000,
   },
 });

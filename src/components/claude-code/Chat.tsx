@@ -6,6 +6,7 @@ import {
 } from "@/chat/replyState";
 import {
   claudeProjects,
+  type AppId,
   type ClaudeProject,
   type ClaudeProjectId,
 } from "@/content/portfolio";
@@ -22,10 +23,17 @@ interface ChatProps {
   project: ClaudeProject;
   active: boolean;
   onOpenClaudeProject: (id: ClaudeProjectId) => void;
+  /** Handles a Skill's "open app" event. */
+  onOpenApp: (app: AppId) => void;
 }
 
 /** The single scripted Chat of a Claude project. */
-export const Chat = ({ project, active, onOpenClaudeProject }: ChatProps) => {
+export const Chat = ({
+  project,
+  active,
+  onOpenClaudeProject,
+  onOpenApp,
+}: ChatProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -55,6 +63,7 @@ export const Chat = ({ project, active, onOpenClaudeProject }: ChatProps) => {
     ]);
 
     for await (const event of stream) {
+      if (event.type === "open-app") onOpenApp(event.app);
       setMessages((current) =>
         current.map((message) =>
           message.id === replyId && message.kind === "reply"

@@ -50,6 +50,14 @@ export const ReplyView = ({ reply, onSkip }: ReplyViewProps) => {
         <div className="cc-thinking-text">{reply.thinking}</div>
       )}
 
+      {reply.skill && (
+        <div className="cc-skill cc-mono">
+          <span className="cc-dot is-done" />
+          Skill({reply.skill})
+          <span className="cc-muted">Successfully loaded skill</span>
+        </div>
+      )}
+
       {reply.tool && (
         <div className="cc-tool">
           <button

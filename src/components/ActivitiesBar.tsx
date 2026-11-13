@@ -83,7 +83,8 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
   };
 
   return (
-    <div className="bg-ubuntu-navbar h-11">
+    // Above the App windows, whose z-index grows as they stack.
+    <div className="bg-ubuntu-navbar h-11 relative z-50">
       <div className="flex justify-between items-center mx-5">
         <span className="text-white select-none">Activities</span>
         <div
