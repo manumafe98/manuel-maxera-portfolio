@@ -1,3 +1,4 @@
+import { matchingCommands } from "@/chat/commandMenu";
 import { replyTo, type ReplyStream } from "@/chat/replyScript";
 import {
   applyReplyEvent,
@@ -10,7 +11,7 @@ import {
   type ClaudeProject,
   type ClaudeProjectId,
 } from "@/content/portfolio";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { LineIcon } from "./LineIcon";
 import { Markdown } from "./Markdown";
 import { ReplyView } from "./ReplyView";
@@ -41,6 +42,15 @@ export const Chat = ({
   const nextId = useRef(0);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [menuDismissed, setMenuDismissed] = useState(false);
+  const [highlighted, setHighlighted] = useState(0);
+  const menuId = useId();
+  const optionId = (index: number) => `${menuId}-option-${index}`;
+
+  const options =
+    streaming || menuDismissed ? [] : matchingCommands(project, input);
+  const menuOpen = options.length > 0;
+  const activeOption = Math.min(highlighted, options.length - 1);
 
   useEffect(() => () => streamRef.current?.stop(), []);
 
@@ -52,6 +62,9 @@ export const Chat = ({
     if (streamRef.current || !text.trim()) return;
     const stream = replyTo(project.id, text);
     streamRef.current = stream;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      stream.skip();
+    }
     const userId = nextId.current++;
     const replyId = nextId.current++;
     setStreaming(true);
@@ -76,6 +89,30 @@ export const Chat = ({
     streamRef.current = null;
     setStreaming(false);
     setTimeout(() => inputRef.current?.focus());
+  };
+
+  const changeInput = (value: string) => {
+    setInput(value);
+    setHighlighted(0);
+    setMenuDismissed(false);
+  };
+
+  const onMenuKey = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (!menuOpen) return;
+    const step = { ArrowDown: 1, ArrowUp: -1 }[event.key];
+    if (step) {
+      event.preventDefault();
+      setHighlighted((activeOption + step + options.length) % options.length);
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      run(options[activeOption].name);
+    } else if (event.key === "Tab") {
+      event.preventDefault();
+      changeInput(options[activeOption].name);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setMenuDismissed(true);
+    }
   };
 
   const links = (project.links ?? []).flatMap(
@@ -164,17 +201,52 @@ export const Chat = ({
               run(input);
             }}
           >
+            {menuOpen && (
+              <ul
+                id={menuId}
+                role="listbox"
+                aria-label="Commands"
+                className="cc-menu"
+              >
+                {options.map((command, index) => (
+                  <li
+                    key={command.name}
+                    id={optionId(index)}
+                    role="option"
+                    aria-selected={index === activeOption}
+                    className="cc-menu-option"
+                    // Keep focus in the input so the keyboard keeps working.
+                    onMouseDown={(event) => event.preventDefault()}
+                    onMouseEnter={() => setHighlighted(index)}
+                    onClick={() => run(command.name)}
+                  >
+                    <code>{command.name}</code>{" "}
+                    <span className="cc-muted">{command.description}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
             <input
               ref={inputRef}
+              role="combobox"
               aria-label="Message"
+              aria-autocomplete="list"
+              aria-controls={menuId}
+              aria-expanded={menuOpen}
+              aria-activedescendant={
+                menuOpen ? optionId(activeOption) : undefined
+              }
+              autoComplete="off"
               value={input}
               disabled={streaming}
-              onChange={(event) => setInput(event.target.value)}
+              onChange={(event) => changeInput(event.target.value)}
+              onKeyDown={onMenuKey}
               placeholder="Type / for commands. Replies are scripted, no live model."
             />
             <div className="cc-composer-row">
               <span className="cc-icon-btn" aria-hidden="true">
                 <LineIcon name="plus" />
+                onOpenClaudeProject={onOpenClaudeProject}
               </span>
               <button
                 type="submit"
