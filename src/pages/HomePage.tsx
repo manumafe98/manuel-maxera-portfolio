@@ -1,13 +1,12 @@
-import jammy_wallpaper from "@/assets/jammy_wallpaper.webp";
 import { ActivitiesBar } from "@/components/ActivitiesBar";
 import { ApplicationsMenu } from "@/components/ApplicationsMenu";
 import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
+import { PhoneClaudeCode } from "@/components/claude-code/PhoneClaudeCode";
 import type { AppId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
 import type { DialogProps } from "@/types/dialog.types";
 import "cally";
-import { ElementType, lazy, Suspense, useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { ElementType, lazy, Suspense, useState } from "react";
 
 // App windows load on first open, so they stay out of the initial bundle.
 const UbuntuSoftwareDialog = lazy(() =>
@@ -43,27 +42,13 @@ const lazyWindows = [
 ] as const;
 
 export const HomePage = () => {
-  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(
-    window.innerWidth < 1024,
-  );
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
   const [calendarDay, setCalendarDay] = useState<string>("");
-  const location = useLocation();
 
   /** Open windows, back to front. Claude Code opens by default. */
   const [stack, setStack] = useState<ApplicationName[]>(["claudecode"]);
   /** Windows opened at least once, so their code has been requested. */
   const [loaded, setLoaded] = useState<ApplicationName[]>(["claudecode"]);
-
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsSmallScreen(window.innerWidth < 1024);
-    };
-
-    window.addEventListener("resize", checkScreenSize);
-
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   /** Opens the window, or brings it to the front when it's already open. */
   const bringToFront = (name: ApplicationName) => {
@@ -102,10 +87,8 @@ export const HomePage = () => {
 
   return (
     <>
-      {isSmallScreen && (
-        <Navigate to="/unavailable" state={{ from: location }} replace />
-      )}
-      <section className="h-screen w-screen overflow-hidden relative">
+      {/* Both shells render; CSS shows one of them (ADR-0002). */}
+      <section className="desktop-shell h-screen w-screen overflow-hidden relative">
         <ClaudeCodeWindow
           {...windowProps("claudecode")}
           onOpenApp={(app) => bringToFront(applicationForApp[app])}
@@ -120,11 +103,6 @@ export const HomePage = () => {
         )}
         <ActivitiesBar openCalendar={handleCalendarClick} />
         <ApplicationsMenu openIconDialog={handleDialogPopUp} />
-        <img
-          src={jammy_wallpaper}
-          alt="Ubuntu Jammy Wallpaper"
-          className="w-full h-full object-cover"
-        />
         {calendarOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">
             <div className="bg-ubuntu-navbar text-white rounded-xl p-5 shadow-lg border border-gray-600">
@@ -145,6 +123,9 @@ export const HomePage = () => {
           </div>
         )}
       </section>
+      <div className="phone-shell">
+        <PhoneClaudeCode />
+      </div>
     </>
   );
 };

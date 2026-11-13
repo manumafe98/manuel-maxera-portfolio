@@ -1,0 +1,232 @@
+/* Claude Code on phones, modeled on the Claude mobile app. */
+.ph-shell {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--cc-bg);
+  color: var(--cc-text);
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  font-size: 15px;
+}
+.ph-app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* header: menu button, current Chat title */
+.ph-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: env(safe-area-inset-top) max(8px, env(safe-area-inset-right)) 0
+    max(8px, env(safe-area-inset-left));
+  min-height: calc(56px + env(safe-area-inset-top));
+  border-bottom: 1px solid var(--cc-border);
+}
+.ph-icon-btn {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--cc-text);
+  cursor: pointer;
+}
+.ph-icon-btn svg {
+  width: 22px;
+  height: 22px;
+}
+.ph-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* the Chat: same component as on desktop, laid out for a small screen */
+.ph-main {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.ph-shell .cc-chat-head,
+.ph-shell .cc-footer {
+  display: none;
+}
+.ph-shell .cc-messages {
+  padding: 16px max(16px, env(safe-area-inset-right)) 8px
+    max(16px, env(safe-area-inset-left));
+}
+.ph-shell .cc-answer {
+  font-size: 15px;
+}
+.ph-shell .cc-user-msg {
+  font-size: 14px;
+}
+.ph-shell .cc-bottom {
+  padding: 8px max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+.ph-shell .cc-chips {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ph-shell .cc-chip {
+  flex: none;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+.ph-shell .cc-link,
+.ph-shell .cc-thought,
+.ph-shell .cc-tool-head {
+  min-height: 44px;
+}
+.ph-shell .cc-menu-option {
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+/* composer as a rounded pill: plus, input, send in one row */
+.ph-shell .cc-composer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 28px;
+}
+.ph-shell .cc-composer-row {
+  display: contents;
+}
+.ph-shell .cc-icon-btn {
+  order: -1;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+}
+.ph-shell .cc-composer input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  font-size: 16px;
+  text-overflow: ellipsis;
+}
+.ph-shell .cc-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+/* drawer: slides in from the left over a dimmed overlay */
+.ph-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.55);
+  opacity: 0;
+  visibility: hidden;
+  /* Hide only once the fade-out ends; show at once so focus can move in. */
+  transition:
+    opacity 0.2s,
+    visibility 0s 0.2s;
+}
+.ph-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s;
+}
+.ph-drawer {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: min(85vw, 340px);
+  display: flex;
+  flex-direction: column;
+  padding: calc(16px + env(safe-area-inset-top)) 12px
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: var(--cc-sidebar);
+  border-right: 1px solid var(--cc-border);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform 0.25s ease,
+    visibility 0s 0.25s;
+}
+.ph-drawer.is-open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.25s ease;
+}
+.ph-drawer-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 20px;
+  font-size: 22px;
+  font-weight: 600;
+}
+.ph-recents {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+.ph-section {
+  padding: 0 8px 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cc-faint);
+}
+.ph-recent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--cc-muted);
+  text-align: left;
+  cursor: pointer;
+}
+.ph-recent svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+.ph-recent[aria-current="page"] {
+  background: #2a2927;
+  color: var(--cc-text);
+}
+.ph-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 8px 8px 0;
+  border-top: 1px solid var(--cc-border);
+}
+.ph-user .cc-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-overlay,
+  .ph-drawer {
+    transition: none;
+  }
+}

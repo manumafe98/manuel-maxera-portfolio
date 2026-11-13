@@ -11,6 +11,8 @@ const lineIcons = {
   up: "M12 19V5M5 12l7-7 7 7",
   file: "M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8zM14 3v5h5",
   download: "M12 4v11M7 10l5 5 5-5M5 20h14",
+  menu: "M4 7h16M4 12h16M4 17h16",
+  chat: "M5 5h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H10l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z",
 };
 
 export const LineIcon = ({ name }: { name: keyof typeof lineIcons }) => (
