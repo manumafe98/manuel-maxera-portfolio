@@ -44,7 +44,7 @@ export interface Project {
 
 export interface TechSkillArea {
   area: string;
-  techSkills: string[];
+  techSkills: readonly string[];
 }
 
 export interface SocialLink {
@@ -169,7 +169,7 @@ export const projects: Project[] = [
   },
 ];
 
-export const techSkillAreas: TechSkillArea[] = [
+export const techSkillAreas = [
   {
     area: "Languages",
     techSkills: [
@@ -240,28 +240,37 @@ export const techSkillAreas: TechSkillArea[] = [
       "herdr",
     ],
   },
-];
+] as const satisfies readonly TechSkillArea[];
+
+/** Any Tech skill on the CV, tool or practice. */
+export type TechSkill = (typeof techSkillAreas)[number]["techSkills"][number];
 
 /**
  * CV Tech skills that are practices rather than tools. They have no logo, so
  * the Tech skill grid leaves them out; llms.txt and the no-JavaScript page
  * still list them under their areas.
  */
-const practices = new Set([
+const practices = [
   "RAG",
   "Prompt engineering",
   "LLM evaluation",
   "Vector search",
   "Embeddings",
-]);
+] as const satisfies readonly TechSkill[];
+
+/** A Tech skill that is a tool, so it has a logo in the Tech skill grid. */
+export type ToolTechSkill = Exclude<TechSkill, (typeof practices)[number]>;
+
+const isTool = (techSkill: TechSkill): techSkill is ToolTechSkill =>
+  !(practices as readonly TechSkill[]).includes(techSkill);
 
 /**
  * The tools from every area as one flat list, in CV order: what the Files
  * window and the phone Tech skills card show.
  */
-export const gridTechSkills: string[] = techSkillAreas
-  .flatMap((area) => area.techSkills)
-  .filter((techSkill) => !practices.has(techSkill));
+export const gridTechSkills: ToolTechSkill[] = techSkillAreas
+  .flatMap((area): readonly TechSkill[] => area.techSkills)
+  .filter(isTool);
 
 export const education: Education[] = [
   {

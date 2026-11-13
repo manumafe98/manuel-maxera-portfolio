@@ -2,6 +2,8 @@ import { ApplicationsMenu } from "@/components/ApplicationsMenu";
 import { appWindowIds, appWindows } from "@/components/appWindows";
 import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
 import { PhoneClaudeCode } from "@/components/claude-code/PhoneClaudeCode";
+import { CloseWindowButton } from "@/components/CloseWindowButton";
+import { LoadError, LoadErrorBoundary } from "@/components/LoadErrorBoundary";
 import { TopBar } from "@/components/TopBar";
 import type { AppWindowId } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
@@ -11,9 +13,16 @@ import { ElementType, Suspense, useState } from "react";
 /** A window on the Desktop: Claude Code or one of the App windows. */
 type DesktopWindowId = "claude-code" | AppWindowId;
 
+/** Today in local time as YYYY-MM-DD, the value the calendar expects. */
+const todayIso = () => {
+  const today = new Date();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${today.getFullYear()}-${month}-${day}`;
+};
+
 export const HomePage = () => {
   const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
-  const [calendarDay, setCalendarDay] = useState<string>("");
 
   /** Open windows, back to front. Claude Code opens by default. */
   const [stack, setStack] = useState<DesktopWindowId[]>(["claude-code"]);
@@ -37,17 +46,10 @@ export const HomePage = () => {
     },
   });
 
-  const handleCalendarClick = (
-    isCalendarOpen: boolean,
-    calendarValue: string,
-  ) => {
+  const toggleCalendar = () => {
     // The calendar's custom elements need a browser, so they load on first use.
     void import("cally");
-    setCalendarOpen(isCalendarOpen);
-    if (calendarValue) {
-      const formattedDate = new Date(calendarValue).toISOString().split("T")[0];
-      setCalendarDay(formattedDate);
-    }
+    setCalendarOpen((open) => !open);
   };
 
   const CalendarDate = "calendar-date" as ElementType;
@@ -62,21 +64,41 @@ export const HomePage = () => {
           onOpenApp={bringToFront}
         />
         {appWindowIds.map((id) => {
-          const { Window } = appWindows[id];
+          const { Window, dock } = appWindows[id];
+          const props = windowProps(id);
           return (
             loaded.includes(id) && (
-              <Suspense key={id} fallback={null}>
-                <Window {...windowProps(id)} />
-              </Suspense>
+              <LoadErrorBoundary
+                key={id}
+                fallback={
+                  <dialog
+                    open={props.open}
+                    style={{ zIndex: props.zIndex }}
+                    onPointerDown={props.onFocus}
+                    aria-label={dock.label}
+                    className="window-frame h-fit flex items-center gap-4 p-4 bg-ubuntu-options text-white"
+                  >
+                    <LoadError />
+                    <CloseWindowButton
+                      onClose={props.onClose}
+                      className="bg-gray-50/20 hover:bg-gray-50/15"
+                    />
+                  </dialog>
+                }
+              >
+                <Suspense fallback={null}>
+                  <Window {...props} />
+                </Suspense>
+              </LoadErrorBoundary>
             )
           );
         })}
-        <TopBar openCalendar={handleCalendarClick} />
+        <TopBar onToggleCalendar={toggleCalendar} />
         <ApplicationsMenu openWindow={bringToFront} />
         {calendarOpen && (
           <div className="absolute left-1/2 -translate-x-1/2 top-12 z-50">
             <div className="bg-ubuntu-top-bar text-white rounded-xl p-5 shadow-lg border border-gray-600">
-              <CalendarDate value={calendarDay}>
+              <CalendarDate value={todayIso()}>
                 <LeftArrowIcon
                   className="calendar-icon"
                   aria-label="Previous"

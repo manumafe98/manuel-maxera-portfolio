@@ -24,13 +24,13 @@ const clockText = (now: Date) =>
     .toLowerCase();
 
 interface TopBarProps {
-  openCalendar: (isCalendarOpen: boolean, calendarValue: string) => void;
+  /** Called on every click of the clock; the Desktop opens or closes the calendar. */
+  onToggleCalendar: () => void;
 }
 
-export const TopBar = ({ openCalendar }: TopBarProps) => {
+export const TopBar = ({ onToggleCalendar }: TopBarProps) => {
   const [formattedDate, setFormattedDate] = useState<string>("");
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
-  const [calendarOpen, setCalendarOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const updateTime = () => setFormattedDate(clockText(new Date()));
@@ -38,20 +38,6 @@ export const TopBar = ({ openCalendar }: TopBarProps) => {
     const timer = setInterval(updateTime, CLOCK_TICK_MS);
     return () => clearInterval(timer);
   }, []);
-
-  const formatDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  };
-
-  const handleCalendarClick = () => {
-    setCalendarOpen(!calendarOpen);
-    openCalendar(calendarOpen, formatDate());
-  };
 
   const socialIcons = { LinkedIn: LinkedinIcon, GitHub: GithubIcon };
 
@@ -81,7 +67,7 @@ export const TopBar = ({ openCalendar }: TopBarProps) => {
         <span className="text-white select-none">Activities</span>
         <div
           className="rounded-3xl p-2 text-white hover:bg-gray-50/10 cursor-pointer select-none"
-          onClick={handleCalendarClick}
+          onClick={onToggleCalendar}
         >
           {formattedDate}
         </div>
