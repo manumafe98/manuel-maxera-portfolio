@@ -1,3 +1,4 @@
+import { cv, socialLinks } from "@/content/portfolio";
 import {
   CurriculumIcon,
   FilledArrowDownIcon,
@@ -60,24 +61,20 @@ export const ActivitiesBar = ({ openCalendar }: ActivitiesBarProps) => {
     openCalendar(calendarOpen, formatDate());
   };
 
+  const socialIcons = { LinkedIn: LinkedinIcon, GitHub: GithubIcon };
+
   const activities = [
-    {
-      name: "Linkedin",
-      href: "https://www.linkedin.com/in/manuel-maxera/",
-      icon: LinkedinIcon,
+    ...socialLinks.map((socialLink) => ({
+      name: socialLink.name,
+      href: socialLink.url,
+      icon: socialIcons[socialLink.name],
       props: { rel: "noopener noreferrer", target: "_blank" },
-    },
-    {
-      name: "Github",
-      href: "https://github.com/manumafe98",
-      icon: GithubIcon,
-      props: { rel: "noopener noreferrer", target: "_blank" },
-    },
+    })),
     {
       name: "Download Curriculum",
-      href: "/files/Manuel_Maxera_Resume.pdf",
+      href: cv.path,
       icon: CurriculumIcon,
-      props: { download: "Manuel_Maxera_Resume.pdf" },
+      props: { download: cv.fileName },
     },
   ];
 

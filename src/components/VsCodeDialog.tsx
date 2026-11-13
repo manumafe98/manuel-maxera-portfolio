@@ -1,4 +1,5 @@
 import { editorOptions } from "@/constants/editorOptions";
+import { experience } from "@/content/portfolio";
 import {
   FilesIcon,
   UnfilledArrowDownIcon,
@@ -10,59 +11,13 @@ import { DialogProps } from "@/types/dialog.types";
 import { forwardRef, Fragment } from "react";
 import { CloseDialog } from "./CloseDialog";
 
+const toYamlKey = (title: string) => title.toLowerCase().replace(/\s+/g, "_");
+
 export const VsCodeDialog = forwardRef<HTMLDialogElement, DialogProps>(
   ({ onClose }, ref) => {
     const closeVsCodeDialog = () => {
       onClose(ref, "vscode");
     };
-
-    const professionalExperiences = [
-      {
-        name: "software_engineer",
-        experience: [
-          "- Develop and maintain a suite of applications across multiple technologies: PHP (core app), Java (scraping and API interaction), and TypeScript (browser extension)",
-          "- Designed and maintained a browser extension using TypeScript with a React frontend and Node.js backend",
-          "- Developed Java-based crawlers/robots to scrape job boards or communicate with their APIs, parsing responses to create user-specific datasets",
-          "- Built and maintained the core PHP application, acting as the end product for end-users and integrating functionalities from the extension and crawlers",
-          "- Conducted bug fixes, defect resolution, and implemented new features across all platforms to enhance functionality and user experience",
-          "- Collaborated with cross-functional teams to ensure seamless integration between projects",
-        ],
-      },
-      {
-        name: "cloud_engineer",
-        experience: [
-          "- Led critical cloud infrastructure operations, including server provisioning, decommissioning, and configuration management across multiple cloud platforms and Linux environments",
-          "- Managed on-call rotations, ensuring rapid response to and resolution of critical infrastructure issues",
-          "- Spearheaded proactive monitoring initiatives, collaborating with cross-functional teams to implement and optimize alerting systems, significantly improving infrastructure reliability and availability",
-          "- Designed and implemented a refined alarm severity system, drastically reducing false positives and enabling more efficient crisis management",
-          "- Initiated and drove the adoption of a team-owned alarm routing system, enhancing accountability and response times by aligning alerts with infrastructure ownership",
-          "- Developed and executed automation strategies using scripting and workflow tools, streamlining operations and reducing manual interventions",
-          "- Acted as a technical enabler, working closely with various teams to enhance their monitoring capabilities and infrastructure reliability",
-          "- Continuously optimized on-call processes, minimizing team burden while maintaining high-quality support",
-        ],
-      },
-      {
-        name: "sysadmin_unix",
-        experience: [
-          "- Administered and maintained a diverse server environment including Linux Red Hat, AIX, and Solaris systems, focusing on capacity planning, server installation, and troubleshooting",
-          "- Managed a 24/7 on-call rotation, promptly responding to and resolving critical infrastructure alerts and issues",
-          "- Developed and executed daily and scheduled maintenance tasks to optimize and improve existing infrastructure",
-          "- Successfully led server and data migration projects, ensuring minimal downtime and data integrity",
-          "- Performed server software installations and upgrades, maintaining system security and performance",
-          "- Provided technical assistance and guidance to on-site datacenter staff, enhancing overall operational efficiency",
-          "- Implemented an Ansible-based automation solution across multiple servers, significantly reducing manual ticket resolution time for specific issues",
-        ],
-      },
-      {
-        name: "helpdesk",
-        experience: [
-          "- Provided comprehensive technical support to customers via multiple channels (phone, chat, email), troubleshooting and resolving application and computer issues across Linux, Windows, and Mac systems",
-          "- Utilized remote access tools to efficiently diagnose and fix software problems, demonstrating adaptability across diverse operating systems",
-          "- Improved support efficiency by reducing average call resolution time and decreasing call abandonment rates",
-          "- Increased overall customer service capacity, resulting in a higher number of users served",
-        ],
-      },
-    ];
 
     return (
       <dialog
@@ -133,23 +88,38 @@ export const VsCodeDialog = forwardRef<HTMLDialogElement, DialogProps>(
               <span className="text-red-500">professional_experience</span>
               <span className="text-white">:</span>
               <br />
-              {professionalExperiences.map((professionalExperience, index) => (
+              {experience.map((entry, index) => (
                 <Fragment key={index}>
                   &nbsp;&nbsp;
-                  <span className="text-red-500">
-                    {professionalExperience.name}
-                  </span>
+                  <span className="text-red-500">{toYamlKey(entry.title)}</span>
                   <span className="text-white">:</span>
                   <br />
-                  {professionalExperience.experience.map(
-                    (experience, expIndex) => (
-                      <Fragment key={expIndex}>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <span className="text-green-500">{experience}</span>
-                        <br />
-                      </Fragment>
-                    ),
-                  )}
+                  {(
+                    [
+                      ["company", entry.company],
+                      ["dates", `${entry.start} - ${entry.end}`],
+                      ["location", entry.location],
+                    ] as const
+                  ).map(([key, value]) => (
+                    <Fragment key={key}>
+                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      <span className="text-red-500">{key}</span>
+                      <span className="text-white">: </span>
+                      <span className="text-green-500">{value}</span>
+                      <br />
+                    </Fragment>
+                  ))}
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <span className="text-red-500">achievements</span>
+                  <span className="text-white">:</span>
+                  <br />
+                  {entry.achievements.map((achievement, achievementIndex) => (
+                    <Fragment key={achievementIndex}>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <span className="text-green-500">- {achievement}</span>
+                      <br />
+                    </Fragment>
+                  ))}
                   <br />
                 </Fragment>
               ))}

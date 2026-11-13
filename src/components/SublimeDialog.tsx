@@ -1,8 +1,11 @@
 import { editorOptions } from "@/constants/editorOptions";
+import { profile } from "@/content/portfolio";
 import { LeftArrowIcon, RightArrowIcon, SublimeTextIcon } from "@/icons";
 import { DialogProps } from "@/types/dialog.types";
-import { forwardRef } from "react";
+import { forwardRef, Fragment } from "react";
 import { CloseDialog } from "./CloseDialog";
+
+const summaryLines = profile.summary.split(/(?<=\.) /);
 
 export const SublimeDialog = forwardRef<HTMLDialogElement, DialogProps>(
   ({ onClose }, ref) => {
@@ -46,23 +49,12 @@ export const SublimeDialog = forwardRef<HTMLDialogElement, DialogProps>(
           <div className="mx-5 mt-4 w-[calc(100vh)]">
             <span className="text-sm text-white font-sublime whitespace-nowrap">
               ## About Me
-              <br />
-              Versatile IT professional turned full-stack software engineer with
-              a strong foundation in infrastructure, automation, and cloud
-              technologies—now specializing in smart contract and blockchain
-              development.
-              <br />
-              Experienced in building and maintaining production-grade
-              applications across PHP, Java, and TypeScript, including a browser
-              extension, web crawlers, and a core backend system.
-              <br />
-              Passionate about Web3 and decentralized applications, I’ve
-              developed and deployed fullstack dApps on Ethereum using Solidity,
-              Hardhat, Foundry, and Ethers.js.
-              <br />
-              Comfortable working across the stack—from writing smart contracts
-              to building performant frontends using React, Tailwind CSS, and
-              Vite.
+              {summaryLines.map((line, index) => (
+                <Fragment key={index}>
+                  <br />
+                  {line}
+                </Fragment>
+              ))}
             </span>
           </div>
         </div>
