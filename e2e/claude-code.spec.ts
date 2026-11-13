@@ -161,7 +161,7 @@ test("Claude Code reopens from the dock after being closed", async ({
   ).toBeVisible();
 });
 
-test("the dock no longer offers the Terminal or Sublime apps", async ({
+test("the dock offers Claude Code and no Terminal or About Me app", async ({
   page,
 }) => {
   const dock = page.getByRole("navigation", { name: "Dock" });
