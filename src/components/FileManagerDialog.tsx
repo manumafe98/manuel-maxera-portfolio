@@ -1,4 +1,4 @@
-import { skillAreas } from "@/content/portfolio";
+import { gridSkills } from "@/content/portfolio";
 import {
   DocumentsIcon,
   DownloadsIcon,
@@ -124,30 +124,25 @@ export const FileManagerDialog = ({
           </div>
         </div>
         <div className="flex-1 h-[48vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-50/15 scrollbar-track-transparent">
-          {skillAreas.map((skillArea) => (
-            <section key={skillArea.area} className="mx-4 my-4">
-              <h3 className="text-white text-sm font-bold mb-3">
-                {skillArea.area}
-              </h3>
-              <div className="grid grid-cols-7 gap-y-4">
-                {skillArea.skills.map((skill) => {
-                  const SkillIcon = skillIcons[skill] ?? DocumentsIcon;
-                  const hasOwnIcon = skill in skillIcons;
-                  return (
-                    <div key={skill} className="flex flex-col items-center">
-                      <SkillIcon
-                        aria-hidden="true"
-                        className={`${skill === "Hardhat" ? "mb-1.5" : "w-12 h-12"} ${hasOwnIcon ? "" : "white-icon opacity-80"} transition-transform duration-300 hover:scale-110`}
-                      />
-                      <span className="text-white text-md text-center">
-                        {skill}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+          <ul
+            aria-label="Skills"
+            className="grid grid-cols-7 gap-y-4 mx-4 my-4"
+          >
+            {gridSkills.map((skill) => {
+              const SkillIcon = skillIcons[skill];
+              return (
+                <li key={skill} className="flex flex-col items-center">
+                  <SkillIcon
+                    aria-hidden="true"
+                    className={`${skill === "Hardhat" ? "mb-1.5" : "w-12 h-12"} transition-transform duration-300 hover:scale-110`}
+                  />
+                  <span className="text-white text-md text-center">
+                    {skill}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </dialog>

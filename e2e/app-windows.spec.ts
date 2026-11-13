@@ -65,6 +65,38 @@ test.describe("Skills", () => {
     });
   }
 
+  test("/open-skills shows all 35 skills in one Files grid with no area headings, Claude Code and herdr included, each tile with its own logo and none with the generic Documents icon", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await sidebar(page)
+      .getByRole("button", { name: "Tech stack overview" })
+      .click();
+    await chat(page, "Tech stack overview")
+      .getByRole("button", { name: "/open-skills" })
+      .click();
+    const files = appWindow(page, "Files");
+    const tiles = files
+      .getByRole("list", { name: "Skills" })
+      .getByRole("listitem");
+
+    await expect(tiles).toHaveCount(35);
+    await expect(files.getByRole("heading")).toHaveCount(0);
+    await expect(tiles.filter({ hasText: /^Claude Code$/ })).toHaveCount(1);
+    await expect(tiles.filter({ hasText: /^herdr$/ })).toHaveCount(1);
+    const logos = await tiles.evaluateAll((items) =>
+      items.map((item) => item.querySelector("svg, img")?.innerHTML ?? null),
+    );
+    expect(logos.filter((logo) => !logo)).toEqual([]);
+    expect(new Set(logos).size).toBe(logos.length);
+    const documentsIcon = await files
+      .getByText("Documents", { exact: true })
+      .locator("xpath=..")
+      .locator("svg")
+      .innerHTML();
+    expect(logos).not.toContain(documentsIcon);
+  });
+
   test("the Welcome intro links to the projects, skills and contact Claude projects, and each link opens that Claude project's Chat", async ({
     page,
   }) => {

@@ -1,4 +1,4 @@
-import { projects, skillAreas, type AppId } from "@/content/portfolio";
+import { gridSkills, projects, type AppId } from "@/content/portfolio";
 import { GithubIcon, WebLinkIcon } from "@/icons";
 import type { MouseEvent } from "react";
 import { initials } from "../initials";
@@ -61,25 +61,17 @@ const ProjectsCard = () => (
 
 const SkillsCard = () => (
   <div className="cc-card cc-skills">
-    {skillAreas.map(({ area, skills }) => {
-      const headingId = `cc-skills-${area.replace(/\W+/g, "-")}`;
-      return (
-        <section key={area} aria-labelledby={headingId}>
-          <h3 id={headingId}>{area}</h3>
-          <ul aria-labelledby={headingId} className="cc-tags">
-            {skills.map((skill) => {
-              const Icon = skillIcons[skill];
-              return (
-                <li key={skill} className="cc-tag">
-                  {Icon && <Icon aria-hidden="true" />}
-                  {skill}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      );
-    })}
+    <ul aria-label="Skills" className="cc-tags">
+      {gridSkills.map((skill) => {
+        const Icon = skillIcons[skill];
+        return (
+          <li key={skill} className="cc-tag">
+            <Icon aria-hidden="true" />
+            {skill}
+          </li>
+        );
+      })}
+    </ul>
   </div>
 );
 
