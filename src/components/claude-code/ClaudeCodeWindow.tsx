@@ -83,7 +83,7 @@ export const ClaudeCodeWindow = ({
                     aria-current={project.id === activeId ? "page" : undefined}
                     onClick={() => setActiveId(project.id)}
                   >
-                    {project.displayName}
+                    {project.title}
                   </button>
                 </li>
               ))}

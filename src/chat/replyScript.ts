@@ -38,7 +38,7 @@ export type AnswerBlock =
   /** External links, opened in a new tab. */
   | { kind: "links"; links: SocialLink[] }
   /** A link that opens another Claude project's Chat. */
-  | { kind: "claude-project-link"; id: ClaudeProjectId; displayName: string };
+  | { kind: "claude-project-link"; id: ClaudeProjectId };
 
 export type ReplyEvent =
   | { type: "thinking"; text: string }
@@ -246,12 +246,8 @@ ${project.commands.map((c) => `- \`${c.name}\`: ${c.description}`).join("\n")}`,
 const elsewhere = (command: string, owner: ClaudeProject): Script => ({
   thinking: `That Command isn't in this Chat. It belongs to another Claude project.`,
   answer: [
-    `\`${command}\` lives in the **${owner.displayName}** Chat. Open it to run the Command there:`,
-    {
-      kind: "claude-project-link",
-      id: owner.id,
-      displayName: owner.displayName,
-    },
+    `\`${command}\` lives in the **${owner.id}** Claude project. Open its Chat to run the Command there:`,
+    { kind: "claude-project-link", id: owner.id },
   ],
 });
 
