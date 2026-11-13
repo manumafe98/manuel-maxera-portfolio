@@ -284,9 +284,9 @@ ${project.commands.map((c) => `- \`${c.name}\`: ${c.description}`).join("\n")}`,
 });
 
 const elsewhere = (command: string, owner: ClaudeProject): Script => ({
-  thinking: `That Command isn't in this Chat. It belongs to another Claude project.`,
+  thinking: `That command isn't in this chat. It belongs to another Claude project.`,
   answer: [
-    `\`${command}\` lives in the **${owner.id}** Claude project. Open its Chat to run the Command there:`,
+    `\`${command}\` lives in **${owner.title}** (\`${owner.id}\`). Open that chat to run it there:`,
     { kind: "claude-project-link", id: owner.id },
   ],
 });

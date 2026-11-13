@@ -123,7 +123,7 @@ test.describe("the / list", () => {
   });
 });
 
-test("/tldr typed in the experience Chat names the about-me Claude project, and its link opens that Claude project's Chat", async ({
+test('/tldr typed in the experience Chat names the "Who is Manuel Maxera?" Chat and the about-me Claude project, and its button opens that Chat', async ({
   page,
 }) => {
   await openChat(page, "Manuel's career timeline");
@@ -135,9 +135,11 @@ test("/tldr typed in the experience Chat names the about-me Claude project, and 
     name: "Reply",
   });
   await expect(reply).toContainText(
-    "/tldr lives in the about-me Claude project",
+    "/tldr lives in Who is Manuel Maxera? (about-me)",
   );
-  await reply.getByRole("button", { name: "Open about-me" }).click();
+  await reply
+    .getByRole("button", { name: "Open Who is Manuel Maxera?" })
+    .click();
 
   await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
   await expect(chat(page, "Manuel's career timeline")).toBeHidden();
