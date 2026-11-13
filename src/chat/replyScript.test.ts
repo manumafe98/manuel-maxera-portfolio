@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { replyTo, type ReplyEvent } from "./replyScript";
+import { replyTo, type ReplyEvent, type ReplyOptions } from "./replyScript";
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -9,10 +9,16 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const runToEnd = async (projectId: string, input: string) => {
+const runToEnd = async (
+  projectId: string,
+  input: string,
+  options: ReplyOptions = {},
+) => {
   const events: ReplyEvent[] = [];
   const consumed = (async () => {
-    for await (const event of replyTo(projectId, input)) events.push(event);
+    for await (const event of replyTo(projectId, input, options)) {
+      events.push(event);
+    }
   })();
   await vi.runAllTimersAsync();
   await consumed;
@@ -317,6 +323,62 @@ describe("Skills", () => {
       const summary = answerText(events);
       expect(summary).toContain(window);
       expect(summary).not.toContain("\n");
+    },
+  );
+});
+
+describe("Skills shown as cards (phones)", () => {
+  test.each([
+    {
+      projectId: "projects",
+      command: "/open-projects",
+      skill: "open-projects",
+      app: "ubuntu-software",
+      summary: "Here are Manuel's 5 Projects, each linking to its code:",
+    },
+    {
+      projectId: "skills",
+      command: "/open-skills",
+      skill: "open-skills",
+      app: "files",
+      summary: "Here are Manuel's 38 skills in 6 areas:",
+    },
+    {
+      projectId: "contact",
+      command: "/open-contact",
+      skill: "open-contact",
+      app: "gmail",
+      summary:
+        "Here's a contact form. Write your email and a message, and Manuel will reply:",
+    },
+  ])(
+    "$command in $projectId shows Skill($skill) and launch_app, emits no open-app, and ends with a $app card after a summary that describes the card",
+    async ({ projectId, command, skill, app, summary }) => {
+      const events = await runToEnd(projectId, command, { skills: "cards" });
+
+      expect(phases(events)).toEqual([
+        "thinking",
+        "thinking-done",
+        "skill",
+        "tool-call",
+        "tool-result",
+        "answer-chunk",
+        "answer-block",
+        "done",
+      ]);
+      expect(events.find((event) => event.type === "skill")).toEqual({
+        type: "skill",
+        name: skill,
+      });
+      expect(toolCall(events)).toMatchObject({
+        name: "mcp__portfolio__launch_app",
+        args: `"${app}"`,
+      });
+      expect(answerText(events)).toBe(summary);
+      expect(events[events.length - 2]).toEqual({
+        type: "answer-block",
+        block: { kind: "skill-card", app },
+      });
     },
   );
 });
