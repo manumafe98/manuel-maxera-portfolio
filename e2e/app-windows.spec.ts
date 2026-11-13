@@ -202,13 +202,53 @@ test.describe("dock", () => {
     await dock(page).getByRole("button", { name: "My Projects" }).click();
 
     await appWindow(page, "Software")
-      .getByRole("button", { name: "Close" })
+      .getByRole("button", { name: "Close Software" })
       .click();
     await expect(appWindow(page, "Software")).toBeHidden();
     await dock(page).getByRole("button", { name: "My Projects" }).click();
 
     await expect(appWindow(page, "Software")).toBeVisible();
   });
+});
+
+/** Presses Tab until the element has focus, as a keyboard user would. */
+const tabTo = async (page: Page, target: Locator) => {
+  for (let presses = 0; presses < 80; presses++) {
+    await page.keyboard.press("Tab");
+    if (await target.evaluate((el) => el === document.activeElement)) return;
+  }
+  throw new Error("Tab never reached the element");
+};
+
+test.describe("close buttons", () => {
+  for (const { dockButton, window } of [
+    { dockButton: null, window: "Claude Code" },
+    { dockButton: "My Projects", window: "Software" },
+    { dockButton: "My Skills", window: "Files" },
+    { dockButton: "Contact Me", window: "Gmail" },
+  ]) {
+    test(`the ${window} window's close button is named "Close ${window}" and shows an outline at least 2px wide when reached with Tab`, async ({
+      page,
+    }) => {
+      await page.goto("/");
+      if (dockButton) {
+        await dock(page).getByRole("button", { name: dockButton }).click();
+      }
+      const close = appWindow(page, window).getByRole("button", {
+        name: `Close ${window}`,
+        exact: true,
+      });
+
+      await tabTo(page, close);
+
+      const outline = await close.evaluate((el) => {
+        const style = getComputedStyle(el);
+        return { style: style.outlineStyle, width: style.outlineWidth };
+      });
+      expect(outline.style).not.toBe("none");
+      expect(parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
+    });
+  }
 });
 
 test.describe("Top bar", () => {

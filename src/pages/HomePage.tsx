@@ -82,6 +82,7 @@ export const HomePage = () => {
                     <CloseWindowButton
                       onClose={props.onClose}
                       className="bg-gray-50/20 hover:bg-gray-50/15"
+                      label={`Close ${dock.label}`}
                     />
                   </dialog>
                 }

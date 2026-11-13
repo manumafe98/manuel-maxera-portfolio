@@ -26,6 +26,7 @@ export const UbuntuSoftwareWindow = ({
         <CloseWindowButton
           onClose={onClose}
           className="mx-3 bg-gray-50/20 hover:bg-gray-50/15"
+          label="Close Software"
         />
       </div>
       <div className="flex flex-col items-center justify-center pb-10">
