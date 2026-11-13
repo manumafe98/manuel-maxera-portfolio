@@ -252,6 +252,44 @@
   }
 }
 
+/* experience timeline */
+.cc-answer ol.cc-timeline {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cc-timeline > li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 16px 22px;
+  border-left: 1px solid var(--cc-border);
+}
+.cc-timeline > li:last-child {
+  padding-bottom: 0;
+  border-left-color: transparent;
+}
+.cc-timeline > li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cc-bg);
+  border: 2px solid var(--cc-accent);
+}
+.cc-timeline > li:first-child::before {
+  background: var(--cc-accent);
+}
+.cc-timeline h3 {
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.cc-timeline .cc-muted {
+  font-size: 12.5px;
+}
+
 /* download card */
 .cc-answer a.cc-download {
   margin-top: 10px;

@@ -103,6 +103,88 @@ describe("About Me", () => {
   });
 });
 
+describe("Experience", () => {
+  test('/show-latest-experience calls mcp__portfolio__fetch_experiences({ scope: "latest" }) and streams the current Avature AI Engineer role with its dates, location and achievements', async () => {
+    const events = await runToEnd("experience", "/show-latest-experience");
+
+    expect(phases(events)).toEqual([
+      "thinking",
+      "thinking-done",
+      "tool-call",
+      "tool-result",
+      "answer-chunk",
+      "done",
+    ]);
+    expect(toolCall(events)).toMatchObject({
+      name: "mcp__portfolio__fetch_experiences",
+      args: '{ scope: "latest" }',
+    });
+    const answer = answerText(events);
+    expect(answer).toContain("AI Engineer");
+    expect(answer).toContain("Avature");
+    expect(answer).toContain("September 2025 – Present");
+    expect(answer).toContain("Buenos Aires, Argentina");
+    expect(answer).toContain(
+      "Migrated seven agents to a shared prompt architecture",
+    );
+    expect(answer).not.toContain("Software Engineer");
+  });
+
+  test('/show-full-experience calls mcp__portfolio__fetch_experiences({ scope: "all" }) and ends with a timeline of all four roles, newest first, each with dates, location and achievements', async () => {
+    const events = await runToEnd("experience", "/show-full-experience");
+
+    expect(phases(events)).toEqual([
+      "thinking",
+      "thinking-done",
+      "tool-call",
+      "tool-result",
+      "answer-chunk",
+      "answer-block",
+      "done",
+    ]);
+    expect(toolCall(events)).toMatchObject({
+      name: "mcp__portfolio__fetch_experiences",
+      args: '{ scope: "all" }',
+    });
+    const timeline = events.find((event) => event.type === "answer-block");
+    expect(timeline).toMatchObject({
+      block: {
+        kind: "timeline",
+        roles: [
+          {
+            title: "AI Engineer",
+            company: "Avature",
+            dates: "September 2025 – Present",
+            location: "Buenos Aires, Argentina",
+          },
+          {
+            title: "Software Engineer",
+            company: "Avature",
+            dates: "August 2024 – August 2025",
+          },
+          {
+            title: "Cloud Engineer",
+            company: "Avature",
+            dates: "March 2022 – July 2024",
+          },
+          {
+            title: "Sysadmin Unix",
+            company: "IBM – Kyndryl",
+            dates: "November 2019 – March 2022",
+          },
+        ],
+      },
+    });
+    expect(
+      timeline?.type === "answer-block" &&
+        timeline.block.kind === "timeline" &&
+        timeline.block.roles[3].achievements,
+    ).toContain(
+      "Led server and data migrations and implemented Ansible automation to reduce manual ticket-resolution work.",
+    );
+  });
+});
+
 describe("free text", () => {
   test("free text in About Me gets no tool call and an answer listing /about-me, /tldr and /download-cv", async () => {
     const events = await runToEnd("about-me", "who are you?");

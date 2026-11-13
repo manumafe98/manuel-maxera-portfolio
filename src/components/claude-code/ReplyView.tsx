@@ -91,6 +91,28 @@ export const ReplyView = ({ reply, onSkip }: ReplyViewProps) => {
           {reply.answer.map((part, index) =>
             part.type === "text" ? (
               <Markdown key={index} text={part.text} />
+            ) : part.block.kind === "timeline" ? (
+              <ol
+                key={index}
+                className="cc-timeline"
+                aria-label="Experience timeline"
+              >
+                {part.block.roles.map((role) => (
+                  <li key={`${role.company}-${role.title}`}>
+                    <h3>
+                      {role.title} · {role.company}
+                    </h3>
+                    <div className="cc-muted">
+                      {role.dates} · {role.location}
+                    </div>
+                    <ul>
+                      {role.achievements.map((achievement) => (
+                        <li key={achievement}>{achievement}</li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ol>
             ) : (
               <a
                 key={index}

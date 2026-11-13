@@ -152,3 +152,67 @@ test("the dock no longer offers the Terminal or Sublime apps", async ({
   await expect(dock.getByRole("button", { name: /Terminal/ })).toHaveCount(0);
   await expect(dock.getByRole("button", { name: "About Me" })).toHaveCount(0);
 });
+
+test("the Experience link in the Welcome intro opens the Experience Chat", async ({
+  page,
+}) => {
+  await chat(page, "Welcome")
+    .getByRole("button", { name: "Experience" })
+    .click();
+
+  await expect(chat(page, "Experience")).toBeVisible();
+  await expect(
+    sidebar(page).getByRole("button", { name: "Experience" }),
+  ).toHaveAttribute("aria-current", "page");
+});
+
+test("the /show-latest-experience chip shows a fetch_experiences latest tool call and the current AI Engineer role at Avature with its achievements", async ({
+  page,
+}) => {
+  await sidebar(page).getByRole("button", { name: "Experience" }).click();
+  const experience = chat(page, "Experience");
+
+  await experience
+    .getByRole("button", { name: "/show-latest-experience" })
+    .click();
+
+  await expect(experience).toContainText(
+    'mcp__portfolio__fetch_experiences({ scope: "latest" })',
+  );
+  const reply = experience.getByRole("article", { name: "Reply" });
+  await expect(reply).toContainText("AI Engineer · Avature");
+  await expect(reply).toContainText("September 2025 – Present");
+  await expect(reply).toContainText(
+    "Migrated seven agents to a shared prompt architecture",
+  );
+  await expect(reply).not.toContainText("Sysadmin Unix");
+});
+
+test("the /show-full-experience chip shows a fetch_experiences all tool call and a timeline of every role, newest first", async ({
+  page,
+}) => {
+  await sidebar(page).getByRole("button", { name: "Experience" }).click();
+  const experience = chat(page, "Experience");
+
+  await experience
+    .getByRole("button", { name: "/show-full-experience" })
+    .click();
+
+  await expect(experience).toContainText(
+    'mcp__portfolio__fetch_experiences({ scope: "all" })',
+  );
+  const roles = experience
+    .getByRole("list", { name: "Experience timeline" })
+    .getByRole("listitem")
+    .filter({ has: page.getByRole("heading") });
+  await expect(roles.getByRole("heading")).toHaveText([
+    "AI Engineer · Avature",
+    "Software Engineer · Avature",
+    "Cloud Engineer · Avature",
+    "Sysadmin Unix · IBM – Kyndryl",
+  ]);
+  await expect(roles.nth(3)).toContainText("November 2019 – March 2022");
+  await expect(roles.nth(3)).toContainText(
+    "Led server and data migrations and implemented Ansible automation",
+  );
+});
