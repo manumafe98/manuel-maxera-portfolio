@@ -2,6 +2,7 @@ import { claudeProjects, type ClaudeProjectId } from "@/content/portfolio";
 import { ClaudeCodeIcon } from "@/icons/ClaudeCodeIcon";
 import { useEffect, useRef, useState } from "react";
 import { Chat } from "./Chat";
+import { useChatFromUrl } from "./chatLink";
 import "./claude-code.css";
 import { LineIcon } from "./LineIcon";
 import "./phone.css";
@@ -11,6 +12,7 @@ export const PhoneClaudeCode = () => {
   const [activeId, setActiveId] = useState<ClaudeProjectId>(
     claudeProjects[0].id,
   );
+  useChatFromUrl(setActiveId);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);

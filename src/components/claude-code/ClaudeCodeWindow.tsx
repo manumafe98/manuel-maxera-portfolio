@@ -8,6 +8,7 @@ import type { WindowProps } from "@/types/window.types";
 import { useState } from "react";
 import { CloseWindowButton } from "../CloseWindowButton";
 import { Chat } from "./Chat";
+import { useChatFromUrl } from "./chatLink";
 import "./claude-code.css";
 import { LineIcon } from "./LineIcon";
 
@@ -27,6 +28,7 @@ export const ClaudeCodeWindow = ({
   const [activeId, setActiveId] = useState<ClaudeProjectId>(
     claudeProjects[0].id,
   );
+  useChatFromUrl(setActiveId);
   const [folded, setFolded] = useState<ReadonlySet<ClaudeProjectId>>(new Set());
 
   const toggleFolded = (id: ClaudeProjectId) =>

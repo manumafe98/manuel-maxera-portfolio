@@ -25,7 +25,7 @@ const Section = ({
 const link = "underline hover:text-(--cc-accent)";
 
 export const PrivacyPage = () => (
-  <StaticPage heading="Privacy">
+  <StaticPage heading="Privacy" backLinkOnTop>
     <p>
       This site collects as little as it can. Here is everything it does with
       data.
