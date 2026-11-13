@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 test.skip(({ isMobile }) => !isMobile, "phone-only behaviour");
 
@@ -291,6 +291,135 @@ test.describe("Skill cards", () => {
         .locator("svg"),
     ).toBeVisible();
     await expect(anyAppWindow(page)).toHaveCount(0);
+  });
+});
+
+test.describe("contact card", () => {
+  const sends: string[] = [];
+
+  const routeEmailJs = (page: Page, status: number) =>
+    page.route("https://api.emailjs.com/**", (route) => {
+      sends.push(route.request().postData() ?? "");
+      return route.fulfill({ status, body: status === 200 ? "OK" : "Bad" });
+    });
+
+  const openContactCard = async (page: Page, emailJsStatus: number) => {
+    sends.length = 0;
+    await routeEmailJs(page, emailJsStatus);
+    const reply = await runSkill(
+      page,
+      "Reaching out to Manuel",
+      "/open-contact",
+    );
+    return reply.getByRole("form", { name: "Contact Manuel" });
+  };
+
+  const send = async (card: Locator, email: string, message: string) => {
+    await card.getByRole("textbox", { name: "Your email" }).fill(email);
+    await card.getByRole("textbox", { name: "Message" }).fill(message);
+    await card.getByRole("button", { name: "Send" }).click();
+  };
+
+  test("on a phone /open-contact shows an inline contact form under a summary that describes it, and opens no App window", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await expect(card).toBeVisible();
+    await expect(
+      chat(page, "Reaching out to Manuel").getByRole("article", {
+        name: "Reply",
+      }),
+    ).toContainText(
+      "Here's a contact form. Write your email and a message, and Manuel will reply:",
+    );
+    await expect(anyAppWindow(page)).toHaveCount(0);
+  });
+
+  test("the contact card rejects an invalid email address with a clear message and sends nothing", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await send(card, "not-an-email", "Hello Manuel");
+
+    await expect(card.getByRole("alert")).toHaveText(
+      "Enter a valid email address, like name@example.com.",
+    );
+    expect(sends).toEqual([]);
+  });
+
+  test("the contact card rejects an empty message with a clear message and sends nothing", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await send(card, "recruiter@example.com", "   ");
+
+    await expect(card.getByRole("alert")).toHaveText(
+      "Write a message before sending.",
+    );
+    expect(sends).toEqual([]);
+  });
+
+  test("the contact card sends a valid email and message to EmailJS and reports success", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await send(card, "Recruiter@Example.com", "Let's talk about a role.");
+
+    await expect(card.getByRole("status")).toHaveText(
+      "Message sent. Manuel will reply to your email.",
+    );
+    expect(sends).toHaveLength(1);
+    expect(JSON.parse(sends[0]).template_params).toEqual({
+      from_email: "Recruiter@Example.com",
+      message: "Let's talk about a role.",
+    });
+  });
+
+  test("the contact card reports failure when the EmailJS request fails", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 400);
+
+    await send(card, "recruiter@example.com", "Let's talk about a role.");
+
+    await expect(card.getByRole("alert")).toHaveText(
+      "Your message couldn't be sent. Try again, or email manumaxerapro@gmail.com.",
+    );
+    expect(sends).toHaveLength(1);
+  });
+
+  test("the contact card offers a mailto link to Manuel's address and a privacy note linking to /privacy", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    await expect(
+      card.getByRole("link", { name: "Email manumaxerapro@gmail.com" }),
+    ).toHaveAttribute("href", "mailto:manumaxerapro@gmail.com");
+    await expect(card).toContainText("Your email is only used to reply.");
+    await expect(
+      card.getByRole("link", { name: "Privacy policy" }),
+    ).toHaveAttribute("href", "/privacy");
+  });
+
+  test("the contact card's fields, Send button and links are at least 44px tall for touch", async ({
+    page,
+  }) => {
+    const card = await openContactCard(page, 200);
+
+    for (const target of [
+      card.getByRole("textbox", { name: "Your email" }),
+      card.getByRole("textbox", { name: "Message" }),
+      card.getByRole("button", { name: "Send" }),
+      card.getByRole("link", { name: "Email manumaxerapro@gmail.com" }),
+      card.getByRole("link", { name: "Privacy policy" }),
+    ]) {
+      expect((await target.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
   });
 });
 

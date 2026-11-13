@@ -3,6 +3,7 @@ import { GithubIcon, WebLinkIcon } from "@/icons";
 import type { MouseEvent } from "react";
 import { initials } from "../initials";
 import { skillIcons } from "../skillIcons";
+import { ContactCard } from "./ContactCard";
 
 /** Links inside a reply must not also trigger skip-to-end. */
 const stopPropagation = (event: MouseEvent) => event.stopPropagation();
@@ -90,6 +91,6 @@ export const SkillCard = ({ app }: { app: AppId }) => {
     case "files":
       return <SkillsCard />;
     case "gmail":
-      return null;
+      return <ContactCard />;
   }
 };
