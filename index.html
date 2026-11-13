@@ -8,6 +8,21 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <!--app-head-->
+    <!-- Picks the shell before any stylesheet loads, so the pre-rendered
+         HTML never shows the wrong one (ADR-0002). -->
+    <style>
+      .desktop-shell {
+        display: none;
+      }
+      @media (min-width: 1024px) {
+        .desktop-shell {
+          display: block;
+        }
+        .phone-shell {
+          display: none;
+        }
+      }
+    </style>
   </head>
   <body>
     <!--app-noscript-->
