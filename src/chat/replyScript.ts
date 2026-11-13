@@ -9,16 +9,26 @@ import {
   claudeProjects,
   cv,
   education,
+  experience,
   profile,
   spokenLanguages,
   type ClaudeProject,
+  type ExperienceEntry,
 } from "@/content/portfolio";
 
-export type AnswerBlock = {
-  kind: "download-card";
-  fileName: string;
-  href: string;
-};
+export interface TimelineRole {
+  company: string;
+  title: string;
+  /** "Start – End", for example "September 2025 – Present". */
+  dates: string;
+  location: string;
+  achievements: string[];
+}
+
+export type AnswerBlock =
+  | { kind: "download-card"; fileName: string; href: string }
+  /** Roles newest first. */
+  | { kind: "timeline"; roles: TimelineRole[] };
 
 export type ReplyEvent =
   | { type: "thinking"; text: string }
@@ -50,6 +60,15 @@ interface Script {
 }
 
 const json = (value: unknown) => JSON.stringify(value, null, 2);
+
+const dates = (role: ExperienceEntry) => `${role.start} – ${role.end}`;
+
+const roleSummary = (role: ExperienceEntry) => ({
+  company: role.company,
+  title: role.title,
+  dates: dates(role),
+  location: role.location,
+});
 
 const scripts: Record<string, () => Script> = {
   "/about-me": () => ({
@@ -98,6 +117,46 @@ Run \`/download-cv\` to keep a copy of the CV.`,
     answer: [
       "Here's Manuel's current CV:",
       { kind: "download-card", fileName: cv.fileName, href: cv.path },
+    ],
+  }),
+  "/show-latest-experience": () => {
+    const [latest] = experience;
+    return {
+      thinking:
+        "They want to know what Manuel does now. I'll fetch his latest role and list its main achievements.",
+      tool: {
+        name: "mcp__portfolio__fetch_experiences",
+        args: `{ scope: "latest" }`,
+        result: json([roleSummary(latest)]),
+      },
+      answer: [
+        `**${latest.title}** · ${latest.company}
+*${dates(latest)} · ${latest.location}*
+
+**Key achievements**
+${latest.achievements.map((a) => `- ${a}`).join("\n")}
+
+Run \`/show-full-experience\` to see his whole career.`,
+      ],
+    };
+  },
+  "/show-full-experience": () => ({
+    thinking:
+      "They want the whole career. I'll fetch every role and lay them out as a timeline, newest first.",
+    tool: {
+      name: "mcp__portfolio__fetch_experiences",
+      args: `{ scope: "all" }`,
+      result: json(experience.map(roleSummary)),
+    },
+    answer: [
+      `Manuel has held **${experience.length} roles**, from Unix sysadmin to AI engineer:`,
+      {
+        kind: "timeline",
+        roles: experience.map((role) => ({
+          ...roleSummary(role),
+          achievements: role.achievements,
+        })),
+      },
     ],
   }),
 };

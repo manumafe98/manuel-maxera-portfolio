@@ -5,7 +5,6 @@ import { ClaudeCodeWindow } from "@/components/claude-code/ClaudeCodeWindow";
 import { FileManagerDialog } from "@/components/FileManagerDialog";
 import { GmailDialog } from "@/components/GmailDialog";
 import { UbuntuSoftwareDialog } from "@/components/UbuntuSoftwareDialog";
-import { VsCodeDialog } from "@/components/VsCodeDialog";
 import { LeftArrowIcon, RightArrowIcon } from "@/icons";
 import "cally";
 import { ElementType, RefObject, useEffect, useRef, useState } from "react";
@@ -20,12 +19,11 @@ export const HomePage = () => {
   const openGmailDialogRef = useRef<HTMLDialogElement>(null);
   const openUbuntuSoftwareDialogRef = useRef<HTMLDialogElement>(null);
   const openClaudeCodeDialogRef = useRef<HTMLDialogElement>(null);
-  const openVsCodeDialogRef = useRef<HTMLDialogElement>(null);
   const openFileManagerDialogRef = useRef<HTMLDialogElement>(null);
   const location = useLocation();
 
   type ApplicationName =
-    "gmail" | "claudecode" | "ubuntusoftware" | "filemanager" | "vscode";
+    "gmail" | "claudecode" | "ubuntusoftware" | "filemanager";
 
   const applicationToRefRelation: Record<
     ApplicationName,
@@ -35,13 +33,11 @@ export const HomePage = () => {
     claudecode: openClaudeCodeDialogRef,
     ubuntusoftware: openUbuntuSoftwareDialogRef,
     filemanager: openFileManagerDialogRef,
-    vscode: openVsCodeDialogRef,
   };
 
   const [dialogStack, setDialogStack] = useState<string[]>([]);
   const zIndexRef = useRef<Record<string, number>>({
     claudecode: 0,
-    vscode: 0,
     gmail: 0,
     ubuntusoftware: 0,
     filemanager: 0,
@@ -130,7 +126,6 @@ export const HomePage = () => {
       )}
       <section className="h-screen w-screen overflow-hidden relative">
         <ClaudeCodeWindow ref={openClaudeCodeDialogRef} onClose={closeDialog} />
-        <VsCodeDialog ref={openVsCodeDialogRef} onClose={closeDialog} />
         <UbuntuSoftwareDialog
           ref={openUbuntuSoftwareDialogRef}
           onClose={closeDialog}

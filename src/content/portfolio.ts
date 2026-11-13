@@ -240,7 +240,8 @@ export const cv = {
   fileName: "Manuel_Maxera_Resume.pdf",
 };
 
-export type ClaudeProjectId = "manuel-maxera-portfolio" | "about-me";
+export type ClaudeProjectId =
+  "manuel-maxera-portfolio" | "about-me" | "experience";
 
 export interface Command {
   /** Slash-prefixed, lower case, as the visitor types it. */
@@ -270,6 +271,14 @@ const tldrCommand: Command = {
   name: "/tldr",
   description: "a two-line summary",
 };
+const showLatestExperienceCommand: Command = {
+  name: "/show-latest-experience",
+  description: "Manuel's current role and its main achievements",
+};
+const showFullExperienceCommand: Command = {
+  name: "/show-full-experience",
+  description: "his whole work history as a timeline",
+};
 const downloadCvCommand: Command = {
   name: "/download-cv",
   description: "download the current CV as a PDF",
@@ -284,7 +293,7 @@ export const claudeProjects: ClaudeProject[] = [
 Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar or from the links below, run a Command from the chips, or type \`/\` to start.`,
     commands: [downloadCvCommand],
     chips: [downloadCvCommand.name],
-    links: ["about-me"],
+    links: ["about-me", "experience"],
   },
   {
     id: "about-me",
@@ -293,5 +302,13 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
       "This is the **About Me** Chat. I can tell you who Manuel is, in full or in short.",
     commands: [aboutMeCommand, tldrCommand, downloadCvCommand],
     chips: [aboutMeCommand.name, tldrCommand.name, downloadCvCommand.name],
+  },
+  {
+    id: "experience",
+    displayName: "Experience",
+    intro:
+      "This is the **Experience** Chat. I can show you what Manuel does now, or his whole career as a timeline.",
+    commands: [showLatestExperienceCommand, showFullExperienceCommand],
+    chips: [showLatestExperienceCommand.name, showFullExperienceCommand.name],
   },
 ];
