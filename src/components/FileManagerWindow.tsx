@@ -1,14 +1,12 @@
-import {
-  DocumentsIcon,
-  DownloadsIcon,
-  HomeIcon,
-  RecentIcon,
-  SearchIcon,
-  StarredIcon,
-  TechSkillsIcon,
-  UnfilledArrowLeftIcon,
-  UnfilledArrowRightIcon,
-} from "@/icons";
+import { DocumentsIcon } from "@/icons/DocumentsIcon";
+import { DownloadsIcon } from "@/icons/DownloadsIcon";
+import { HomeIcon } from "@/icons/HomeIcon";
+import { RecentIcon } from "@/icons/RecentIcon";
+import { SearchIcon } from "@/icons/SearchIcon";
+import { StarredIcon } from "@/icons/StarredIcon";
+import { TechSkillsIcon } from "@/icons/TechSkillsIcon";
+import { UnfilledArrowLeftIcon } from "@/icons/UnfilledArrowLeftIcon";
+import { UnfilledArrowRightIcon } from "@/icons/UnfilledArrowRightIcon";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
 import { TechSkillGrid } from "./TechSkillGrid";
@@ -102,7 +100,7 @@ export const FileManagerWindow = ({
         />
       </div>
       <div className="flex">
-        <div className="flex w-1/5 h-[48vh] bg-ubuntu-top-bar opacity-85 border-r border-r-solid border-r-black rounded-b-lg">
+        <div className="flex w-1/5 bg-ubuntu-top-bar opacity-85 border-r border-r-solid border-r-black rounded-b-lg">
           <div className="flex flex-col w-full my-2 gap-y-3">
             {fileManagerIcons.map((icon, index) => (
               <div
@@ -118,7 +116,7 @@ export const FileManagerWindow = ({
             ))}
           </div>
         </div>
-        <div className="flex-1 h-[48vh] overflow-y-auto thin-scrollbar">
+        <div className="files-grid-view flex-1 overflow-y-auto thin-scrollbar">
           <TechSkillGrid frame="window" />
         </div>
       </div>

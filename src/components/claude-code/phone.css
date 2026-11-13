@@ -170,11 +170,15 @@
   width: 52px;
   height: 52px;
   flex: none;
+  padding: 4px;
   border-radius: 12px;
-  background: var(--cc-raised);
+  /* A light tile, so dark logos such as Pokemon Voting stay visible. */
+  background: #f5f5f4;
   object-fit: contain;
 }
 .cc-project-logo.is-initials {
+  padding: 0;
+  background: var(--cc-raised);
   display: grid;
   place-items: center;
   font-size: 17px;

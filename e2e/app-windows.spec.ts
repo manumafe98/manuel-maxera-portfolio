@@ -164,6 +164,105 @@ test.describe("Skills", () => {
   });
 });
 
+test.describe("at 1280x720", () => {
+  test.use({ viewport: { width: 1280, height: 720 } });
+
+  test("the Files window fits the screen, cuts off no skill label, and shows the top of the next row of logos to hint that the grid scrolls", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await dock(page).getByRole("button", { name: "My Skills" }).click();
+    const files = appWindow(page, "Files");
+    const grid = files.getByRole("list", { name: "Skills" });
+    await expect(grid).toBeVisible();
+
+    const layout = await grid.evaluate((list) => {
+      const scroller = list.parentElement!;
+      const view = scroller.getBoundingClientRect();
+      const items = [...list.querySelectorAll("li")].map((item) => ({
+        icon: item.querySelector("svg, img")!.getBoundingClientRect(),
+        label: item.querySelector("span")!.getBoundingClientRect(),
+      }));
+      return {
+        windowBottom: scroller.closest("dialog")!.getBoundingClientRect()
+          .bottom,
+        scrolls: scroller.scrollHeight > scroller.clientHeight,
+        cutLabels: items.filter(
+          ({ label }) => label.top < view.bottom && label.bottom > view.bottom,
+        ).length,
+        peekingIcons: items.filter(
+          ({ icon }) => icon.top < view.bottom && icon.bottom > view.bottom,
+        ).length,
+      };
+    });
+
+    expect(layout.windowBottom).toBeLessThanOrEqual(720);
+    expect(layout.scrolls).toBe(true);
+    expect(layout.cutLabels).toBe(0);
+    expect(layout.peekingIcons).toBeGreaterThan(0);
+  });
+
+  test("the Software window's Project cards are all the same height and each title fits on one line", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await dock(page).getByRole("button", { name: "My Projects" }).click();
+    const cards = appWindow(page, "Software").getByRole("listitem");
+    await expect(cards).toHaveCount(5);
+
+    const heights = await cards.evaluateAll((items) =>
+      items.map((item) => Math.round(item.getBoundingClientRect().height)),
+    );
+    const titleLines = await cards
+      .getByRole("heading")
+      .evaluateAll((titles) =>
+        titles.map((title) =>
+          Math.round(
+            title.getBoundingClientRect().height /
+              parseFloat(getComputedStyle(title).lineHeight),
+          ),
+        ),
+      );
+
+    expect(new Set(heights).size, heights.join(", ")).toBe(1);
+    expect(titleLines).toEqual([1, 1, 1, 1, 1]);
+  });
+
+  test("the Software window shows each Project logo on a light tile, so dark logos such as Pokemon Voting stay visible", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await dock(page).getByRole("button", { name: "My Projects" }).click();
+    const logos = appWindow(page, "Software").getByRole("img");
+    await expect(logos).toHaveCount(4);
+
+    const tileLightness = await logos.evaluateAll((images) => {
+      // Paints a CSS colour on a canvas to read it as sRGB, whatever its syntax.
+      const context = document.createElement("canvas").getContext("2d")!;
+      const rgba = (color: string) => {
+        context.clearRect(0, 0, 1, 1);
+        context.fillStyle = color;
+        context.fillRect(0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data];
+      };
+      return images.map((image) => {
+        // The nearest box with a painted background behind the logo.
+        let box: Element | null = image;
+        while (box) {
+          const [r, g, b, a] = rgba(getComputedStyle(box).backgroundColor);
+          if (a > 0) return (r + g + b) / 3 / 255;
+          box = box.parentElement;
+        }
+        return 0;
+      });
+    });
+
+    for (const lightness of tileLightness) {
+      expect(lightness).toBeGreaterThan(0.8);
+    }
+  });
+});
+
 test.describe("dock", () => {
   for (const { button, window } of [
     { button: "My Projects", window: "Software" },

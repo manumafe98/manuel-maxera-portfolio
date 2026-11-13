@@ -1,41 +1,41 @@
 import type { ToolTechSkill } from "@/content/portfolio";
+import { AmazonWebServicesIcon } from "@/icons/AmazonWebServicesIcon";
+import { ClaudeCodeIcon } from "@/icons/ClaudeCodeIcon";
+import { CodexIcon } from "@/icons/CodexIcon";
+import { DockerIcon } from "@/icons/DockerIcon";
+import { FastApiIcon } from "@/icons/FastApiIcon";
+import { GitIcon } from "@/icons/GitIcon";
+import { GitLabIcon } from "@/icons/GitLabIcon";
+import { GrafanaIcon } from "@/icons/GrafanaIcon";
+import { HardhatIcon } from "@/icons/HardhatIcon";
+import { HerdrIcon } from "@/icons/HerdrIcon";
+import { JavaIcon } from "@/icons/JavaIcon";
+import { JavaScriptIcon } from "@/icons/JavaScriptIcon";
+import { LangChainIcon } from "@/icons/LangChainIcon";
+import { LinuxIcon } from "@/icons/LinuxIcon";
+import { McpIcon } from "@/icons/McpIcon";
 import {
-  AmazonWebServicesIcon,
   AwsBedrockIcon,
   CeleryIcon,
-  ClaudeCodeIcon,
-  CodexIcon,
   DevinIcon,
-  DockerIcon,
   ElasticsearchIcon,
-  FastApiIcon,
   FoundryIcon,
-  GitIcon,
-  GitLabIcon,
-  GrafanaIcon,
-  HardhatIcon,
-  HerdrIcon,
-  JavaIcon,
-  JavaScriptIcon,
-  LangChainIcon,
   LangGraphIcon,
-  LinuxIcon,
-  McpIcon,
-  OpenAiIcon,
-  OpenCodeIcon,
   OpenTelemetryIcon,
   PhoenixIcon,
-  PhpIcon,
-  PrometheusIcon,
-  PythonIcon,
-  ReactIcon,
-  RedisIcon,
-  SolidityIcon,
-  SpringIcon,
-  TailwindCssIcon,
-  TypeScriptIcon,
-  WindsurfIcon,
-} from "@/icons";
+} from "@/icons/MonogramIcons";
+import { OpenAiIcon } from "@/icons/OpenAiIcon";
+import { OpenCodeIcon } from "@/icons/OpenCodeIcon";
+import { PhpIcon } from "@/icons/PhpIcon";
+import { PrometheusIcon } from "@/icons/PrometheusIcon";
+import { PythonIcon } from "@/icons/PythonIcon";
+import { ReactIcon } from "@/icons/ReactIcon";
+import { RedisIcon } from "@/icons/RedisIcon";
+import { SolidityIcon } from "@/icons/SolidityIcon";
+import { SpringIcon } from "@/icons/SpringIcon";
+import { TailwindCssIcon } from "@/icons/TailwindCssIcon";
+import { TypeScriptIcon } from "@/icons/TypeScriptIcon";
+import { WindsurfIcon } from "@/icons/WindsurfIcon";
 import type { ComponentType, SVGProps } from "react";
 
 /**

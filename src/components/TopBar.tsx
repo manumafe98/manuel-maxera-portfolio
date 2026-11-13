@@ -1,10 +1,8 @@
 import { cv, socialLinks } from "@/content/portfolio";
-import {
-  CurriculumIcon,
-  FilledArrowDownIcon,
-  GithubIcon,
-  LinkedinIcon,
-} from "@/icons";
+import { CurriculumIcon } from "@/icons/CurriculumIcon";
+import { FilledArrowDownIcon } from "@/icons/FilledArrowDownIcon";
+import { GithubIcon } from "@/icons/GithubIcon";
+import { LinkedinIcon } from "@/icons/LinkedinIcon";
 import { useEffect, useId, useRef, useState } from "react";
 
 /** How often the clock refreshes. It shows minutes, so a few seconds late is fine. */

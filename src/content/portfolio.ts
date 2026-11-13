@@ -44,7 +44,8 @@ export interface Project {
   description: string;
   /** Longer description, when the CV has one. */
   details?: string[];
-  logo?: { src: string; alt: string };
+  /** The logo and its intrinsic size in pixels, set on the <img>. */
+  logo?: { src: string; alt: string; width: number; height: number };
   repoUrl: string;
   liveUrl?: string;
 }
@@ -159,7 +160,7 @@ export const projects: Project[] = [
   {
     name: "HoytsX",
     description: "Your cinema in the blockchain",
-    logo: { src: hoytsxLogo, alt: "HoytsX Logo" },
+    logo: { src: hoytsxLogo, alt: "HoytsX Logo", width: 160, height: 160 },
     repoUrl: "https://github.com/manumafe98/HoytsX",
   },
   {
@@ -168,19 +169,24 @@ export const projects: Project[] = [
     details: [
       "Built a Solidity/React voting DApp with wallet-based registration, one vote per user and admin-managed candidates; stored profile images on IPFS and deployed and verified the contract on Ethereum Sepolia.",
     ],
-    logo: { src: pokemonVotingDappLogo, alt: "Pokemon Voting Dapp Logo" },
+    logo: {
+      src: pokemonVotingDappLogo,
+      alt: "Pokemon Voting Dapp Logo",
+      width: 160,
+      height: 160,
+    },
     repoUrl: "https://github.com/manumafe98/pokemon_voting_dapp",
   },
   {
     name: "Exercism",
     description: "Java Track Maintainer",
-    logo: { src: exercismLogo, alt: "Exercism Logo" },
+    logo: { src: exercismLogo, alt: "Exercism Logo", width: 220, height: 220 },
     repoUrl: "https://github.com/manumafe98/java",
   },
   {
     name: "Vbnb",
     description: "Listing App",
-    logo: { src: vbnbLogo, alt: "Vbnb logo" },
+    logo: { src: vbnbLogo, alt: "Vbnb logo", width: 155, height: 152 },
     repoUrl: "https://github.com/manumafe98/Vbnb",
   },
 ];

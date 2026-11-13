@@ -1,10 +1,10 @@
-// Renders the PNG icons and the Open Graph image from public/favicon.svg with
-// Playwright's Chromium. Run it by hand when the mascot or the OG design
-// changes, and commit the PNGs it writes to public/:
+// Renders the PNG icons, favicon.ico and the Open Graph image from
+// public/favicon.svg with Playwright's Chromium. Run it by hand when the
+// mascot or the OG design changes, and commit the files it writes to public/:
 //
 //   node scripts/generate-images.js
 import { chromium } from "@playwright/test";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const publicDir = path.resolve(import.meta.dirname, "..", "public");
@@ -52,6 +52,37 @@ const images = {
   "og-image.png": ogImage,
 };
 
+/** The mascot alone on a transparent square, like favicon.svg, for the ICO. */
+const faviconHtml = (size) =>
+  `<body style="margin:0;width:${size}px;height:${size}px;display:flex">${mascot}</body>`;
+
+/** Only the sizes browsers use for a tab icon; favicon.svg covers the rest. */
+const faviconSizes = [16, 32];
+
+/**
+ * Packs PNG images into an ICO file. Each directory entry points at a whole
+ * PNG, which every browser that reads favicon.ico supports.
+ */
+const encodeIco = (pngs) => {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // type: icon
+  header.writeUInt16LE(pngs.length, 4);
+  let offset = header.length + 16 * pngs.length;
+  const entries = pngs.map(({ size, data }) => {
+    const entry = Buffer.alloc(16);
+    entry.writeUInt8(size, 0); // width (0 would mean 256)
+    entry.writeUInt8(size, 1); // height
+    entry.writeUInt16LE(1, 4); // colour planes
+    entry.writeUInt16LE(32, 6); // bits per pixel
+    entry.writeUInt32LE(data.length, 8);
+    entry.writeUInt32LE(offset, 12);
+    offset += data.length;
+    return entry;
+  });
+  return Buffer.concat([header, ...entries, ...pngs.map(({ data }) => data)]);
+};
+
 const browser = await chromium.launch();
 for (const [file, { width, height, html }] of Object.entries(images)) {
   const page = await browser.newPage({ viewport: { width, height } });
@@ -62,4 +93,20 @@ for (const [file, { width, height, html }] of Object.entries(images)) {
   await page.close();
   console.log(`wrote public/${file}`);
 }
+const faviconPngs = [];
+for (const size of faviconSizes) {
+  const page = await browser.newPage({
+    viewport: { width: size, height: size },
+  });
+  await page.setContent(
+    `<!doctype html><html><head><meta charset="utf-8"></head>${faviconHtml(size)}</html>`,
+  );
+  faviconPngs.push({
+    size,
+    data: await page.screenshot({ omitBackground: true }),
+  });
+  await page.close();
+}
+await writeFile(path.join(publicDir, "favicon.ico"), encodeIco(faviconPngs));
+console.log(`wrote public/favicon.ico (${faviconSizes.join(", ")} px)`);
 await browser.close();

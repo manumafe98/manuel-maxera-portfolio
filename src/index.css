@@ -47,3 +47,14 @@ calendar-month {
   scrollbar-width: thin;
   scrollbar-color: --alpha(var(--color-gray-50) / 15%) transparent;
 }
+
+/* The Files window's skill grid. Its height follows the viewport but always
+   ends a whole number of rows down, plus the top of the next row's logos, so
+   no label is ever cut and the peeking logos and the fade show it scrolls.
+   A row is a 48px logo and a 24px label, 72px, plus the 16px gap: 88px. */
+.files-grid-view {
+  --row: 88px;
+  height: 48vh;
+  height: calc(round(down, 60vh - 64px, var(--row)) + 16px + 32px);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 40px), transparent);
+}

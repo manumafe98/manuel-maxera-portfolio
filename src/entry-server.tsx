@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { prerender } from "react-dom/static";
 import { pages, type PageId } from "./pages/pages";
 import { headFor, type HeadOptions } from "./seo/head";
-import { NoscriptContent } from "./seo/NoscriptContent";
+import { NoscriptContent, noscriptStyles } from "./seo/NoscriptContent";
 
 export { agentFiles } from "./seo/agentFiles";
 
@@ -34,7 +34,7 @@ export const render = async (
     html: await toHtml(<Page />),
     noscript:
       page === "home"
-        ? `<noscript>${await toHtml(<NoscriptContent />)}</noscript>`
+        ? `<noscript><style>${noscriptStyles}</style>${await toHtml(<NoscriptContent />)}</noscript>`
         : "",
   };
 };

@@ -6,7 +6,8 @@ import { CloseWindowButton } from "@/components/CloseWindowButton";
 import { LoadError, LoadErrorBoundary } from "@/components/LoadErrorBoundary";
 import { TopBar } from "@/components/TopBar";
 import type { AppWindowId } from "@/content/portfolio";
-import { LeftArrowIcon, RightArrowIcon } from "@/icons";
+import { LeftArrowIcon } from "@/icons/LeftArrowIcon";
+import { RightArrowIcon } from "@/icons/RightArrowIcon";
 import type { WindowProps } from "@/types/window.types";
 import { ElementType, Suspense, useState } from "react";
 

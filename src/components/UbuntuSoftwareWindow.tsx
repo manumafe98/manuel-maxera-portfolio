@@ -1,5 +1,5 @@
 import { projects } from "@/content/portfolio";
-import { SearchIcon } from "@/icons";
+import { SearchIcon } from "@/icons/SearchIcon";
 import type { WindowProps } from "@/types/window.types";
 import { CloseWindowButton } from "./CloseWindowButton";
 import { ProjectCard } from "./ProjectCard";
@@ -31,7 +31,7 @@ export const UbuntuSoftwareWindow = ({
       </div>
       <div className="flex flex-col items-center justify-center pb-10">
         <span className="text-white text-2xl font-bold my-10">Projects</span>
-        <ul className="grid grid-cols-2 grid-rows-1 gap-5 w-3/4 h-1/3">
+        <ul className="grid grid-cols-2 auto-rows-fr gap-5 w-3/4">
           {projects.map((project) => (
             <ProjectCard key={project.name} project={project} frame="window" />
           ))}

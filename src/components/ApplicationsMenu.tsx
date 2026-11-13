@@ -1,5 +1,6 @@
 import type { AppWindowId } from "@/content/portfolio";
-import { ClaudeCodeIcon, MenuIcon } from "@/icons";
+import { ClaudeCodeIcon } from "@/icons/ClaudeCodeIcon";
+import { MenuIcon } from "@/icons/MenuIcon";
 import { appWindowIds, appWindows } from "./appWindows";
 
 interface ApplicationsMenuProps {
