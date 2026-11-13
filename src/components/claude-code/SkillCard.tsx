@@ -1,4 +1,4 @@
-import { gridTechSkills, projects, type AppId } from "@/content/portfolio";
+import { gridTechSkills, projects, type AppWindowId } from "@/content/portfolio";
 import { GithubIcon, WebLinkIcon } from "@/icons";
 import type { MouseEvent } from "react";
 import { initials } from "../initials";
@@ -11,7 +11,7 @@ const stopPropagation = (event: MouseEvent) => event.stopPropagation();
 const ProjectsCard = () => (
   <ul aria-label="Projects" className="cc-card-list">
     {projects.map((project) => (
-      <li key={project.name} className="cc-card cc-project">
+      <li key={project.name} className="cc-card cc-project-card">
         {project.logo ? (
           <img
             src={project.logo.src}
@@ -76,7 +76,7 @@ const TechSkillsCard = () => (
 );
 
 /** A Skill's content shown inside the Chat, in place of its App window. */
-export const SkillCard = ({ app }: { app: AppId }) => {
+export const SkillCard = ({ app }: { app: AppWindowId }) => {
   switch (app) {
     case "ubuntu-software":
       return <ProjectsCard />;

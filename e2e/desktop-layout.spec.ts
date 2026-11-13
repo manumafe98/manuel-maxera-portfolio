@@ -23,3 +23,19 @@ test("the Desktop requests the Ubuntu wallpaper image", async ({ page }) => {
 
   expect((await wallpaperRequest).url()).toMatch(/\.webp$/);
 });
+
+test("the sidebar's Claude project rows keep their chevron centred with a 4px gap, unchanged by the phone Project card styles", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const row = page
+    .getByRole("navigation", { name: "Claude projects" })
+    .getByRole("button", { name: "about-me" });
+
+  const layout = await row.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { gap: style.columnGap, alignItems: style.alignItems };
+  });
+
+  expect(layout).toEqual({ gap: "4px", alignItems: "center" });
+});
