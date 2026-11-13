@@ -98,9 +98,16 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  width: 100%;
   padding: 7px 6px 3px;
+  border-radius: 6px;
   font-size: 11.5px;
   color: var(--cc-faint);
+  text-align: left;
+  cursor: pointer;
+}
+.cc-project:hover {
+  color: var(--cc-muted);
 }
 .cc-chev {
   display: inline-grid;
@@ -586,5 +593,8 @@
   .cc-caret,
   .cc-dot.is-running {
     animation: none;
+  }
+  .cc-chev {
+    transition: none;
   }
 }

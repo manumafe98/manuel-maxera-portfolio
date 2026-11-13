@@ -278,4 +278,48 @@ test.describe("sidebar", () => {
       await expect(opened.locator("header")).toContainText(id);
     });
   }
+
+  test("clicking the experience Claude project folds away its Chat entry and clicking again shows it", async ({
+    page,
+  }) => {
+    const toggle = sidebar(page).getByRole("button", {
+      name: "experience",
+      exact: true,
+    });
+    const entry = sidebar(page).getByRole("button", {
+      name: "Manuel's career timeline",
+    });
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(entry).toBeVisible();
+
+    await toggle.click();
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(entry).toBeHidden();
+    await expect(
+      sidebar(page).getByRole("button", { name: "Who is Manuel Maxera?" }),
+    ).toBeVisible();
+
+    await toggle.click();
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await expect(entry).toBeVisible();
+  });
+
+  test("folding the Claude project of the open Chat keeps that Chat open in the main pane", async ({
+    page,
+  }) => {
+    await sidebar(page)
+      .getByRole("button", { name: "Who is Manuel Maxera?" })
+      .click();
+
+    await sidebar(page)
+      .getByRole("button", { name: "about-me", exact: true })
+      .click();
+
+    await expect(
+      sidebar(page).getByRole("button", { name: "Who is Manuel Maxera?" }),
+    ).toBeHidden();
+    await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
+  });
 });
