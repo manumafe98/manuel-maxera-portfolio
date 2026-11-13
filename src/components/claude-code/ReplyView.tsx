@@ -4,6 +4,7 @@ import type { ClaudeProjectId } from "@/content/portfolio";
 import { useState, type MouseEvent } from "react";
 import { LineIcon } from "./LineIcon";
 import { Markdown } from "./Markdown";
+import { SkillCard } from "./SkillCard";
 
 const RESULT_PREVIEW_LINES = 6;
 
@@ -80,6 +81,8 @@ const AnswerBlockView = ({
           ))}
         </ul>
       );
+    case "skill-card":
+      return <SkillCard app={block.app} />;
     case "claude-project-link":
       return (
         <button

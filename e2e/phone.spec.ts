@@ -182,25 +182,76 @@ test("typing /about-me in the phone composer and tapping Send streams the full b
   await expect(aboutMe).toContainText("Spanish: Native");
 });
 
-test("on a phone /open-projects leaves its one-line summary in the Chat and opens no Software App window", async ({
-  page,
-}) => {
+/** Opens a Chat from the drawer, runs a Skill chip and waits for its reply. */
+const runSkill = async (page: Page, title: string, command: string) => {
   await page.goto("/");
   await menuButton(page).click();
-  await recents(page)
-    .getByRole("button", { name: "Side projects showcase" })
-    .click();
-  const projects = chat(page, "Side projects showcase");
-
-  await projects.getByRole("button", { name: "/open-projects" }).click();
-
-  const reply = projects.getByRole("article", { name: "Reply" });
-  await expect(reply).toContainText("Opened Software");
+  await recents(page).getByRole("button", { name: title }).click();
+  const skillChat = chat(page, title);
+  await skillChat.getByRole("button", { name: command }).click();
+  const reply = skillChat.getByRole("article", { name: "Reply" });
   await expect(reply).toHaveAttribute("aria-busy", "false");
-  await expect(
-    page.getByRole("dialog", { name: "Software", includeHidden: true }),
-  ).toHaveCount(0);
-  await expect(projects).toBeVisible();
+  return reply;
+};
+
+const anyAppWindow = (page: Page) =>
+  page.getByRole("dialog", {
+    name: /^(Software|Files|Gmail)$/,
+    includeHidden: true,
+  });
+
+test.describe("Skill cards", () => {
+  test("on a phone /open-projects shows one card per Project under a summary that describes the cards, and opens no App window", async ({
+    page,
+  }) => {
+    const reply = await runSkill(
+      page,
+      "Side projects showcase",
+      "/open-projects",
+    );
+
+    await expect(reply).toContainText(
+      "Here are Manuel's 5 Projects, each linking to its code:",
+    );
+    await expect(reply).not.toContainText("Opened Software");
+    const cards = reply
+      .getByRole("list", { name: "Projects" })
+      .getByRole("listitem");
+    await expect(cards.getByRole("heading")).toHaveText([
+      "Trading Strategy Tester",
+      "HoytsX",
+      "Pokemon Voting",
+      "Exercism",
+      "Vbnb",
+    ]);
+    await expect(cards.nth(1)).toContainText("Your cinema in the blockchain");
+    await expect(
+      cards.nth(1).getByRole("img", { name: "HoytsX Logo" }),
+    ).toBeVisible();
+    await expect(cards.nth(0)).toContainText("TST");
+    await expect(anyAppWindow(page)).toHaveCount(0);
+  });
+
+  test("each phone Project card links to its GitHub repo in a new tab with rel noopener noreferrer", async ({
+    page,
+  }) => {
+    const reply = await runSkill(
+      page,
+      "Side projects showcase",
+      "/open-projects",
+    );
+
+    const repoLinks = reply.getByRole("link", { name: /on GitHub$/ });
+    await expect(repoLinks).toHaveCount(5);
+    const hoytsx = reply.getByRole("link", { name: "HoytsX on GitHub" });
+    await expect(hoytsx).toHaveAttribute(
+      "href",
+      "https://github.com/manumafe98/HoytsX",
+    );
+    await expect(hoytsx).toHaveAttribute("target", "_blank");
+    await expect(hoytsx).toHaveAttribute("rel", "noopener noreferrer");
+    expect((await hoytsx.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  });
 });
 
 test("a phone never requests the Ubuntu wallpaper image", async ({ page }) => {

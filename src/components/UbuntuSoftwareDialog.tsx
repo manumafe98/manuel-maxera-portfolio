@@ -2,12 +2,7 @@ import { projects } from "@/content/portfolio";
 import { GithubIcon, SearchIcon, WebLinkIcon } from "@/icons";
 import type { DialogProps } from "@/types/dialog.types";
 import { CloseDialog } from "./CloseDialog";
-
-const initials = (name: string) =>
-  name
-    .split(" ")
-    .map((word) => word[0])
-    .join("");
+import { initials } from "./initials";
 
 export const UbuntuSoftwareDialog = ({
   open,
