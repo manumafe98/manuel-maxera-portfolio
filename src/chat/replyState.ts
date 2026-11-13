@@ -8,6 +8,8 @@ export interface ReplyState {
   thinking: string;
   /** Set once thinking is done. */
   thinkingSeconds: number | null;
+  /** The Skill this reply runs, such as "open-projects". */
+  skill: string | null;
   tool: { name: string; args: string; result: string | null } | null;
   answer: AnswerPart[];
   done: boolean;
@@ -16,6 +18,7 @@ export interface ReplyState {
 export const emptyReply: ReplyState = {
   thinking: "",
   thinkingSeconds: null,
+  skill: null,
   tool: null,
   answer: [],
   done: false,
@@ -30,6 +33,10 @@ export const applyReplyEvent = (
       return { ...state, thinking: state.thinking + event.text };
     case "thinking-done":
       return { ...state, thinkingSeconds: event.seconds };
+    case "skill":
+      return { ...state, skill: event.name };
+    case "open-app":
+      return state;
     case "tool-call":
       return {
         ...state,

@@ -241,7 +241,15 @@ export const cv = {
 };
 
 export type ClaudeProjectId =
-  "manuel-maxera-portfolio" | "about-me" | "experience";
+  | "manuel-maxera-portfolio"
+  | "about-me"
+  | "experience"
+  | "projects"
+  | "skills"
+  | "contact";
+
+/** The App windows a Skill can open. */
+export type AppId = "ubuntu-software" | "files" | "gmail";
 
 export interface Command {
   /** Slash-prefixed, lower case, as the visitor types it. */
@@ -283,6 +291,18 @@ const downloadCvCommand: Command = {
   name: "/download-cv",
   description: "download the current CV as a PDF",
 };
+const openProjectsCommand: Command = {
+  name: "/open-projects",
+  description: "open the Software window with the Projects Manuel built",
+};
+const openSkillsCommand: Command = {
+  name: "/open-skills",
+  description: "open the Files window with his skills grouped by area",
+};
+const openContactCommand: Command = {
+  name: "/open-contact",
+  description: "open the Gmail window to send Manuel a message",
+};
 
 export const claudeProjects: ClaudeProject[] = [
   {
@@ -291,9 +311,9 @@ export const claudeProjects: ClaudeProject[] = [
     intro: `Hi! This is **${profile.name}**'s portfolio, running as a Claude Code session. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
 
 Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar or from the links below, run a Command from the chips, or type \`/\` to start.`,
-    commands: [downloadCvCommand],
-    chips: [downloadCvCommand.name],
-    links: ["about-me", "experience"],
+    commands: [openContactCommand, downloadCvCommand],
+    chips: [openContactCommand.name, downloadCvCommand.name],
+    links: ["about-me", "experience", "projects", "skills", "contact"],
   },
   {
     id: "about-me",
@@ -310,5 +330,29 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
       "This is the **Experience** Chat. I can show you what Manuel does now, or his whole career as a timeline.",
     commands: [showLatestExperienceCommand, showFullExperienceCommand],
     chips: [showLatestExperienceCommand.name, showFullExperienceCommand.name],
+  },
+  {
+    id: "projects",
+    displayName: "Projects",
+    intro:
+      "This is the **Projects** Chat. I can open the Software window with the Projects Manuel built, each with a link to its code.",
+    commands: [openProjectsCommand],
+    chips: [openProjectsCommand.name],
+  },
+  {
+    id: "skills",
+    displayName: "Skills",
+    intro:
+      "This is the **Skills** Chat. I can open the Files window with Manuel's tech stack, grouped by area.",
+    commands: [openSkillsCommand],
+    chips: [openSkillsCommand.name],
+  },
+  {
+    id: "contact",
+    displayName: "Contact",
+    intro:
+      "This is the **Contact** Chat. I can open the Gmail window so you can send Manuel a message.",
+    commands: [openContactCommand],
+    chips: [openContactCommand.name],
   },
 ];

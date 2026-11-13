@@ -386,6 +386,16 @@
   }
 }
 
+.cc-skill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.cc-skill .cc-muted {
+  margin-left: 4px;
+  font-family: system-ui, sans-serif;
+}
 .cc-tool {
   border: 1px solid var(--cc-border);
   border-radius: 8px;

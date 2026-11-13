@@ -256,3 +256,67 @@ describe("skip and stop", () => {
     expect(events).toHaveLength(2);
   });
 });
+
+describe("Skills", () => {
+  test.each([
+    {
+      projectId: "projects",
+      command: "/open-projects",
+      skill: "open-projects",
+      app: "ubuntu-software",
+      window: "Software",
+    },
+    {
+      projectId: "skills",
+      command: "/open-skills",
+      skill: "open-skills",
+      app: "files",
+      window: "Files",
+    },
+    {
+      projectId: "contact",
+      command: "/open-contact",
+      skill: "open-contact",
+      app: "gmail",
+      window: "Gmail",
+    },
+    {
+      projectId: "manuel-maxera-portfolio",
+      command: "/open-contact",
+      skill: "open-contact",
+      app: "gmail",
+      window: "Gmail",
+    },
+  ])(
+    '$command in $projectId shows Skill($skill), calls mcp__portfolio__launch_app("$app"), emits open-app $app, then a one-line summary naming the $window window',
+    async ({ projectId, command, skill, app, window }) => {
+      const events = await runToEnd(projectId, command);
+
+      expect(phases(events)).toEqual([
+        "thinking",
+        "thinking-done",
+        "skill",
+        "tool-call",
+        "tool-result",
+        "open-app",
+        "answer-chunk",
+        "done",
+      ]);
+      expect(events.find((event) => event.type === "skill")).toEqual({
+        type: "skill",
+        name: skill,
+      });
+      expect(toolCall(events)).toMatchObject({
+        name: "mcp__portfolio__launch_app",
+        args: `"${app}"`,
+      });
+      expect(events.find((event) => event.type === "open-app")).toEqual({
+        type: "open-app",
+        app,
+      });
+      const summary = answerText(events);
+      expect(summary).toContain(window);
+      expect(summary).not.toContain("\n");
+    },
+  );
+});

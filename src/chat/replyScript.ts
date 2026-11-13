@@ -11,7 +11,10 @@ import {
   education,
   experience,
   profile,
+  projects,
+  skillAreas,
   spokenLanguages,
+  type AppId,
   type ClaudeProject,
   type ExperienceEntry,
 } from "@/content/portfolio";
@@ -35,6 +38,10 @@ export type ReplyEvent =
   | { type: "thinking-done"; seconds: number }
   | { type: "tool-call"; name: string; args: string }
   | { type: "tool-result"; result: string }
+  /** A Skill's trace line, such as Skill(open-projects). */
+  | { type: "skill"; name: string }
+  /** Open or focus an App window (on desktop). */
+  | { type: "open-app"; app: AppId }
   | { type: "answer-chunk"; text: string }
   | { type: "answer-block"; block: AnswerBlock }
   | { type: "done" };
@@ -55,6 +62,8 @@ export interface ReplyOptions {
 
 interface Script {
   thinking: string;
+  /** Set for a Skill: its name and the App window it opens. */
+  skill?: { name: string; app: AppId };
   tool?: { name: string; args: string; result: string };
   answer: (string | AnswerBlock)[];
 }
@@ -69,6 +78,25 @@ const roleSummary = (role: ExperienceEntry) => ({
   dates: dates(role),
   location: role.location,
 });
+
+const skill = (
+  name: string,
+  app: AppId,
+  thinking: string,
+  result: unknown,
+  summary: string,
+): Script => ({
+  thinking,
+  skill: { name, app },
+  tool: {
+    name: "mcp__portfolio__launch_app",
+    args: `"${app}"`,
+    result: json(result),
+  },
+  answer: [summary],
+});
+
+const skillCount = skillAreas.reduce((n, area) => n + area.skills.length, 0);
 
 const scripts: Record<string, () => Script> = {
   "/about-me": () => ({
@@ -159,6 +187,30 @@ Run \`/show-full-experience\` to see his whole career.`,
       },
     ],
   }),
+  "/open-projects": () =>
+    skill(
+      "open-projects",
+      "ubuntu-software",
+      "They want to see what Manuel built. I'll launch the Software window with his Projects.",
+      { app: "ubuntu-software", projects: projects.map((p) => p.name) },
+      `Opened **Software** with Manuel's ${projects.length} Projects, each linking to its code.`,
+    ),
+  "/open-skills": () =>
+    skill(
+      "open-skills",
+      "files",
+      "They want Manuel's tech stack. I'll launch the Files window with his skills grouped by area.",
+      { app: "files", areas: skillAreas.map((a) => a.area) },
+      `Opened **Files** with ${skillCount} skills in ${skillAreas.length} areas.`,
+    ),
+  "/open-contact": () =>
+    skill(
+      "open-contact",
+      "gmail",
+      "They want to get in touch. I'll launch Gmail with the contact form.",
+      { app: "gmail", opened: "contact form" },
+      "Opened **Gmail** with a contact form. Write your email and a message, and Manuel will reply.",
+    ),
 };
 
 const fallback = (project: ClaudeProject): Script => ({
@@ -205,10 +257,21 @@ const plan = (script: Script, random: () => number): Step[] => {
     },
   });
 
+  if (script.skill) {
+    steps.push({
+      ms: jitter(200),
+      event: { type: "skill", name: script.skill.name },
+    });
+  }
+
   if (script.tool) {
     const { name, args, result } = script.tool;
     steps.push({ ms: jitter(200), event: { type: "tool-call", name, args } });
     steps.push({ ms: jitter(700), event: { type: "tool-result", result } });
+  }
+
+  if (script.skill) {
+    steps.push({ ms: 0, event: { type: "open-app", app: script.skill.app } });
   }
 
   script.answer.forEach((part, index) => {
