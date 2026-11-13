@@ -235,6 +235,11 @@ export const socialLinks: SocialLink[] = [
   { name: "GitHub", url: "https://github.com/manumafe98" },
 ];
 
+/** The live site. Canonical URLs and structured data point here. */
+export const site = {
+  url: "https://manuel-maxera.netlify.app/",
+};
+
 export const cv = {
   path: "/files/Manuel_Maxera_Resume.pdf",
   fileName: "Manuel_Maxera_Resume.pdf",

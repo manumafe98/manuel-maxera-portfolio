@@ -7,9 +7,25 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>Manuel Maxera Portfolio</title>
+    <!--app-head-->
+    <!-- Picks the shell before any stylesheet loads, so the pre-rendered
+         HTML never shows the wrong one (ADR-0002). -->
+    <style>
+      .desktop-shell {
+        display: none;
+      }
+      @media (min-width: 1024px) {
+        .desktop-shell {
+          display: block;
+        }
+        .phone-shell {
+          display: none;
+        }
+      }
+    </style>
   </head>
   <body>
+    <!--app-noscript-->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
