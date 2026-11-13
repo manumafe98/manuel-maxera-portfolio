@@ -38,7 +38,9 @@ export type AnswerBlock =
   /** External links, opened in a new tab. */
   | { kind: "links"; links: SocialLink[] }
   /** A link that opens another Claude project's Chat. */
-  | { kind: "claude-project-link"; id: ClaudeProjectId };
+  | { kind: "claude-project-link"; id: ClaudeProjectId }
+  /** A Skill's content shown inside the Chat, in place of its App window. */
+  | { kind: "skill-card"; app: AppId };
 
 export type ReplyEvent =
   | { type: "thinking"; text: string }
@@ -47,7 +49,7 @@ export type ReplyEvent =
   | { type: "tool-result"; result: string }
   /** A Skill's trace line, such as Skill(open-projects). */
   | { type: "skill"; name: string }
-  /** Open or focus an App window (on desktop). */
+  /** Open or focus an App window. Only sent when Skills open windows. */
   | { type: "open-app"; app: AppId }
   | { type: "answer-chunk"; text: string }
   | { type: "answer-block"; block: AnswerBlock }
@@ -65,7 +67,14 @@ export interface ReplyOptions {
   delay?: (ms: number) => Promise<void>;
   /** Source of jitter in [0, 1). Defaults to Math.random. */
   random?: () => number;
+  /**
+   * How Skills show their content: by opening App windows (desktop, the
+   * default) or as cards inside the reply (phones).
+   */
+  skills?: SkillsShownAs;
 }
+
+export type SkillsShownAs = "windows" | "cards";
 
 interface Script {
   thinking: string;
@@ -86,26 +95,31 @@ const roleSummary = (role: ExperienceEntry) => ({
   location: role.location,
 });
 
-const skill = (
-  name: string,
-  app: AppId,
-  thinking: string,
-  result: unknown,
-  summary: string,
-): Script => ({
-  thinking,
-  skill: { name, app },
-  tool: {
-    name: "mcp__portfolio__launch_app",
-    args: `"${app}"`,
-    result: json(result),
-  },
-  answer: [summary],
-});
+/** What a Skill's reply says, for each way its content can be shown. */
+type SkillWording = Record<
+  SkillsShownAs,
+  { thinking: string; summary: string }
+>;
+
+const skill =
+  (name: string, app: AppId, result: unknown, wording: SkillWording) =>
+  (shownAs: SkillsShownAs): Script => ({
+    thinking: wording[shownAs].thinking,
+    skill: { name, app },
+    tool: {
+      name: "mcp__portfolio__launch_app",
+      args: `"${app}"`,
+      result: json(result),
+    },
+    answer:
+      shownAs === "cards"
+        ? [wording.cards.summary, { kind: "skill-card", app }]
+        : [wording.windows.summary],
+  });
 
 const skillCount = skillAreas.reduce((n, area) => n + area.skills.length, 0);
 
-const scripts: Record<string, () => Script> = {
+const scripts: Record<string, (skills: SkillsShownAs) => Script> = {
   "/about-me": () => ({
     thinking:
       "The visitor wants Manuel's full background. I'll fetch his profile and walk through the summary, education and languages.",
@@ -194,30 +208,59 @@ Run \`/show-full-experience\` to see his whole career.`,
       },
     ],
   }),
-  "/open-projects": () =>
-    skill(
-      "open-projects",
-      "ubuntu-software",
-      "They want to see what Manuel built. I'll launch the Software window with his Projects.",
-      { app: "ubuntu-software", projects: projects.map((p) => p.name) },
-      `Opened **Software** with Manuel's ${projects.length} Projects, each linking to its code.`,
-    ),
-  "/open-skills": () =>
-    skill(
-      "open-skills",
-      "files",
-      "They want Manuel's tech stack. I'll launch the Files window with his skills grouped by area.",
-      { app: "files", areas: skillAreas.map((a) => a.area) },
-      `Opened **Files** with ${skillCount} skills in ${skillAreas.length} areas.`,
-    ),
-  "/open-contact": () =>
-    skill(
-      "open-contact",
-      "gmail",
-      "They want to get in touch. I'll launch Gmail with the contact form.",
-      { app: "gmail", opened: "contact form" },
-      "Opened **Gmail** with a contact form. Write your email and a message, and Manuel will reply.",
-    ),
+  "/open-projects": skill(
+    "open-projects",
+    "ubuntu-software",
+    { app: "ubuntu-software", projects: projects.map((p) => p.name) },
+    {
+      windows: {
+        thinking:
+          "They want to see what Manuel built. I'll launch the Software window with his Projects.",
+        summary: `Opened **Software** with Manuel's ${projects.length} Projects, each linking to its code.`,
+      },
+      cards: {
+        thinking:
+          "They want to see what Manuel built. I'll show his Projects as cards.",
+        summary: `Here are Manuel's ${projects.length} Projects, each linking to its code:`,
+      },
+    },
+  ),
+  "/open-skills": skill(
+    "open-skills",
+    "files",
+    { app: "files", areas: skillAreas.map((a) => a.area) },
+    {
+      windows: {
+        thinking:
+          "They want Manuel's tech stack. I'll launch the Files window with his skills grouped by area.",
+        summary: `Opened **Files** with ${skillCount} skills in ${skillAreas.length} areas.`,
+      },
+      cards: {
+        thinking:
+          "They want Manuel's tech stack. I'll show his skills grouped by area.",
+        summary: `Here are Manuel's ${skillCount} skills in ${skillAreas.length} areas:`,
+      },
+    },
+  ),
+  "/open-contact": skill(
+    "open-contact",
+    "gmail",
+    { app: "gmail", opened: "contact form" },
+    {
+      windows: {
+        thinking:
+          "They want to get in touch. I'll launch Gmail with the contact form.",
+        summary:
+          "Opened **Gmail** with a contact form. Write your email and a message, and Manuel will reply.",
+      },
+      cards: {
+        thinking:
+          "They want to get in touch. I'll show the contact form right here.",
+        summary:
+          "Here's a contact form. Write your email and a message, and Manuel will reply:",
+      },
+    },
+  ),
 
   "/socials": () => ({
     thinking:
@@ -277,7 +320,11 @@ const chunk = (text: string, ticks: number) => {
 
 type Step = { ms: number; event: ReplyEvent };
 
-const plan = (script: Script, random: () => number): Step[] => {
+const plan = (
+  script: Script,
+  random: () => number,
+  skills: SkillsShownAs,
+): Step[] => {
   const jitter = (ms: number) => Math.round(ms * (0.7 + random() * 0.6));
   const steps: Step[] = [];
 
@@ -310,7 +357,7 @@ const plan = (script: Script, random: () => number): Step[] => {
     steps.push({ ms: jitter(700), event: { type: "tool-result", result } });
   }
 
-  if (script.skill) {
+  if (script.skill && skills === "windows") {
     steps.push({ ms: 0, event: { type: "open-app", app: script.skill.app } });
   }
 
@@ -341,7 +388,11 @@ const sleep = (ms: number) =>
 export const replyTo = (
   projectId: string,
   rawInput: string,
-  { delay = sleep, random = Math.random }: ReplyOptions = {},
+  {
+    delay = sleep,
+    random = Math.random,
+    skills = "windows",
+  }: ReplyOptions = {},
 ): ReplyStream => {
   const project = claudeProjects.find((p) => p.id === projectId);
   if (!project) throw new Error(`Unknown Claude project: ${projectId}`);
@@ -350,11 +401,11 @@ export const replyTo = (
   const known = project.commands.some((c) => c.name === command);
   const owner = known ? undefined : ownerOf(command, project);
   const script = known
-    ? scripts[command]()
+    ? scripts[command](skills)
     : owner
       ? elsewhere(command, owner)
       : fallback(project);
-  const steps = plan(script, random);
+  const steps = plan(script, random, skills);
 
   let skipped = false;
   let stopped = false;

@@ -132,6 +132,179 @@
   border-radius: 50%;
 }
 
+/* Skill cards: a Skill's content inside the Chat, like Claude's artifact cards */
+.cc-answer .cc-card-list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+}
+.cc-answer .cc-card-list > li {
+  margin: 0;
+}
+.cc-card {
+  padding: 14px;
+  border: 1px solid var(--cc-border);
+  border-radius: 16px;
+  background: #232220;
+}
+.cc-card h3 {
+  color: var(--cc-text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.cc-project {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.cc-project-logo {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 12px;
+  background: var(--cc-raised);
+  object-fit: contain;
+}
+.cc-project-logo.is-initials {
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--cc-accent);
+}
+.cc-project-text {
+  flex: 1;
+  min-width: 0;
+}
+.cc-project-text p {
+  margin: 2px 0 0;
+  font-size: 13.5px;
+}
+.cc-project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.cc-answer a.cc-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  background: var(--cc-raised);
+  color: var(--cc-text);
+  font-size: 13.5px;
+  text-decoration: none;
+}
+.cc-card-link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.cc-skills {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cc-answer ul.cc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cc-answer li.cc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 5px 10px;
+  border: 1px solid var(--cc-border);
+  border-radius: 999px;
+  background: var(--cc-raised);
+  font-size: 13px;
+}
+.cc-tag svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.cc-contact {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cc-contact label {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--cc-muted);
+}
+.cc-contact input,
+.cc-contact textarea {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  background: var(--cc-bg);
+  color: var(--cc-text);
+  /* 16px keeps mobile browsers from zooming into the field. */
+  font-size: 16px;
+}
+.cc-contact textarea {
+  resize: vertical;
+}
+.cc-contact input:focus-visible,
+.cc-contact textarea:focus-visible {
+  outline: 2px solid var(--cc-accent);
+  outline-offset: -1px;
+}
+.cc-contact-send {
+  min-height: 44px;
+  margin-top: 6px;
+  border-radius: 12px;
+  background: var(--cc-accent);
+  color: #1f1e1d;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cc-contact-send:disabled {
+  opacity: 0.6;
+}
+.cc-contact-notice {
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+}
+.cc-contact-notice.is-success {
+  background: rgb(74 160 100 / 0.15);
+  color: #9fd8ad;
+}
+.cc-contact-notice.is-error {
+  background: rgb(220 90 80 / 0.15);
+  color: #f0a59c;
+}
+.cc-contact-note {
+  font-size: 13px;
+  color: var(--cc-muted);
+}
+.cc-answer a.cc-touch-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 /* drawer: slides in from the left over a dimmed overlay */
 .ph-overlay {
   position: absolute;

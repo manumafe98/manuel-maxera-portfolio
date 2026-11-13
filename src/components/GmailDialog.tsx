@@ -1,21 +1,7 @@
-import { profile } from "@/content/portfolio";
+import { useContactForm } from "@/contact/useContactForm";
 import type { DialogProps } from "@/types/dialog.types";
-import { useEffect, useRef, useState } from "react";
 import { CloseDialog } from "./CloseDialog";
 import { GmailDialogMessagePopUp } from "./GmailDialogMessagePopUp";
-
-const validEmailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-
-const sendWithEmailJs = async (fromEmail: string, message: string) => {
-  // Loaded on first send, so EmailJS stays out of the initial bundle.
-  const { default: emailjs } = await import("@emailjs/browser");
-  await emailjs.send(
-    import.meta.env.EMAILJS_SERVICE_ID,
-    import.meta.env.EMAILJS_TEMPLATE_ID,
-    { from_email: fromEmail, message },
-    import.meta.env.EMAILJS_USER_PUBLIC_KEY,
-  );
-};
 
 export const GmailDialog = ({
   open,
@@ -23,52 +9,15 @@ export const GmailDialog = ({
   onClose,
   onFocus,
 }: DialogProps) => {
-  const [senderEmail, setSenderEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
-  const [notice, setNotice] = useState<{
-    text: string;
-    success: boolean;
-  } | null>(null);
-  const hideNotice = useRef<ReturnType<typeof setTimeout>>(undefined);
-
-  useEffect(() => () => clearTimeout(hideNotice.current), []);
-
-  const notify = (text: string, success: boolean) => {
-    setNotice({ text, success });
-    clearTimeout(hideNotice.current);
-    hideNotice.current = setTimeout(() => setNotice(null), 6000);
-  };
-
-  const validationError = () => {
-    if (!validEmailRegex.test(senderEmail.trim())) {
-      return "Enter a valid email address, like name@example.com.";
-    }
-    if (!message.trim()) return "Write a message before sending.";
-    return null;
-  };
-
-  const sendEmail = async () => {
-    const error = validationError();
-    if (error) {
-      notify(error, false);
-      return;
-    }
-
-    setSending(true);
-    try {
-      await sendWithEmailJs(senderEmail.trim(), message);
-      notify("Message sent. Manuel will reply to your email.", true);
-    } catch (error) {
-      console.error("EmailJS send failed", error);
-      notify(
-        `Your message couldn't be sent. Try again, or email ${profile.email}.`,
-        false,
-      );
-    } finally {
-      setSending(false);
-    }
-  };
+  const {
+    senderEmail,
+    setSenderEmail,
+    message,
+    setMessage,
+    sending,
+    notice,
+    onSubmit,
+  } = useContactForm();
 
   return (
     <dialog
@@ -88,14 +37,7 @@ export const GmailDialog = ({
         <span className="text-ubuntu-main text-2xl font-bold mb-10">
           Contact Me
         </span>
-        <form
-          noValidate
-          className="flex flex-col w-4/6"
-          onSubmit={(event) => {
-            event.preventDefault();
-            sendEmail();
-          }}
-        >
+        <form noValidate className="flex flex-col w-4/6" onSubmit={onSubmit}>
           <input
             aria-label="Your email"
             placeholder="email@example.com"

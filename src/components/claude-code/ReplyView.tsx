@@ -1,11 +1,16 @@
 import type { AnswerBlock } from "@/chat/replyScript";
 import type { ReplyState } from "@/chat/replyState";
 import type { ClaudeProjectId } from "@/content/portfolio";
-import { useState, type MouseEvent } from "react";
+import { lazy, Suspense, useState, type MouseEvent } from "react";
 import { LineIcon } from "./LineIcon";
 import { Markdown } from "./Markdown";
 
 const RESULT_PREVIEW_LINES = 6;
+
+// Skill cards only show on phones, so their code loads when a Skill runs.
+const SkillCard = lazy(() =>
+  import("./SkillCard").then((m) => ({ default: m.SkillCard })),
+);
 
 interface ReplyViewProps {
   reply: ReplyState;
@@ -79,6 +84,14 @@ const AnswerBlockView = ({
             </li>
           ))}
         </ul>
+      );
+    case "skill-card":
+      return (
+        <Suspense
+          fallback={<div className="cc-muted cc-shimmer">Loading…</div>}
+        >
+          <SkillCard app={block.app} />
+        </Suspense>
       );
     case "claude-project-link":
       return (

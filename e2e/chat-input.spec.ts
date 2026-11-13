@@ -183,7 +183,7 @@ for (const title of [
     const gitHub = reply.getByRole("link", { name: "GitHub" });
     await expect(linkedIn).toHaveAttribute(
       "href",
-      "https://www.linkedin.com/in/manuelmaxera/",
+      "https://www.linkedin.com/in/manuel-maxera/",
     );
     await expect(gitHub).toHaveAttribute(
       "href",

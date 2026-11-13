@@ -6,12 +6,6 @@ import "./claude-code.css";
 import { LineIcon } from "./LineIcon";
 import "./phone.css";
 
-/**
- * Skills show their content as inline cards on phones (#16). Until then a
- * Skill leaves only its one-line summary and opens no App window.
- */
-const ignoreOpenApp = () => {};
-
 /** Claude Code on phones, modeled on the Claude mobile app. */
 export const PhoneClaudeCode = () => {
   const [activeId, setActiveId] = useState<ClaudeProjectId>(
@@ -63,7 +57,6 @@ export const PhoneClaudeCode = () => {
               project={project}
               active={project.id === activeId}
               onOpenClaudeProject={setActiveId}
-              onOpenApp={ignoreOpenApp}
             />
           ))}
         </main>

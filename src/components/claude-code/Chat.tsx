@@ -24,8 +24,11 @@ interface ChatProps {
   project: ClaudeProject;
   active: boolean;
   onOpenClaudeProject: (id: ClaudeProjectId) => void;
-  /** Handles a Skill's "open app" event. */
-  onOpenApp: (app: AppId) => void;
+  /**
+   * Opens the App window a Skill launches. Without it (phones), Skills show
+   * their content as cards inside the reply instead.
+   */
+  onOpenApp?: (app: AppId) => void;
 }
 
 /** The single scripted Chat of a Claude project. */
@@ -60,7 +63,9 @@ export const Chat = ({
 
   const run = async (text: string) => {
     if (streamRef.current || !text.trim()) return;
-    const stream = replyTo(project.id, text);
+    const stream = replyTo(project.id, text, {
+      skills: onOpenApp ? "windows" : "cards",
+    });
     streamRef.current = stream;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       stream.skip();
@@ -76,7 +81,7 @@ export const Chat = ({
     ]);
 
     for await (const event of stream) {
-      if (event.type === "open-app") onOpenApp(event.app);
+      if (event.type === "open-app") onOpenApp?.(event.app);
       setMessages((current) =>
         current.map((message) =>
           message.id === replyId && message.kind === "reply"
