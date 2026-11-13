@@ -38,6 +38,10 @@
 .cc-muted {
   color: var(--cc-muted);
 }
+/* Wording for one layout; phone.css swaps these in the phone layout. */
+.cc-phone-only {
+  display: none;
+}
 .cc-mono {
   font-family: var(--cc-mono);
 }

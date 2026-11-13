@@ -328,3 +328,25 @@ test.describe("sidebar", () => {
     await expect(chat(page, "Who is Manuel Maxera?")).toBeVisible();
   });
 });
+
+test("on desktop the Welcome intro points to the sidebar, not the phone's ☰ menu, and never says session", async ({
+  page,
+}) => {
+  const welcome = chat(page, "Getting started with Manuel's portfolio");
+
+  await expect(welcome.getByText(/in the sidebar/)).toBeVisible();
+  await expect(welcome.getByText(/☰/)).toBeHidden();
+  expect(await welcome.innerText()).not.toMatch(/session/i);
+});
+
+test("the /socials chip in the Welcome Chat links LinkedIn and GitHub", async ({
+  page,
+}) => {
+  const welcome = chat(page, "Getting started with Manuel's portfolio");
+
+  await welcome.getByRole("button", { name: "/socials" }).click();
+
+  const reply = welcome.getByRole("article", { name: "Reply" });
+  await expect(reply.getByRole("link", { name: "LinkedIn" })).toBeVisible();
+  await expect(reply.getByRole("link", { name: "GitHub" })).toBeVisible();
+});

@@ -136,6 +136,16 @@ export const Chat = ({
         <div className="cc-column">
           <div className="cc-answer">
             <Markdown text={project.intro} />
+            {project.layoutHint && (
+              <div className="cc-block">
+                <span className="cc-desktop-only">
+                  {project.layoutHint.desktop}
+                </span>
+                <span className="cc-phone-only">
+                  {project.layoutHint.phone}
+                </span>
+              </div>
+            )}
             <div className="cc-block">
               <div>Commands I understand:</div>
               <ul>
@@ -163,9 +173,6 @@ export const Chat = ({
                 </ul>
               </div>
             )}
-            <div className="cc-block">
-              Click a chip below or type a Command.
-            </div>
           </div>
           {messages.map((message) =>
             message.kind === "user" ? (

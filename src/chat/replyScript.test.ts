@@ -334,7 +334,7 @@ describe("Skills shown as cards (phones)", () => {
       command: "/open-projects",
       skill: "open-projects",
       app: "ubuntu-software",
-      summary: "Here are Manuel's 5 Projects, each linking to its code:",
+      summary: "Here are Manuel's 5 projects, each linking to its code:",
     },
     {
       projectId: "skills",

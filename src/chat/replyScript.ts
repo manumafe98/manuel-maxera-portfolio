@@ -196,7 +196,7 @@ Run \`/show-full-experience\` to see his whole career.`,
       result: json(experience.map(roleSummary)),
     },
     answer: [
-      `Manuel has held **${experience.length} roles**, from Unix sysadmin to AI engineer:`,
+      `Manuel has held **${experience.length} roles**, ${profile.careerPath}:`,
       {
         kind: "timeline",
         roles: experience.map((role) => ({
@@ -213,13 +213,13 @@ Run \`/show-full-experience\` to see his whole career.`,
     {
       windows: {
         thinking:
-          "They want to see what Manuel built. I'll launch the Software window with his Projects.",
-        summary: `Opened **Software** with Manuel's ${projects.length} Projects, each linking to its code.`,
+          "They want to see what Manuel built. I'll launch the Software window with his projects.",
+        summary: `Opened **Software** with Manuel's ${projects.length} projects, each linking to its code.`,
       },
       cards: {
         thinking:
-          "They want to see what Manuel built. I'll show his Projects as cards.",
-        summary: `Here are Manuel's ${projects.length} Projects, each linking to its code:`,
+          "They want to see what Manuel built. I'll show his projects as cards.",
+        summary: `Here are Manuel's ${projects.length} projects, each linking to its code:`,
       },
     },
   ),
@@ -275,9 +275,9 @@ Run \`/show-full-experience\` to see his whole career.`,
 };
 
 const fallback = (project: ClaudeProject): Script => ({
-  thinking: "That isn't a Command this Chat knows.",
+  thinking: "That isn't a command this chat knows.",
   answer: [
-    `Replies here are scripted, so I only understand these Commands:
+    `Replies here are scripted, so I only understand these commands:
 
 ${project.commands.map((c) => `- \`${c.name}\`: ${c.description}`).join("\n")}`,
   ],

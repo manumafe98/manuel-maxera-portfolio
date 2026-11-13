@@ -209,7 +209,7 @@ test.describe("Skill cards", () => {
     );
 
     await expect(reply).toContainText(
-      "Here are Manuel's 5 Projects, each linking to its code:",
+      "Here are Manuel's 5 projects, each linking to its code:",
     );
     await expect(reply).not.toContainText("Opened Software");
     const cards = reply
@@ -545,4 +545,34 @@ test("on a phone the Welcome links to the five Claude projects wrap as one row o
   expect(boxes[1].x).toBeGreaterThan(boxes[0].x);
   const rows = new Set(boxes.map((box) => Math.round(box.y)));
   expect(rows.size).toBeLessThanOrEqual(2);
+});
+
+test("on a phone the Welcome intro points to the ☰ menu, not the desktop sidebar, and never says session", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const welcome = chat(page, WELCOME);
+
+  await expect(welcome.getByText(/☰/)).toBeVisible();
+  await expect(welcome.getByText(/in the sidebar/)).toBeHidden();
+  expect(await welcome.innerText()).not.toMatch(/session/i);
+});
+
+test("on a phone no Chat intro mentions windows or the sidebar, and each names each of its Commands at most once", async ({
+  page,
+}) => {
+  await page.goto("/");
+  for (const title of CHAT_TITLES) {
+    await menuButton(page).click();
+    await recents(page).getByRole("button", { name: title }).click();
+    const intro = await chat(page, title)
+      .locator(".cc-answer")
+      .first()
+      .innerText();
+
+    expect(intro, title).not.toMatch(/window|sidebar/i);
+    const commands = intro.match(/\/[a-z-]+/g) ?? [];
+    expect(commands.length, title).toBeGreaterThan(0);
+    expect(new Set(commands).size, title).toBe(commands.length);
+  }
 });

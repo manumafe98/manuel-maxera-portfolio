@@ -19,6 +19,8 @@ export interface Profile {
   summary: string;
   /** Two- or three-line version of the summary. */
   shortSummary: string;
+  /** The career from the first role to the current one, as a short phrase. */
+  careerPath: string;
 }
 
 export interface ExperienceEntry {
@@ -73,6 +75,7 @@ export const profile: Profile = {
     "AI Engineer focused on production LLM agents and backend platforms for enterprise SaaS, using Python, FastAPI, LangGraph, AWS Bedrock and the Model Context Protocol (MCP). Experience includes retrieval, multilingual search, LLM evaluation and observability, as well as AI-assisted code review and merge-request workflows in GitLab CI. Foundation in full-stack product engineering and cloud infrastructure.",
   shortSummary:
     "AI Engineer at Avature building production LLM agents and MCP integrations with Python, FastAPI, LangGraph and AWS Bedrock. Background in full-stack product engineering and cloud infrastructure.",
+  careerPath: "from Unix sysadmin to AI engineer",
 };
 
 export const experience: ExperienceEntry[] = [
@@ -326,6 +329,11 @@ export interface ClaudeProject {
   title: string;
   /** Opening message of the Chat. The Commands list is added after it. */
   intro: string;
+  /**
+   * A closing line of the intro worded for each layout, since the Desktop
+   * and the phone layout open Chats from different places. CSS shows one.
+   */
+  layoutHint?: { desktop: string; phone: string };
   commands: Command[];
   /** Commands offered as clickable chips above the input. */
   chips: string[];
@@ -355,15 +363,15 @@ const downloadCvCommand: Command = {
 };
 const openProjectsCommand: Command = {
   name: "/open-projects",
-  description: "open the Software window with the Projects Manuel built",
+  description: "the projects Manuel built, each linking to its code",
 };
 const openSkillsCommand: Command = {
   name: "/open-skills",
-  description: "open the Files window with his skills",
+  description: "Manuel's tech stack",
 };
 const openContactCommand: Command = {
   name: "/open-contact",
-  description: "open the Gmail window to send Manuel a message",
+  description: "a form to send Manuel a message",
 };
 /** Available in every Chat. */
 const socialsCommand: Command = {
@@ -375,13 +383,21 @@ export const claudeProjects: ClaudeProject[] = [
   {
     id: "manuel-maxera-portfolio",
     title: "Getting started with Manuel's portfolio",
-    intro: `Hi! This is **${profile.name}**'s portfolio, running as a Claude Code session. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
+    intro: `Hi! This is **${profile.name}**'s portfolio, built to look like the Claude Code app. Manuel is an **${profile.title}** in ${profile.location}, building production LLM agents and MCP integrations.
 
-Replies here are scripted, with no live model behind them.
-
-Each Claude project in the sidebar covers one topic and holds one Chat. Open one from the sidebar (the ☰ menu on phones) or from the links below, run a Command from the chips, or type \`/\` to start.`,
+Replies here are scripted, with no live model behind them.`,
+    layoutHint: {
+      desktop:
+        "Each Claude project in the sidebar covers one topic. Open its chat there or from the links below.",
+      phone:
+        "Each chat covers one topic. Open one from the ☰ menu or the links below.",
+    },
     commands: [openContactCommand, downloadCvCommand, socialsCommand],
-    chips: [openContactCommand.name, downloadCvCommand.name],
+    chips: [
+      openContactCommand.name,
+      downloadCvCommand.name,
+      socialsCommand.name,
+    ],
     links: ["about-me", "experience", "projects", "skills", "contact"],
   },
   {
@@ -407,21 +423,21 @@ Each Claude project in the sidebar covers one topic and holds one Chat. Open one
     id: "projects",
     title: "Side projects showcase",
     intro:
-      "I can open the Software window with the Projects Manuel built, each with a link to its code.",
+      "I can show you the projects Manuel built, each with a link to its code.",
     commands: [openProjectsCommand, socialsCommand],
     chips: [openProjectsCommand.name],
   },
   {
     id: "skills",
     title: "Tech stack overview",
-    intro: "I can open the Files window with Manuel's tech stack.",
+    intro: "I can show you Manuel's tech stack.",
     commands: [openSkillsCommand, socialsCommand],
     chips: [openSkillsCommand.name],
   },
   {
     id: "contact",
     title: "Reaching out to Manuel",
-    intro: "I can open the Gmail window so you can send Manuel a message.",
+    intro: "I can bring up a form so you can send Manuel a message.",
     commands: [openContactCommand, socialsCommand],
     chips: [openContactCommand.name],
   },
