@@ -8,3 +8,10 @@
 [build.environment]
   # Vite 8 needs Node 20.19+ or 22.12+; Netlify's old default (18) can't run it.
   NODE_VERSION = "22"
+
+# Vite puts a content hash in every file name under /assets, so a changed file
+# gets a new URL and browsers can keep these for a year without revalidating.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
