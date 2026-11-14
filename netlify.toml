@@ -15,3 +15,13 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# The site lives at manuelmaxera.com. Send the old Netlify address there
+# permanently, so search engines see one copy and Umami (which only counts
+# manuelmaxera.com) sees every visit. Deploy previews use other hosts
+# (deploy-preview-N--manuel-maxera.netlify.app) and are not affected.
+[[redirects]]
+  from = "https://manuel-maxera.netlify.app/*"
+  to = "https://manuelmaxera.com/:splat"
+  status = 301
+  force = true
