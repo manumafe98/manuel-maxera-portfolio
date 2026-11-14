@@ -1,31 +1,34 @@
 import { expect, test } from "@playwright/test";
 
-// playwright.config.ts builds with this placeholder CF_BEACON_TOKEN.
-const BEACON_TOKEN = "e2e-beacon-token";
-const BEACON_SRC = "https://static.cloudflareinsights.com/beacon.min.js";
+// playwright.config.ts makes cloud.umami.is unreachable, so the real Umami
+// script never loads and no test ever reports a visit.
+
+const UMAMI_SRC = "https://cloud.umami.is/script.js";
+const WEBSITE_ID = "d3d352a7-8cac-4be0-835d-0b7f7174e382";
+const DOMAINS = "manuelmaxera.com,www.manuelmaxera.com";
 
 const PAGES = ["/", "/privacy", "/some/unknown/path"];
 
 for (const path of PAGES) {
-  test(`${path} requests the Cloudflare Web Analytics beacon with the build's token`, async ({
+  test(`${path} loads the Umami script deferred, with the site's Website ID and only the manuelmaxera.com domains`, async ({
     page,
   }) => {
-    // Answer the beacon request here, so nothing reaches Cloudflare.
-    const beaconRequests: string[] = [];
-    await page.route(BEACON_SRC, (route) => {
-      beaconRequests.push(route.request().url());
-      return route.fulfill({ contentType: "text/javascript", body: "" });
-    });
-
     await page.goto(path);
 
-    const beacon = page.locator(`script[src="${BEACON_SRC}"]`);
-    await expect(beacon).toHaveCount(1);
-    await expect(beacon).toHaveAttribute("defer", "");
-    expect(
-      JSON.parse((await beacon.getAttribute("data-cf-beacon")) ?? ""),
-    ).toEqual({ token: BEACON_TOKEN });
-    await expect.poll(() => beaconRequests).toEqual([BEACON_SRC]);
+    const script = page.locator(`script[src="${UMAMI_SRC}"]`);
+    await expect(script).toHaveCount(1);
+    await expect(script).toHaveAttribute("defer", "");
+    await expect(script).toHaveAttribute("data-website-id", WEBSITE_ID);
+    await expect(script).toHaveAttribute("data-domains", DOMAINS);
+  });
+
+  test(`${path} has no Cloudflare Web Analytics beacon in its HTML`, async ({
+    request,
+  }) => {
+    const html = await (await request.get(path)).text();
+
+    expect(html).toContain(UMAMI_SRC);
+    expect(html).not.toMatch(/cloudflareinsights|data-cf-beacon/);
   });
 }
 

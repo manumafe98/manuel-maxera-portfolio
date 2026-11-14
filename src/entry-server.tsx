@@ -5,7 +5,7 @@
 import type { ReactNode } from "react";
 import { prerender } from "react-dom/static";
 import { pages, type PageId } from "./pages/pages";
-import { headFor, type HeadOptions } from "./seo/head";
+import { headFor } from "./seo/head";
 import { NoscriptContent, noscriptStyles } from "./seo/NoscriptContent";
 
 export { agentFiles } from "./seo/agentFiles";
@@ -24,13 +24,10 @@ export interface RenderedPage {
   noscript: string;
 }
 
-export const render = async (
-  page: PageId,
-  options: HeadOptions = {},
-): Promise<RenderedPage> => {
+export const render = async (page: PageId): Promise<RenderedPage> => {
   const Page = pages[page];
   return {
-    head: headFor(page, options),
+    head: headFor(page),
     html: await toHtml(<Page />),
     noscript:
       page === "home"
