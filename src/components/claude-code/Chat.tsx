@@ -1,5 +1,6 @@
+import { trackCommand } from "@/analytics/umami";
 import { matchingCommands } from "@/chat/commandMenu";
-import { replyTo, type ReplyStream } from "@/chat/replyScript";
+import { normalize, replyTo, type ReplyStream } from "@/chat/replyScript";
 import {
   applyReplyEvent,
   emptyReply,
@@ -66,6 +67,10 @@ export const Chat = ({
 
   const run = async (text: string) => {
     if (streamRef.current || !text.trim()) return;
+    const command = normalize(text);
+    if (project.commands.some((c) => c.name === command)) {
+      trackCommand(command);
+    }
     const stream = replyTo(project.id, text, {
       skills: onOpenApp ? "windows" : "cards",
     });

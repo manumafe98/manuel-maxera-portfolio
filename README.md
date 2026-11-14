@@ -21,3 +21,5 @@ Set these in the build environment (on Netlify: Site configuration > Environment
 ## Analytics
 
 Every pre-rendered page loads [Umami Cloud](https://umami.is/), which is cookie-free. Its script URL, Website ID and the domains it counts are public values in `site.analytics` in `src/content/portfolio.ts`, not environment variables. Umami only counts visits on `manuelmaxera.com` and `www.manuelmaxera.com`, so deploy previews, the netlify.app address and local builds never count.
+
+The call-to-action Commands `/open-contact`, `/download-cv` and `/socials` each send one custom event when they run in a Chat, named `command-open-contact`, `command-download-cv` and `command-socials` (see `src/analytics/umami.ts`).
