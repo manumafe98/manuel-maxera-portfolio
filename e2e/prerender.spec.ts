@@ -26,16 +26,20 @@ test.describe("with JavaScript disabled", () => {
     await expect(homeLinks.last()).toHaveAttribute("href", "/");
   });
 
-  test("/privacy explains the cookie-free Cloudflare analytics, the contact form data sent to EmailJS, and how to ask questions", async ({
+  test("/privacy explains the cookie-free Umami analytics, the contact form data sent to EmailJS, and how to ask questions", async ({
     page,
   }) => {
     await page.goto("/privacy");
     const main = page.getByRole("main");
 
     const analytics = main.getByRole("region", { name: "Analytics" });
-    await expect(analytics).toContainText("Cloudflare Web Analytics");
+    await expect(analytics).toContainText("Umami Cloud");
     await expect(analytics).toContainText(/doesn't use cookies/);
+    await expect(analytics).toContainText(/doesn't store your IP address/);
     await expect(analytics).toContainText(/aggregated/);
+    await expect(analytics).toContainText(/Commands/);
+    await expect(analytics).toContainText(/United States/);
+    await expect(main).not.toContainText("Cloudflare");
 
     const contactForm = main.getByRole("region", { name: "Contact form" });
     await expect(contactForm).toContainText("EmailJS");
