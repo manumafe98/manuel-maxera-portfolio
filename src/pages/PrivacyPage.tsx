@@ -32,10 +32,13 @@ export const PrivacyPage = () => (
     </p>
     <Section id="privacy-analytics" heading="Analytics">
       <p>
-        The site uses Cloudflare Web Analytics to count visits. It doesn't use
-        cookies or any other storage on your device, and it doesn't track you
-        across sites or build a profile of you. Manuel only sees aggregated
-        numbers, such as page views, referring sites, countries and browsers.
+        The site uses Umami Cloud, hosted in the United States, to count visits.
+        It doesn't use cookies or any other storage on your device, doesn't
+        store your IP address, and doesn't track you across sites or build a
+        profile of you. Manuel only sees aggregated numbers, such as page views,
+        referring sites, countries and browsers, and how often the
+        call-to-action Commands (/open-contact, /download-cv and /socials) are
+        run.
       </p>
     </Section>
     <Section id="privacy-contact-form" heading="Contact form">

@@ -11,12 +11,10 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${port}`,
     trace: "on-first-retry",
-    // The build includes the Cloudflare Web Analytics beacon (see webServer
-    // env). Make its hosts unreachable so no test ever reports a visit.
+    // Every page loads the Umami script. Make its host unreachable so no
+    // test ever reports a visit or an event.
     launchOptions: {
-      args: [
-        "--host-resolver-rules=MAP static.cloudflareinsights.com ~NOTFOUND, MAP cloudflareinsights.com ~NOTFOUND",
-      ],
+      args: ["--host-resolver-rules=MAP cloud.umami.is ~NOTFOUND"],
     },
   },
   projects: [
@@ -42,8 +40,6 @@ export default defineConfig({
       EMAILJS_SERVICE_ID: "service_e2e",
       EMAILJS_TEMPLATE_ID: "template_e2e",
       EMAILJS_USER_PUBLIC_KEY: "public_key_e2e",
-      // A placeholder, so every page carries the analytics beacon.
-      CF_BEACON_TOKEN: "e2e-beacon-token",
     },
     timeout: 120_000,
   },

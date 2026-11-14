@@ -29,15 +29,8 @@ const fill = (html, placeholder, value) => {
   return html.replace(placeholder, () => value);
 };
 
-// Cloudflare Web Analytics is added to every page only when its token is set
-// in the build environment (Netlify's environment variables, or .env-example).
-const analyticsToken = process.env.CF_BEACON_TOKEN || undefined;
-if (!analyticsToken) {
-  console.log("CF_BEACON_TOKEN is not set: building without analytics");
-}
-
 for (const [page, file] of Object.entries(outputFiles)) {
-  const { head, html, noscript } = await render(page, { analyticsToken });
+  const { head, html, noscript } = await render(page);
   let output = fill(template, "<!--app-head-->", head);
   output = fill(output, "<!--app-noscript-->", noscript);
   output = fill(

@@ -12,9 +12,7 @@ test("/robots.txt is plain text that allows every crawler and points at the site
   const body = await response.text();
   expect(body).toMatch(/^User-agent: \*$/m);
   expect(body).toMatch(/^Allow: \/$/m);
-  expect(body).toMatch(
-    /^Sitemap: https:\/\/manuelmaxera\.com\/sitemap\.xml$/m,
-  );
+  expect(body).toMatch(/^Sitemap: https:\/\/manuelmaxera\.com\/sitemap\.xml$/m);
 });
 
 test("/sitemap.xml is XML listing the absolute URLs of / and /privacy", async ({

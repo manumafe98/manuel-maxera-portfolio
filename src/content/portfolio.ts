@@ -317,6 +317,16 @@ export const socialLinks: SocialLink[] = [
 /** The live site. Canonical URLs and structured data point here. */
 export const site = {
   url: "https://manuelmaxera.com/",
+  /**
+   * Umami Cloud, the cookie-free analytics on every page. These values are
+   * public: they ship in the HTML. Umami counts only visits on these domains,
+   * so the netlify.app address, deploy previews and localhost never count.
+   */
+  analytics: {
+    scriptUrl: "https://cloud.umami.is/script.js",
+    websiteId: "d3d352a7-8cac-4be0-835d-0b7f7174e382",
+    domains: ["manuelmaxera.com", "www.manuelmaxera.com"],
+  },
 };
 
 /** This portfolio's code repository, named in the Chat footer. */
