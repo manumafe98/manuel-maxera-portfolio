@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 import { contrastRatio } from "./contrast";
 
-const SITE_URL = "https://manuel-maxera.netlify.app/";
+const SITE_URL = "https://manuelmaxera.com/";
 
 const SUMMARY_START =
   "AI Engineer focused on production LLM agents and backend platforms for enterprise SaaS";

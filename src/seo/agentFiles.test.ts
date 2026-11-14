@@ -23,9 +23,9 @@ describe("the Markdown the Edge Function serves to agents", () => {
 
     expect(markdown.length).toBeGreaterThanOrEqual(20);
     expect(markdown).toMatch(/not found/i);
-    expect(markdown).toContain("(https://manuel-maxera.netlify.app/llms.txt)");
+    expect(markdown).toContain("(https://manuelmaxera.com/llms.txt)");
     expect(markdown).toContain(
-      "(https://manuel-maxera.netlify.app/sitemap.xml)",
+      "(https://manuelmaxera.com/sitemap.xml)",
     );
   });
 });

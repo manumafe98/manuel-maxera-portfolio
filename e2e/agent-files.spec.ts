@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const SITE_URL = "https://manuel-maxera.netlify.app/";
+const SITE_URL = "https://manuelmaxera.com/";
 
 test("/robots.txt is plain text that allows every crawler and points at the sitemap", async ({
   request,
@@ -13,7 +13,7 @@ test("/robots.txt is plain text that allows every crawler and points at the site
   expect(body).toMatch(/^User-agent: \*$/m);
   expect(body).toMatch(/^Allow: \/$/m);
   expect(body).toMatch(
-    /^Sitemap: https:\/\/manuel-maxera\.netlify\.app\/sitemap\.xml$/m,
+    /^Sitemap: https:\/\/manuelmaxera\.com\/sitemap\.xml$/m,
   );
 });
 
@@ -62,7 +62,7 @@ test("/llms.txt is markdown in llms.txt form with Manuel's name, current role, e
   expect(body).toContain("(https://www.linkedin.com/in/manuel-maxera/)");
   expect(body).toContain("manumaxerapro@gmail.com");
   expect(body).toContain(
-    "(https://manuel-maxera.netlify.app/files/Manuel_Maxera_Resume.pdf)",
+    "(https://manuelmaxera.com/files/Manuel_Maxera_Resume.pdf)",
   );
 });
 
