@@ -316,7 +316,7 @@ export const socialLinks: SocialLink[] = [
 
 /** The live site. Canonical URLs and structured data point here. */
 export const site = {
-  url: "https://manuel-maxera.netlify.app/",
+  url: "https://manuelmaxera.com/",
 };
 
 /** This portfolio's code repository, named in the Chat footer. */
