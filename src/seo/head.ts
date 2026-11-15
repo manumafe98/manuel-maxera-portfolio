@@ -30,11 +30,14 @@ const ogImage = {
   alt: `${profile.name}, ${profile.title}: the Claude Code mascot beside his name`,
 };
 
-/** Manuel as a schema.org Person, for JSON-LD. */
+/**
+ * Manuel as a schema.org Person, for JSON-LD. No image: he doesn't want a
+ * photo published. The contactPoint is on the Person, not on the employer
+ * Organization (ADR-0004).
+ */
 const person = () => {
   const [locality, country] = profile.location.split(", ");
   return {
-    "@context": "https://schema.org",
     "@type": "Person",
     name: profile.name,
     jobTitle: profile.title,
@@ -47,9 +50,23 @@ const person = () => {
       addressLocality: locality,
       addressCountry: country,
     },
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: profile.email,
+      contactType: "professional inquiries",
+    },
     worksFor: { "@type": "Organization", name: experience[0].company },
   };
 };
+
+/** The home page as Google's ProfilePage, about the Person. */
+const profilePage = () => ({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: site.url,
+  name: homeTitle,
+  mainEntity: person(),
+});
 
 /** "<" is escaped so the JSON can never close its script element. */
 const jsonLd = (data: object) =>
@@ -77,7 +94,7 @@ const heads: Record<PageId, () => string[]> = {
     metaName("twitter:image:alt", ogImage.alt),
     metaName("twitter:title", homeTitle),
     metaName("twitter:description", homeDescription),
-    jsonLd(person()),
+    jsonLd(profilePage()),
   ],
   privacy: () => [
     title(`Privacy | ${profile.name}`),

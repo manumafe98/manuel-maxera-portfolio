@@ -12,6 +12,21 @@ import {
 
 const absolute = (path: string) => new URL(path, site.url).href;
 
+/**
+ * The jobs an agent can do with this site and how, and what the site is
+ * not (ADR-0004), so an agent doesn't look for an API that isn't there.
+ */
+const whenToUse = () => [
+  "## When to use this",
+  "",
+  `- Evaluating ${profile.name} for ${profile.title} roles: read this file, or request ${site.url} with \`Accept: text/markdown\` to get the same Markdown. The [CV](${absolute(cv.path)}) is a PDF with the same experience.`,
+  `- Finding his experience with ${profile.knowsAbout.slice(0, -1).join(", ")} or ${profile.knowsAbout[profile.knowsAbout.length - 1]}: read the Experience and Projects sections below.`,
+  `- Contacting him about work: email [${profile.email}](mailto:${profile.email}).`,
+  "",
+  `This site is a personal portfolio. It has no API, no MCP server and no booking or scheduling. To reach ${profile.name}, use the email above.`,
+  "",
+];
+
 /** The whole portfolio as markdown, in the llms.txt format (llmstxt.org). */
 const llmsTxt = () =>
   [
@@ -21,6 +36,7 @@ const llmsTxt = () =>
     "",
     `${profile.title} based in ${profile.location}. This file holds the full content of ${profile.name}'s portfolio site (${site.url}).`,
     "",
+    ...whenToUse(),
     "## Links",
     "",
     `- [Portfolio](${site.url}): the interactive portfolio, built to look like the Claude Code app`,

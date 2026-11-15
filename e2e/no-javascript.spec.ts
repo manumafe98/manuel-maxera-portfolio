@@ -256,25 +256,38 @@ test.describe("with JavaScript disabled", () => {
     expect(image.headers()["content-type"]).toBe("image/png");
   });
 
-  test("/ HTML has a JSON-LD Person with Manuel's job, employer, city and profile links", async ({
+  test("/ HTML has a JSON-LD ProfilePage whose mainEntity Person has Manuel's job, employer, city, profile links and contact email, and no image", async ({
     page,
   }) => {
     await page.goto("/");
     const scripts = page.locator('script[type="application/ld+json"]');
     await expect(scripts).toHaveCount(1);
 
-    const person = JSON.parse((await scripts.textContent()) ?? "");
+    const text = (await scripts.textContent()) ?? "";
+    const profilePage = JSON.parse(text);
 
-    expect(person).toMatchObject({
+    expect(profilePage).toMatchObject({
       "@context": "https://schema.org",
-      "@type": "Person",
-      name: "Manuel Maxera",
-      jobTitle: "AI Engineer",
+      "@type": "ProfilePage",
       url: SITE_URL,
-      address: { addressLocality: "Buenos Aires" },
-      worksFor: { name: "Avature" },
+      mainEntity: {
+        "@type": "Person",
+        name: "Manuel Maxera",
+        jobTitle: "AI Engineer",
+        url: SITE_URL,
+        address: { addressLocality: "Buenos Aires" },
+        worksFor: { name: "Avature" },
+        contactPoint: {
+          "@type": "ContactPoint",
+          email: "manumaxerapro@gmail.com",
+          contactType: "professional inquiries",
+        },
+      },
     });
-    expect(person.sameAs).toEqual(expect.arrayContaining([LINKEDIN, GITHUB]));
+    expect(profilePage.mainEntity.sameAs).toEqual(
+      expect.arrayContaining([LINKEDIN, GITHUB]),
+    );
+    expect(text).not.toContain('"image"');
   });
 
   test("/ HTML has a JSON-LD Person whose knowsAbout terms all appear in the page text", async ({
@@ -285,7 +298,7 @@ test.describe("with JavaScript disabled", () => {
       (await page
         .locator('script[type="application/ld+json"]')
         .textContent()) ?? "",
-    );
+    ).mainEntity;
     const pageText = await page.locator("body").innerText();
 
     expect(person.knowsAbout).toEqual(
