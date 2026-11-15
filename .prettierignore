@@ -25,3 +25,7 @@ contracts/package-lock.json
 # Ignore specific Vite and Hardhat files
 frontend/vite.config.ts
 contracts/hardhat.config.ts
+
+# Google Search Console checks this file byte for byte, so leave it as Google
+# issued it (no trailing newline).
+public/googlebba936e1a5fbb6d8.html

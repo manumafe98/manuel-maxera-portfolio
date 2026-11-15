@@ -8,6 +8,7 @@ A personal portfolio that simulates an Ubuntu desktop, explored through a simula
 - `npm run build`: type-checks, builds, and pre-renders `/`, `/privacy` and the 404 page into `dist/`, together with `llms.txt`, `robots.txt`, `sitemap.xml` and `site.webmanifest`, all generated from `src/content/portfolio.ts`.
 - `npm test`: unit tests (Vitest).
 - `npm run test:e2e`: end-to-end tests (Playwright) against the production build.
+- `npm run check`: the full verification, run before every pull request and in CI. It runs `lint`, `prettier:check`, `test` and `test:e2e` in that order and stops at the first failure. The end-to-end tests build the site themselves, with placeholder EmailJS settings, so no separate build is needed.
 - `node scripts/generate-images.js`: re-renders the PNG icons and the Open Graph image in `public/` from `public/favicon.svg`. Run it by hand and commit the PNGs.
 
 ## Environment variables

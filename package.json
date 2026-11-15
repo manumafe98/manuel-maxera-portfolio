@@ -11,7 +11,9 @@
     "prettier:check": "npx prettier . --check",
     "prettier:fix": "npx prettier . --write",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check": "npm run lint && npm run prettier:check && npm test && npm run test:e2e",
+    "prepare": "node scripts/install-hooks.js"
   },
   "dependencies": {
     "@emailjs/browser": "^5.0.3",

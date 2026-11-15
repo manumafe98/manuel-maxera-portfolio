@@ -1,0 +1,8 @@
+#!/bin/sh
+# Refuse commits on main. Work on a branch and open a pull request instead.
+branch=$(git symbolic-ref --short -q HEAD)
+if [ "$branch" = "main" ]; then
+  echo "pre-commit: refusing to commit on main." >&2
+  echo "Create a branch (git switch -c <name>) and open a pull request." >&2
+  exit 1
+fi
