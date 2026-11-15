@@ -75,6 +75,8 @@ export const Chat = ({
       skills: onOpenApp ? "windows" : "cards",
     });
     streamRef.current = stream;
+    // A motion preference, not the window width, so ADR-0002 doesn't apply.
+    // eslint-disable-next-line no-restricted-properties
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       stream.skip();
     }
