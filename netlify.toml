@@ -20,6 +20,17 @@
 # permanently, so search engines see one copy and Umami (which only counts
 # manuelmaxera.com) sees every visit. Deploy previews use other hosts
 # (deploy-preview-N--manuel-maxera.netlify.app) and are not affected.
+#
+# One exception, listed first because Netlify uses the first rule that
+# matches: Google's verification file stays reachable on the old address, so
+# Search Console can verify it and run Change of Address. Remove the file and
+# this rule only if that property is deleted.
+[[redirects]]
+  from = "https://manuel-maxera.netlify.app/googlebba936e1a5fbb6d8.html"
+  to = "/googlebba936e1a5fbb6d8.html"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "https://manuel-maxera.netlify.app/*"
   to = "https://manuelmaxera.com/:splat"
