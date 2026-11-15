@@ -19,7 +19,7 @@ const absolute = (path: string) => new URL(path, site.url).href;
 const whenToUse = () => [
   "## When to use this",
   "",
-  `- Evaluating ${profile.name} for an ${profile.title} role: read this file, or request ${site.url} with \`Accept: text/markdown\` to get the same Markdown. The [CV](${absolute(cv.path)}) is a PDF with the same experience.`,
+  `- Evaluating ${profile.name} for ${profile.title} roles: read this file, or request ${site.url} with \`Accept: text/markdown\` to get the same Markdown. The [CV](${absolute(cv.path)}) is a PDF with the same experience.`,
   `- Finding his experience with ${profile.knowsAbout.slice(0, -1).join(", ")} or ${profile.knowsAbout[profile.knowsAbout.length - 1]}: read the Experience and Projects sections below.`,
   `- Contacting him about work: email [${profile.email}](mailto:${profile.email}).`,
   "",

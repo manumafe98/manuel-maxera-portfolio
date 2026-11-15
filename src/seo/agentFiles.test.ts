@@ -19,7 +19,7 @@ describe("the Markdown the Edge Function serves to agents", () => {
   });
 
   for (const file of ["llms.txt", "index.md"]) {
-    test(`${file} has a When to use this section between the summary paragraph and the Links, with the email and CV for each job and a statement that the site has no API, MCP server or booking`, () => {
+    test(`${file} opens with a When to use this section, after the summary and before the Links, that gives the email, the CV link, the Accept: text/markdown request, where to read the LangGraph experience, and says the site has no API, MCP server or booking`, () => {
       const markdown = agentFiles()[file];
       const headings = markdown.match(/^## .+$/gm);
       const section = markdown
