@@ -1,5 +1,9 @@
 # Agents
 
+## Verification
+
+Run `npm run check` before opening a pull request. It runs lint, Prettier, unit tests and end-to-end tests, and CI runs the same command. Never commit on `main`: the pre-commit hook in `.githooks/` refuses it, so work on a branch.
+
 ## Agent skills
 
 ### Issue tracker
