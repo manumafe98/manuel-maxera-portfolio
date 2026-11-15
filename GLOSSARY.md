@@ -8,6 +8,10 @@ A personal portfolio that simulates an Ubuntu desktop, where visitors explore Ma
 The simulated Ubuntu screen shown on large screens, with a top bar, a dock, and app windows.
 _Avoid_: Home page, OS
 
+**Phone layout**:
+The Claude Code app shown full screen on small screens in place of the Desktop. Skills show their content inside the Chat instead of opening App windows.
+_Avoid_: Mobile view, phone shell
+
 **Top bar**:
 The strip across the top of the Desktop that holds the calendar, the CV download, and the social links.
 _Avoid_: Navbar, activities bar
