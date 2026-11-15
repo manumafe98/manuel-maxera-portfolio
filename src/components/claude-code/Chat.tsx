@@ -75,7 +75,8 @@ export const Chat = ({
       skills: onOpenApp ? "windows" : "cards",
     });
     streamRef.current = stream;
-    // A motion preference, not the window width, so ADR-0002 doesn't apply.
+    // A motion preference: it changes animation, not which markup renders,
+    // so ADR-0002 allows it (CODING_STANDARDS.md, Layout choice).
     // eslint-disable-next-line no-restricted-properties
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
       stream.skip();

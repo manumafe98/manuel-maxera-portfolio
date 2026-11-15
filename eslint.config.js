@@ -4,9 +4,9 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-// ADR-0002: CSS, not JavaScript, chooses the Desktop or phone layout.
+// ADR-0002: CSS, not JavaScript, chooses the Desktop or the Phone layout.
 const widthMessage =
-  "Don't pick what to render from the window width; CSS chooses the Desktop or phone layout. See docs/adr/0002-css-picks-desktop-or-phone-shell.md.";
+  "Don't branch on innerWidth or matchMedia to decide what to render; CSS chooses the Desktop or the Phone layout. See docs/adr/0002-css-picks-desktop-or-phone-shell.md.";
 
 export default tseslint.config(
   { ignores: ["dist"] },
@@ -34,8 +34,10 @@ export default tseslint.config(
       ],
       "no-restricted-properties": [
         "error",
-        { object: "window", property: "innerWidth", message: widthMessage },
-        { object: "window", property: "matchMedia", message: widthMessage },
+        ...["window", "globalThis", "self"].flatMap((object) => [
+          { object, property: "innerWidth", message: widthMessage },
+          { object, property: "matchMedia", message: widthMessage },
+        ]),
       ],
     },
   },
