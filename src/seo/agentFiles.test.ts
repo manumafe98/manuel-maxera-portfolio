@@ -18,6 +18,36 @@ describe("the Markdown the Edge Function serves to agents", () => {
     }
   });
 
+  for (const file of ["llms.txt", "index.md"]) {
+    test(`${file} has a When to use this section between the summary paragraph and the Links, with the email and CV for each job and a statement that the site has no API, MCP server or booking`, () => {
+      const markdown = agentFiles()[file];
+      const headings = markdown.match(/^## .+$/gm);
+      const section = markdown
+        .split("## When to use this\n")[1]
+        ?.split("\n## ")[0];
+
+      expect(headings?.slice(0, 2)).toEqual([
+        "## When to use this",
+        "## Links",
+      ]);
+      expect(markdown.indexOf("## When to use this")).toBeGreaterThan(
+        markdown.indexOf("This file holds the full content"),
+      );
+      expect(section).toContain(
+        "[manumaxerapro@gmail.com](mailto:manumaxerapro@gmail.com)",
+      );
+      expect(section).toContain(
+        "(https://manuelmaxera.com/files/Manuel_Maxera_Resume.pdf)",
+      );
+      expect(section).toContain("`Accept: text/markdown`");
+      expect(section).toMatch(/LangGraph/);
+      expect(section).toMatch(/Experience and Projects sections/);
+      expect(section).toContain(
+        "It has no API, no MCP server and no booking or scheduling.",
+      );
+    });
+  }
+
   test("404.md explains the page wasn't found in at least 20 characters and links llms.txt and the sitemap", () => {
     const markdown = agentFiles()["404.md"];
 

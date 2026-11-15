@@ -64,6 +64,18 @@ test("/llms.txt is markdown in llms.txt form with Manuel's name, current role, e
   );
 });
 
+test("/llms.txt tells agents when to use the site, with the contact email, and that it has no API, MCP server or booking", async ({
+  request,
+}) => {
+  const body = await (await request.get("/llms.txt")).text();
+  const section = body.split("## When to use this\n")[1]?.split("\n## ")[0];
+
+  expect(section).toContain("mailto:manumaxerapro@gmail.com");
+  expect(section).toContain(
+    "It has no API, no MCP server and no booking or scheduling.",
+  );
+});
+
 test("/site.webmanifest is a web manifest naming Manuel, with standalone display, dark colours and PNG icons that load", async ({
   request,
 }) => {
