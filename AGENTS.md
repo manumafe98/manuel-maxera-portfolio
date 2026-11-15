@@ -2,7 +2,11 @@
 
 ## Verification
 
-Run `npm run check` before opening a pull request. It runs lint, Prettier, unit tests and end-to-end tests, and CI runs the same command. Never commit on `main`: the pre-commit hook in `.githooks/` refuses it, so work on a branch.
+Run `npm run check` before opening a pull request. It is the full verification, and CI runs the same command. Never commit on `main`: the pre-commit hook in `.githooks/` refuses it, so work on a branch.
+
+## Coding standards
+
+Follow [`CODING_STANDARDS.md`](CODING_STANDARDS.md). `/code-review` checks each pull request against it before Manuel reviews it.
 
 ## Agent skills
 
